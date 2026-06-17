@@ -410,34 +410,80 @@ def eliminar_caso(id_caso):
 @token_requerido
 def get_indicadores():
     depto_id = request.args.get('id_departamento')
-    resumen = RepositorioEstadistica.obtener_resumen_indicadores(depto_id)
+    prov_id = request.args.get('id_provincia')
+    dist_id = request.args.get('id_distrito')
+    anio = request.args.get('anio')
+    semana_inicio = request.args.get('semana_inicio')
+    semana_fin = request.args.get('semana_fin')
+    
+    resumen = RepositorioEstadistica.obtener_resumen_indicadores(
+        depto_id=depto_id, prov_id=prov_id, dist_id=dist_id,
+        anio=anio, semana_inicio=semana_inicio, semana_fin=semana_fin
+    )
     return jsonify(resumen)
 
 @dash_bp.route('/graficos/casos-semanales', methods=['GET'])
 @token_requerido
 def get_casos_semanales():
     depto_id = request.args.get('id_departamento')
-    res = RepositorioEstadistica.obtener_casos_semanales(depto_id)
+    prov_id = request.args.get('id_provincia')
+    dist_id = request.args.get('id_distrito')
+    anio = request.args.get('anio')
+    semana_inicio = request.args.get('semana_inicio')
+    semana_fin = request.args.get('semana_fin')
+    
+    res = RepositorioEstadistica.obtener_casos_semanales(
+        depto_id=depto_id, prov_id=prov_id, dist_id=dist_id,
+        anio=anio, semana_inicio=semana_inicio, semana_fin=semana_fin
+    )
     return jsonify(res)
 
 @dash_bp.route('/graficos/serotipos', methods=['GET'])
 @token_requerido
 def get_dist_serotipos():
     depto_id = request.args.get('id_departamento')
-    res = RepositorioEstadistica.obtener_distribucion_serotipos(depto_id)
+    prov_id = request.args.get('id_provincia')
+    dist_id = request.args.get('id_distrito')
+    anio = request.args.get('anio')
+    semana_inicio = request.args.get('semana_inicio')
+    semana_fin = request.args.get('semana_fin')
+    
+    res = RepositorioEstadistica.obtener_distribucion_serotipos(
+        depto_id=depto_id, prov_id=prov_id, dist_id=dist_id,
+        anio=anio, semana_inicio=semana_inicio, semana_fin=semana_fin
+    )
     return jsonify(res)
 
 @dash_bp.route('/graficos/letalidad', methods=['GET'])
 @token_requerido
 def get_letalidad():
-    res = RepositorioEstadistica.obtener_letalidad_departamentos()
+    depto_id = request.args.get('id_departamento')
+    prov_id = request.args.get('id_provincia')
+    dist_id = request.args.get('id_distrito')
+    anio = request.args.get('anio')
+    semana_inicio = request.args.get('semana_inicio')
+    semana_fin = request.args.get('semana_fin')
+    
+    res = RepositorioEstadistica.obtener_letalidad_departamentos(
+        depto_id=depto_id, prov_id=prov_id, dist_id=dist_id,
+        anio=anio, semana_inicio=semana_inicio, semana_fin=semana_fin
+    )
     return jsonify(res)
 
 @dash_bp.route('/graficos/sintomas', methods=['GET'])
 @token_requerido
 def get_sintomas_stat():
     depto_id = request.args.get('id_departamento')
-    res = RepositorioEstadistica.obtener_distribucion_sintomas(depto_id)
+    prov_id = request.args.get('id_provincia')
+    dist_id = request.args.get('id_distrito')
+    anio = request.args.get('anio')
+    semana_inicio = request.args.get('semana_inicio')
+    semana_fin = request.args.get('semana_fin')
+    
+    res = RepositorioEstadistica.obtener_distribucion_sintomas(
+        depto_id=depto_id, prov_id=prov_id, dist_id=dist_id,
+        anio=anio, semana_inicio=semana_inicio, semana_fin=semana_fin
+    )
     return jsonify(res)
 
 @dash_bp.route('/exportar/<string:formato>', methods=['GET'])
@@ -445,9 +491,17 @@ def get_sintomas_stat():
 @requiere_roles('Administrador', 'Epidemiologo', 'Autoridad')
 def exportar_reporte(formato):
     depto_id = request.args.get('id_departamento')
+    prov_id = request.args.get('id_provincia')
+    dist_id = request.args.get('id_distrito')
+    anio = request.args.get('anio')
+    semana_inicio = request.args.get('semana_inicio')
+    semana_fin = request.args.get('semana_fin')
     
     # Traer datos de los casos filtrados
-    casos = repo_caso.buscar_filtrado(depto_id=depto_id)
+    casos = repo_caso.buscar_filtrado(
+        depto_id=depto_id, prov_id=prov_id, dist_id=dist_id,
+        anio=anio, semana=semana_fin
+    )
     
     encabezados = ['ID Caso', 'Paciente DNI', 'Paciente Nombres', 'Establecimiento', 'Fecha Notificación', 'Diagnóstico', 'Clasificación', 'Condición']
     filas = [
@@ -738,7 +792,6 @@ def extraer_entidades_del_prompt(user_prompt):
                     lines = lines[:-1]
                 raw_text = "\n".join(lines).strip()
                 
-            return json.loads(raw_text)
     except Exception as e:
         print(f"Error extracting entities: {e}")
         return {}
@@ -752,6 +805,10 @@ def asistente_ia():
     data = request.get_json() or {}
     tipo = data.get('tipo', 'chat')  # 'chat', 'analisis', 'campana'
     user_prompt = data.get('prompt', '')
+    history = data.get('history', [])
+    # Limitar el historial a los últimos 30 mensajes (15 turnos completos) para prevenir sobrecarga extrema
+    if isinstance(history, list):
+        history = history[-30:]
     
     id_departamento = data.get('id_departamento')
     id_provincia = data.get('id_provincia')
@@ -760,8 +817,219 @@ def asistente_ia():
     semana = data.get('semana')
     id_serotipo = data.get('id_serotipo')
     id_clasificacion = data.get('id_clasificacion')
-    
-    # Procesamiento por NLP si es un chat libre
+
+    # Helper function to call the LLM endpoint with automatic retries and exponential backoff
+    def llamar_endpoint_llm(prompt_text, timeout=30, max_retries=3):
+        import urllib.request
+        import urllib.error
+        import json
+        import time
+        import sys
+        
+        url = "https://lb0wyqyxbe.execute-api.us-east-1.amazonaws.com/prod/generate"
+        payload = json.dumps({"prompt": prompt_text}).encode('utf-8')
+        
+        for attempt in range(1, max_retries + 1):
+            req = urllib.request.Request(
+                url,
+                data=payload,
+                headers={"Content-Type": "application/json"},
+                method="POST"
+            )
+            try:
+                print(f"[LLM CALL] Intentando llamada a la API (Intento {attempt}/{max_retries})...")
+                sys.stdout.flush()
+                with urllib.request.urlopen(req, timeout=timeout) as response:
+                    res_body = response.read().decode('utf-8')
+                    res_json = json.loads(res_body)
+                    response_text = res_json.get('response', '').strip()
+                    if response_text:
+                        print(f"[LLM CALL] Éxito en intento {attempt}.")
+                        sys.stdout.flush()
+                        return response_text
+                    else:
+                        print(f"[LLM CALL] Intento {attempt} retornó una respuesta vacía.")
+                        sys.stdout.flush()
+            except urllib.error.HTTPError as e:
+                print(f"[LLM CALL] Error HTTP en intento {attempt}: {e.code} - {e.reason}")
+                sys.stdout.flush()
+            except urllib.error.URLError as e:
+                print(f"[LLM CALL] Error de red/timeout en intento {attempt}: {e.reason}")
+                sys.stdout.flush()
+            except Exception as e:
+                print(f"[LLM CALL] Error inesperado en intento {attempt}: {e}")
+                sys.stdout.flush()
+            
+            # Exponential backoff (1.5s, 3.0s, 6.0s...)
+            if attempt < max_retries:
+                sleep_time = 1.5 * (2 ** (attempt - 1))
+                print(f"[LLM CALL] Reintentando en {sleep_time} segundos...")
+                sys.stdout.flush()
+                time.sleep(sleep_time)
+                
+        print("[LLM CALL] Se agotaron todos los intentos de llamada a la IA.")
+        sys.stdout.flush()
+        return ""
+
+    # 1. Procesar Chat con Contexto e Inteligencia SQL (si es tipo 'chat')
+    if tipo == 'chat':
+        # Comprobar si es la solicitud de reporte automático del dashboard
+        is_dashboard_report = "Como epidemiólogo experto" in user_prompt or "Pregunta médica/epidemiológica del usuario sobre la distribución" in user_prompt
+        
+        if not is_dashboard_report:
+            # Construir filtros activos como contexto para el planificador SQL
+            filters_list = []
+            if id_departamento:
+                deptos = repo_geo.listar_departamentos()
+                d_obj = next((d for d in deptos if d.id_departamento == id_departamento), None)
+                if d_obj: filters_list.append(f"departamento = '{d_obj.nombre_departamento}'")
+            if id_provincia:
+                provs = repo_geo.listar_provincias(id_departamento)
+                p_obj = next((p for p in provs if p.id_provincia == id_provincia), None)
+                if p_obj: filters_list.append(f"provincia = '{p_obj.nombre_provincia}'")
+            if id_distrito:
+                dists = repo_geo.listar_distritos(id_provincia)
+                di_obj = next((d for d in dists if d.id_distrito == id_distrito), None)
+                if di_obj: filters_list.append(f"distrito = '{di_obj.nombre_distrito}'")
+            if anio:
+                filters_list.append(f"año = {anio}")
+            if semana:
+                filters_list.append(f"semana = {semana}")
+            if id_serotipo:
+                ser_cat = repo_geo.listar_serotipos()
+                s_obj = next((s for s in ser_cat if s.id_serotipo == id_serotipo), None)
+                if s_obj: filters_list.append(f"serotipo = '{s_obj.codigo}'")
+            if id_clasificacion:
+                clas_cat = repo_geo.listar_clasificaciones()
+                c_obj = next((c for c in clas_cat if c.id_clasificacion == id_clasificacion), None)
+                if c_obj: filters_list.append(f"clasificación = '{c_obj.nombre}'")
+
+            active_filters_hint = ""
+            if filters_list:
+                active_filters_hint = "\nFiltros de búsqueda epidemiológica activos en la interfaz (aplícalos a la consulta SQL si el usuario pide estadísticas):\n" + "\n".join([f"- {f}" for f in filters_list])
+
+            # Prompt para decidir si se necesita SQL y generarlo
+            planning_prompt = (
+                "Eres un agente inteligente para SIVED-Perú, un sistema de vigilancia de dengue en Perú. "
+                "Tu tarea es decidir si la pregunta del usuario requiere consultar la base de datos PostgreSQL de SIVED-Perú para obtener números, conteos, listados o estadísticas epidemiológicas.\n\n"
+                "Esquema de base de datos:\n"
+                "- departamento: id_departamento (PK), nombre_departamento (VARCHAR)\n"
+                "- provincia: id_provincia (PK), nombre_provincia (VARCHAR), id_departamento (FK)\n"
+                "- distrito: id_distrito (PK), nombre_distrito (VARCHAR), id_provincia (FK)\n"
+                "- establecimiento_salud: id_establecimiento (PK), nombre_establecimiento (VARCHAR), categoria (VARCHAR), id_distrito (FK)\n"
+                "- paciente: id_paciente (PK), documento (VARCHAR), nombres (VARCHAR), apellidos (VARCHAR), fecha_nacimiento (DATE), sexo (CHAR: 'M' o 'F'), id_distrito (FK)\n"
+                "- periodo_epidemiologico: id_periodo (PK), anio (INT), numero_semana (INT), fecha_inicio (DATE), fecha_fin (DATE)\n"
+                "- serotipo: id_serotipo (PK), codigo (VARCHAR, p.ej. 'DENV-1', 'DENV-2', 'DENV-3', 'DENV-4'), descripcion (VARCHAR)\n"
+                "- clasificacion_caso: id_clasificacion (PK), nombre (VARCHAR), descripcion (VARCHAR)\n"
+                "- caso_dengue: id_caso (PK), id_paciente (FK), id_establecimiento (FK), id_periodo (FK), id_serotipo (FK), id_clasificacion (FK), fecha_notificacion (DATE), tipo_diagnostico (VARCHAR: 'Probable' o 'Confirmado'), condicion (VARCHAR: 'Vivo' o 'Fallecido')\n\n"
+                "Reglas importantes:\n"
+                "1. Genera únicamente una consulta SELECT válida para PostgreSQL. No uses comandos modificadores (INSERT, UPDATE, DELETE).\n"
+                "2. Para contar casos totales usa: SELECT COUNT(*) FROM caso_dengue\n"
+                "3. Para contar fallecidos usa: SELECT COUNT(*) FROM caso_dengue WHERE condicion = 'Fallecido'\n"
+                "4. Para unir geografía usa: caso_dengue JOIN establecimiento_salud USING(id_establecimiento) JOIN distrito USING(id_distrito) JOIN provincia USING(id_provincia) JOIN departamento USING(id_departamento)\n"
+                "5. Para filtrar por año o semana, une con periodo_epidemiologico usando: caso_dengue JOIN periodo_epidemiologico USING(id_periodo)\n"
+                "6. Para unir paciente usa: caso_dengue JOIN paciente USING(id_paciente)\n"
+                "7. Filtra de forma flexible usando ILIKE (p.ej. nombre_departamento ILIKE '%piura%').\n"
+                "8. Limita los resultados agregando LIMIT 15 al final para no saturar.\n"
+                "9. Responde estrictamente con la consulta SQL en una sola línea. No incluyas explicaciones ni bloques de código (```).\n"
+                "10. Si la pregunta del usuario es conceptual (ej. qué es el dengue, síntomas comunes, recomendaciones, prevención) o un saludo, responde estrictamente: NO_BD\n"
+                "11. Si el usuario pregunta por regiones o áreas geográficas de Perú (norte, centro, sur, oriente), traduce esta indicación a una cláusula IN con los nombres oficiales de los departamentos correspondientes (en mayúsculas):\n"
+                "    - sur: UPPER(nombre_departamento) IN ('AREQUIPA', 'CUSCO', 'TACNA', 'MOQUEGUA', 'PUNO', 'APURIMAC', 'AYACUCHO', 'HUANCAVELICA', 'MADRE DE DIOS')\n"
+                "    - norte: UPPER(nombre_departamento) IN ('TUMBES', 'PIURA', 'LAMBAYEQUE', 'LA LIBERTAD', 'CAJAMARCA', 'AMAZONAS', 'SAN MARTIN', 'LORETO')\n"
+                "    - centro: UPPER(nombre_departamento) IN ('LIMA', 'CALLAO', 'ANCASH', 'HUANUCO', 'PASCO', 'JUNIN', 'ICA', 'UCAYALI')\n"
+                "    - oriente: UPPER(nombre_departamento) IN ('LORETO', 'UCAYALI', 'MADRE DE DIOS', 'SAN MARTIN', 'AMAZONAS')\n\n"
+                f"Pregunta del usuario: \"{user_prompt}\""
+                f"{active_filters_hint}\n\n"
+                "Respuesta (SQL o NO_BD):"
+            )
+
+            sql_query = llamar_endpoint_llm(planning_prompt, timeout=25)
+            db_results = None
+            exec_error = None
+
+            # Limpiar posibles delimitadores markdown del SQL
+            if sql_query:
+                sql_query = sql_query.replace("```sql", "").replace("```", "").strip()
+
+            if sql_query and sql_query.upper().startswith("SELECT"):
+                print(f"[SQL AGENT] Generado: {sql_query}")
+                import sys
+                sys.stdout.flush()
+                conn = DatabaseConnection.get_connection()
+                cur = conn.cursor(cursor_factory=RealDictCursor)
+                try:
+                    cur.execute(sql_query)
+                    db_results = cur.fetchall()
+                    print(f"[SQL AGENT] Filas devueltas: {len(db_results)}")
+                    sys.stdout.flush()
+                except Exception as e:
+                    exec_error = str(e)
+                    print(f"[SQL AGENT] Error ejecutando consulta del planificador SQL: {e}")
+                    import sys
+                    sys.stdout.flush()
+                finally:
+                    cur.close()
+                    conn.close()
+
+            # Formatear el historial de chat para mantener el contexto
+            history_str = ""
+            for msg in history:
+                role_label = "Usuario" if msg.get('role') == 'user' else "Asistente"
+                history_str += f"{role_label}: {msg.get('content')}\n\n"
+
+            # Custom JSON Encoder to handle date/datetime objects in database results
+            class DateEncoder(json.JSONEncoder):
+                def default(self, obj):
+                    import datetime
+                    if isinstance(obj, (datetime.date, datetime.datetime)):
+                        return obj.isoformat()
+                    return super().default(obj)
+
+            # Construir el prompt final
+            if db_results is not None:
+                db_results_str = json.dumps(db_results, cls=DateEncoder, ensure_ascii=False, indent=2)
+                prompt_final = (
+                    f"Eres el Asistente Clínico de IA de SIVED-Perú. Tienes acceso directo a la base de datos PostgreSQL del sistema.\n"
+                    f"Para responder la consulta del usuario, has ejecutado con éxito esta consulta SQL:\n"
+                    f"{sql_query}\n\n"
+                    f"Resultados de la base de datos:\n{db_results_str}\n\n"
+                    f"Instrucciones:\n"
+                    f"- Responde a la pregunta de forma clara, profesional y empática en base a estos datos.\n"
+                    f"- Utiliza siempre tablas y listados en markdown si te solicitan rankings, conteos o desgloses.\n"
+                    f"- Si no hay resultados, indícalo de forma amable.\n\n"
+                    f"Historial de conversación:\n{history_str}"
+                    f"Usuario: {user_prompt}\n\n"
+                    f"Asistente:"
+                )
+            elif exec_error is not None:
+                prompt_final = (
+                    f"Eres el Asistente Clínico de IA de SIVED-Perú.\n"
+                    f"El usuario solicitó información de la base de datos, pero ocurrió un error al procesar la consulta:\n"
+                    f"Error: {exec_error}\n\n"
+                    f"Por favor, indícale al usuario de forma atenta que ocurrió un problema al consultar la base de datos y ofrécele responder de forma conceptual o indícale qué filtros podrían estar causando el conflicto.\n\n"
+                    f"Historial de conversación:\n{history_str}"
+                    f"Usuario: {user_prompt}\n\n"
+                    f"Asistente:"
+                )
+            else:
+                prompt_final = (
+                    f"Eres el Asistente Clínico de IA de SIVED-Perú, un chatbot de soporte epidemiológico y prevención del dengue en el Perú.\n"
+                    f"Responde de forma clara, profesional y concisa a la consulta del usuario.\n"
+                    f"Puedes utilizar formato de markdown (como negritas, listas o tablas) para estructurar tu respuesta de forma amigable.\n\n"
+                    f"Historial de conversación:\n{history_str}"
+                    f"Usuario: {user_prompt}\n\n"
+                    f"Asistente:"
+                )
+
+            # Ejecutar llamada final
+            respuesta_final = llamar_endpoint_llm(prompt_final, timeout=35)
+            return jsonify({
+                'success': True,
+                'respuesta': respuesta_final or "Lo siento, no pude generar una respuesta en este momento.",
+                'modelo': 'Amazon Nova Pro'
+            })
+
+    # Procesamiento por NLP si es un chat libre original o dashboard
     if tipo == 'chat':
         entidades = extraer_entidades_del_prompt(user_prompt)
         if entidades:
@@ -793,8 +1061,8 @@ def asistente_ia():
                     clas_cat = repo_geo.listar_clasificaciones()
                     clas_obj = next((c for c in clas_cat if clas_name.lower() in c.nombre.lower() or clas_name.lower() in c.descripcion.lower()), None)
                     if clas_obj: id_clasificacion = clas_obj.id_clasificacion
-    
-    # 1. Enriquecer prompt según el tipo
+
+    # 2. Enriquecer prompt según el tipo (Original fallback/dashboard)
     prompt_final = ""
     
     if tipo == 'analisis':

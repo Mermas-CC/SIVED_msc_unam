@@ -2,7 +2,6 @@ import os
 import csv
 import random
 from datetime import datetime, timedelta
-import hashlib
 
 # Configuración de rutas
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -20,17 +19,6 @@ ROLES = [
     (4, 'Autoridad', 'ver_dashboard,exportar_reportes', 'Autoridad de salud con acceso de solo lectura al dashboard')
 ]
 
-# Hashes de prueba para contraseñas usando sha256 (como fallback/ejemplo) o formato simple.
-# Usaremos contraseñas de texto plano hashificadas con pbkdf2:sha256 (compatibles con werkzeug)
-# Contraseña para todos: "sived123"
-# Hash generado con pbkdf2:sha256:600000$salt$hash...
-# Para simplificar y evitar dependencias de werkzeug durante la generación de datos,
-# usaremos un hash SHA256 simple y luego en el backend validaremos apropiadamente,
-# o podemos precalcular hashes válidos de werkzeug para "admin123", "epidemio123", "notifica123", "autoridad123".
-# Hashes de werkzeug (scrypt o pbkdf2_sha256) para password: "password123"
-# Guardamos hashes generados con pbkdf2:sha256:600000$salt$hash:
-# En Python: werkzeug.security.generate_password_hash('sived123')
-# Vamos a guardar hashes fijos de tipo pbkdf2:sha256:260000$Z7yqB9zN$1bc44f0b...
 HASH_PASS = "pbkdf2:sha256:260000$Z7yqB9zN$1bc44f0bb6c12b9a71221147a4694b29bb8968ee8dc1f5f2479f648d8b9d3655" # hash de "sived123"
 
 USUARIOS = [
@@ -92,186 +80,42 @@ DEPARTAMENTOS_INFO = [
     ('PE25', 'Ucayali', -8.3791, -74.5539, 102410.6)
 ]
 
-# 3. Provincias (69 total)
-PROVINCIAS = []
-p_id = 1
-for dep_code, dep_name, dep_lat, dep_lon in [(d[0], d[1], d[2], d[3]) for d in DEPARTAMENTOS_INFO]:
-    # Cada departamento tiene al menos 1 provincia (la capital/principal)
-    prov_name = f"Provincia {dep_name}"
-    # Nombres reales para los principales
-    if dep_code == 'PE20': prov_name = 'Piura'
-    elif dep_code == 'PE14': prov_name = 'Chiclayo'
-    elif dep_code == 'PE15': prov_name = 'Lima'
-    elif dep_code == 'PE16': prov_name = 'Maynas'
-    elif dep_code == 'PE25': prov_name = 'Coronel Portillo'
-    elif dep_code == 'PE18': prov_name = 'Mariscal Nieto'
-    
-    PROVINCIAS.append((f"P{p_id:03d}", prov_name, dep_code, dep_lat + random.uniform(-0.1, 0.1), dep_lon + random.uniform(-0.1, 0.1)))
-    p_id += 1
-    
-    # Añadimos provincias secundarias para completar 69
-    extra_provs = 2 if dep_code in ['PE20', 'PE14', 'PE15', 'PE16', 'PE25', 'PE04', 'PE08', 'PE22'] else 1
-    for k in range(extra_provs):
-        if len(PROVINCIAS) < 69:
-            PROVINCIAS.append((f"P{p_id:03d}", f"Provincia {dep_name} Aux {k+1}", dep_code, dep_lat + random.uniform(-0.3, 0.3), dep_lon + random.uniform(-0.3, 0.3)))
-            p_id += 1
+dep_map = {
+    'AMAZONAS': 'PE01', 'ANCASH': 'PE02', 'APURIMAC': 'PE03', 'AREQUIPA': 'PE04',
+    'AYACUCHO': 'PE05', 'CAJAMARCA': 'PE06', 'CALLAO': 'PE07', 'CUSCO': 'PE08',
+    'HUANCAVELICA': 'PE09', 'HUANUCO': 'PE10', 'ICA': 'PE11', 'JUNIN': 'PE12',
+    'LA LIBERTAD': 'PE13', 'LAMBAYEQUE': 'PE14', 'LIMA': 'PE15', 'LORETO': 'PE16',
+    'MADRE DE DIOS': 'PE17', 'MOQUEGUA': 'PE18', 'PASCO': 'PE19', 'PIURA': 'PE20',
+    'PUNO': 'PE21', 'SAN MARTIN': 'PE22', 'TACNA': 'PE23', 'TUMBES': 'PE24',
+    'UCAYALI': 'PE25'
+}
 
-# Asegurar que llegamos a 69 provincias exactamente
-while len(PROVINCIAS) < 69:
-    PROVINCIAS.append((f"P{p_id:03d}", f"Provincia Extra {p_id}", 'PE15', -12.0464 + random.uniform(-0.5, 0.5), -77.0428 + random.uniform(-0.5, 0.5)))
-    p_id += 1
-
-# 4. Distritos (120 total)
-DISTRITOS = []
-d_id = 1
-# Cada provincia tiene al menos 1 distrito
-for prov_id, prov_name, dep_code, p_lat, p_lon in PROVINCIAS:
-    dist_name = f"Distrito {prov_name}"
-    # Nombres reales para los principales
-    if prov_id == 'P020': dist_name = 'Piura' # Provincia Piura
-    elif prov_id == 'P014': dist_name = 'Chiclayo' # Chiclayo
-    elif prov_id == 'P015': dist_name = 'Lima' # Lima
-    elif prov_id == 'P016': dist_name = 'Iquitos' # Maynas
-    elif prov_id == 'P025': dist_name = 'Calleria' # Coronel Portillo
-    
-    DISTRITOS.append((f"D{d_id:04d}", dist_name, prov_id, p_lat + random.uniform(-0.05, 0.05), p_lon + random.uniform(-0.05, 0.05)))
-    d_id += 1
-
-# Completar hasta 120 distritos
-while len(DISTRITOS) < 120:
-    # Elegir provincia al azar para añadir distrito extra
-    rand_prov = random.choice(PROVINCIAS)
-    prov_id = rand_prov[0]
-    p_lat, p_lon = rand_prov[3], rand_prov[4]
-    DISTRITOS.append((f"D{d_id:04d}", f"Distrito {rand_prov[1]} Aux {d_id}", prov_id, p_lat + random.uniform(-0.1, 0.1), p_lon + random.uniform(-0.1, 0.1)))
-    d_id += 1
-
-# 5. Establecimientos de Salud (120 total)
-# Cada distrito tendrá exactamente 1 establecimiento de salud
-ESTABLECIMIENTOS = []
-for i, dist in enumerate(DISTRITOS):
-    est_id = i + 1
-    dist_id = dist[0]
-    dist_name = dist[1]
-    
-    categorias = ['Puesto de Salud', 'Centro de Salud', 'Hospital I', 'Hospital II']
-    categoria = random.choice(categorias)
-    
-    nombre_est = f"{categoria} {dist_name}"
-    if dist_name == 'Piura': nombre_est = 'Hospital Regional Cayetano Heredia'
-    elif dist_name == 'Chiclayo': nombre_est = 'Hospital Las Mercedes'
-    elif dist_name == 'Lima': nombre_est = 'Hospital Nacional Arzobispo Loayza'
-    elif dist_name == 'Iquitos': nombre_est = 'Hospital Apoyo Iquitos'
-    
-    ESTABLECIMIENTOS.append((est_id, nombre_est, categoria, dist_id))
-
-# 6. Profesionales de Salud (240 total, 2 por establecimiento)
-PROFESIONALES = []
-nombres_pool = ['Juan', 'Maria', 'Carlos', 'Ana', 'Luis', 'Pedro', 'Rosa', 'Jorge', 'Jose', 'Carmen', 'Sofia', 'Miguel', 'David', 'Laura', 'Elena', 'Diego']
-apellidos_pool = ['Gomez', 'Rodriguez', 'Perez', 'Sanchez', 'Flores', 'Quispe', 'Mamani', 'Diaz', 'Ramos', 'García', 'Villanueva', 'Vargas', 'Castro', 'Chavez']
-cargos = ['Medico', 'Enfermero', 'Tecnico de Laboratorio', 'Epidemiologo']
-
-prof_id = 1
-for est in ESTABLECIMIENTOS:
-    est_id = est[0]
-    for _ in range(2):
-        nombres = random.choice(nombres_pool) + " " + random.choice(nombres_pool)
-        apellidos = random.choice(apellidos_pool) + " " + random.choice(apellidos_pool)
-        colegiatura = f"CMP{prof_id:05d}" if prof_id % 2 == 1 else f"CEP{prof_id:05d}"
-        cargo = random.choice(cargos)
-        PROFESIONALES.append((prof_id, nombres, apellidos, colegiatura, cargo, est_id))
-        prof_id += 1
-
-# 7. Periodos Epidemiológicos (523 semanas)
-# 10 años, p. ej. 2014 a 2023.
-# Fecha de inicio: 2014-01-05 (Domingo)
-START_DATE = datetime(2014, 1, 5)
+# 3. Periodos Epidemiológicos (Semanas desde 2000 hasta 2026)
+START_DATE = datetime(2000, 1, 2) # Primer domingo de 2000
 PERIODOS = []
+periodo_map = {}
 p_date = START_DATE
-for i in range(523):
-    p_id = i + 1
+period_id = 1
+
+while p_date.year <= 2026:
     anio = p_date.year
-    # Calcular número de semana epidemiológica
-    # (ISO semana o cálculo simple: cada 7 días en el año)
-    # Hacemos cálculo simple para consistencia temporal
-    # La semana va de domingo a sábado
-    fecha_fin = p_date + timedelta(days=6)
+    first_jan = datetime(anio, 1, 1)
+    days_to_sunday = (6 - first_jan.weekday()) % 7
+    first_sunday = first_jan + timedelta(days=days_to_sunday)
+    week_num = int((p_date - first_sunday).days / 7) + 1
     
-    # Semana de 1 a 53
-    # Buscamos cuántas semanas han pasado en este año
-    sem_num = 1
-    # Simple aproximación:
-    temp_date = p_date
-    while temp_date.year == anio and temp_date > datetime(anio, 1, 7):
-        temp_date -= timedelta(days=7)
-        sem_num += 1
-        
-    PERIODOS.append((p_id, anio, sem_num, p_date.strftime('%Y-%m-%d'), fecha_fin.strftime('%Y-%m-%d')))
+    fecha_inicio = p_date.strftime('%Y-%m-%d')
+    fecha_fin = (p_date + timedelta(days=6)).strftime('%Y-%m-%d')
+    
+    PERIODOS.append((period_id, anio, week_num, fecha_inicio, fecha_fin))
+    periodo_map[(anio, week_num)] = period_id
+    
     p_date += timedelta(days=7)
+    period_id += 1
 
-# 8. Medidas Climáticas (13,075 total = 25 departamentos * 523 periodos)
-MEDIDAS_CLIMATICAS = []
-medida_id = 1
+print(f"Generados {len(PERIODOS)} periodos epidemiológicos (2000-2026).")
 
-# Creamos un perfil de clima promedio para cada departamento
-# (temp_base, precip_base, estacionalidad)
-clima_perfiles = {}
-for dep in DEPARTAMENTOS_INFO:
-    dep_code = dep[0]
-    lat = dep[2]
-    # Cuanto más al norte (latitud más cercana a 0), más caliente
-    temp_base = 25.0 - abs(lat) * 0.5
-    # Selva (Loreto, Ucayali, Madre de Dios) y Norte (Piura, Tumbes) son más lluviosos o calurosos
-    if dep_code in ['PE16', 'PE25', 'PE17']: # Selva
-        precip_base = 50.0
-        temp_base = 26.5
-    elif dep_code in ['PE20', 'PE24', 'PE14']: # Costa norte
-        precip_base = 10.0
-        temp_base = 24.5
-    elif dep_code in ['PE21', 'PE18', 'PE04']: # Sierra sur / altiplano
-        precip_base = 8.0
-        temp_base = 12.0
-    else: # Resto
-        precip_base = 15.0
-        
-    clima_perfiles[dep_code] = (temp_base, precip_base)
-
-for dep in DEPARTAMENTOS_INFO:
-    dep_code = dep[0]
-    temp_base, precip_base = clima_perfiles[dep_code]
-    for per in PERIODOS:
-        per_id = per[0]
-        anio = per[1]
-        sem = per[2]
-        
-        # Estacionalidad: en Perú llueve más y hace más calor entre Enero y Abril (semanas 1 a 16)
-        # y menos entre Junio y Septiembre (semanas 22 a 40)
-        # Usamos una función seno basada en la semana del año
-        import math
-        factor_estacional = math.sin(2 * math.pi * (sem - 5) / 52) # pico en semana 18
-        
-        temp = temp_base + factor_estacional * 3.0 + random.uniform(-1.0, 1.0)
-        precip = max(0.0, precip_base + factor_estacional * precip_base * 0.8 + random.uniform(-5.0, 10.0))
-        
-        # Simular fenómeno El Niño de 2023 (mayor calor y lluvias torrenciales en el norte)
-        if anio == 2023 and dep_code in ['PE20', 'PE24', 'PE14'] and sem in range(8, 20):
-            temp += 3.5
-            precip += random.uniform(50.0, 150.0) # lluvias extremas
-            
-        temp_max = temp + random.uniform(3.0, 6.0)
-        
-        MEDIDAS_CLIMATICAS.append((
-            medida_id,
-            dep_code,
-            per_id,
-            round(temp, 2),
-            round(temp_max, 2),
-            round(precip, 2)
-        ))
-        medida_id += 1
-
-# 9. Pacientes y Casos de Dengue (Datos Reales de OpenDengue + CDC/MINSA)
-# Mapeo oficial de fallecidos (CDC MINSA)
+# 4. Mapeo Oficial de Fallecidos del CDC MINSA para 2022 y 2023
 REAL_DEATHS = {
     'PE01': {2022: 2, 2023: 3},   # Amazonas
     'PE02': {2022: 1, 2023: 25},  # Ancash
@@ -300,303 +144,385 @@ REAL_DEATHS = {
     'PE25': {2022: 6, 2023: 12}   # Ucayali
 }
 
-# Fallback en caso de que el archivo peru_opendengue.csv no esté disponible
-REAL_CASOS_FALLBACK = {
-    'PE01': {2022: 3575, 2023: 3271},
-    'PE02': {2022: 2145, 2023: 11658},
-    'PE03': {2022: 5, 2023: 15},
-    'PE04': {2022: 2, 2023: 10},
-    'PE05': {2022: 782, 2023: 695},
-    'PE06': {2022: 3639, 2023: 7451},
-    'PE07': {2022: 8, 2023: 2356},
-    'PE08': {2022: 3687, 2023: 2630},
-    'PE09': {2022: 0, 2023: 2},
-    'PE10': {2022: 1580, 2023: 2298},
-    'PE11': {2022: 5084, 2023: 16889},
-    'PE12': {2022: 4157, 2023: 3580},
-    'PE13': {2022: 162, 2023: 26502},
-    'PE14': {2022: 2386, 2023: 31460},
-    'PE15': {2022: 938, 2023: 30735},
-    'PE16': {2022: 8926, 2023: 6582},
-    'PE17': {2022: 3641, 2023: 1853},
-    'PE18': {2022: 0, 2023: 5},
-    'PE19': {2022: 496, 2023: 1156},
-    'PE20': {2022: 12150, 2023: 79304},
-    'PE21': {2022: 0, 2023: 8},
-    'PE22': {2022: 4270, 2023: 6890},
-    'PE23': {2022: 0, 2023: 1},
-    'PE24': {2022: 723, 2023: 12890},
-    'PE25': {2022: 4842, 2023: 8174}
-}
+# 5. Carga y Procesamiento del CSV Oficial
+minsa_csv_path = "/Users/mac-mermitas/Documents/MAESTRIA/TRABAJO FINAL/datos_abiertos_vigilancia_dengue_2000_2024.csv"
 
-def load_real_opendengue_data():
-    csv_path = "/Users/mac-mermitas/.gemini/antigravity/brain/d9c5bbb8-ca21-4dbf-94b0-116a53fb888e/scratch/peru_opendengue.csv"
-    dep_map = {
-        'AMAZONAS': 'PE01', 'ANCASH': 'PE02', 'APURIMAC': 'PE03', 'AREQUIPA': 'PE04',
-        'AYACUCHO': 'PE05', 'CAJAMARCA': 'PE06', 'CALLAO': 'PE07', 'CUSCO': 'PE08',
-        'HUANCAVELICA': 'PE09', 'HUANUCO': 'PE10', 'ICA': 'PE11', 'JUNIN': 'PE12',
-        'LA LIBERTAD': 'PE13', 'LAMBAYEQUE': 'PE14', 'LIMA': 'PE15', 'LORETO': 'PE16',
-        'MADRE DE DIOS': 'PE17', 'MOQUEGUA': 'PE18', 'PASCO': 'PE19', 'PIURA': 'PE20',
-        'PUNO': 'PE21', 'SAN MARTIN': 'PE22', 'TACNA': 'PE23', 'TUMBES': 'PE24',
-        'UCAYALI': 'PE25'
-    }
+# Paso 1: Leer el CSV para recolectar la geografía real y contar casos
+print("Leyendo CSV del MINSA para extraer geografía y conteo de casos...")
+unique_provs = {}  # dep_code -> set
+unique_dists = {}  # (dep_code, prov_name) -> set
+cases_count = {}   # (dep_code, year) -> int
+cases_count_by_dep_per = {} # (dep_code, per_id) -> int
+
+with open(minsa_csv_path, 'r', encoding='utf-8-sig', errors='ignore') as f:
+    reader = csv.reader(f, delimiter=';')
+    headers = [h.strip().replace('\ufeff', '') for h in next(reader)]
     
-    res = {dep_code: {2022: 0, 2023: 0} for dep_code in dep_map.values()}
+    dep_idx = headers.index('departamento')
+    prov_idx = headers.index('provincia')
+    dist_idx = headers.index('distrito')
+    ano_idx = headers.index('ano')
+    semana_idx = headers.index('semana')
     
-    if not os.path.exists(csv_path):
-        print(f"Alerta: No se encontró {csv_path}. Usando fallback.")
-        return REAL_CASOS_FALLBACK
+    for row in reader:
+        if len(row) <= max(dep_idx, prov_idx, dist_idx, ano_idx, semana_idx):
+            continue
+            
+        dep = row[dep_idx].strip().upper()
+        prov = row[prov_idx].strip().upper() or "SIN ESPECIFICAR"
+        dist = row[dist_idx].strip().upper() or "SIN ESPECIFICAR"
         
-    try:
-        with open(csv_path, 'r', encoding='utf-8', errors='ignore') as f:
-            reader = csv.reader(f)
-            headers = next(reader)
+        try:
+            year = int(row[ano_idx])
+            week = int(row[semana_idx])
+        except ValueError:
+            continue
             
-            adm1_idx = headers.index('adm_1_name')
-            year_idx = headers.index('Year')
-            total_idx = headers.index('dengue_total')
-            tres_idx = headers.index('T_res')
+        dep_code = dep_map.get(dep)
+        if not dep_code:
+            continue
             
-            for row in reader:
-                if len(row) <= max(adm1_idx, year_idx, total_idx, tres_idx):
-                    continue
-                
-                adm1 = row[adm1_idx].strip().upper()
-                t_res = row[tres_idx].strip()
-                
-                try:
-                    year = int(row[year_idx])
-                    cases = int(float(row[total_idx]))
-                except ValueError:
-                    continue
-                    
-                if t_res == 'Week' and year in [2022, 2023]:
-                    dep_code = dep_map.get(adm1)
-                    if dep_code:
-                        res[dep_code][year] += cases
-                        
-        # Validar si se cargaron casos; si no, retornar fallback
-        total_loaded = sum(sum(year_data.values()) for year_data in res.values())
-        if total_loaded == 0:
-            print("Alerta: 0 casos procesados. Usando fallback.")
-            return REAL_CASOS_FALLBACK
-            
-        print(f"Carga dinámica exitosa: {total_loaded} casos procesados de OpenDengue.")
-        return res
-    except Exception as e:
-        print(f"Error al procesar OpenDengue CSV: {e}. Usando fallback.")
-        return REAL_CASOS_FALLBACK
+        # Geo
+        if dep_code not in unique_provs:
+            unique_provs[dep_code] = set()
+        unique_provs[dep_code].add(prov)
+        
+        prov_key = (dep_code, prov)
+        if prov_key not in unique_dists:
+            unique_dists[prov_key] = set()
+        unique_dists[prov_key].add(dist)
+        
+        # Conteo de casos para fallecidos
+        key = (dep_code, year)
+        cases_count[key] = cases_count.get(key, 0) + 1
+        
+        # Conteo de casos para alertas
+        per_id = periodo_map.get((year, week))
+        if not per_id:
+            # Fallback
+            per_id = periodo_map.get((year, 52)) or 1
+        dep_per_key = (dep_code, per_id)
+        cases_count_by_dep_per[dep_per_key] = cases_count_by_dep_per.get(dep_per_key, 0) + 1
 
-REAL_CASOS = load_real_opendengue_data()
+# Agregar Huancavelica y Tacna que no registran casos en el CSV
+for fallback_dep, fallback_prov, fallback_dist in [('PE09', 'HUANCAVELICA', 'HUANCAVELICA'), ('PE23', 'TACNA', 'TACNA')]:
+    if fallback_dep not in unique_provs:
+        unique_provs[fallback_dep] = {fallback_prov}
+    prov_key = (fallback_dep, fallback_prov)
+    if prov_key not in unique_dists:
+        unique_dists[prov_key] = {fallback_dist}
 
-CASOS = []
-PACIENTES = []
-pac_id = 1
-caso_id = 1
+print("Geografía cargada.")
 
-# Geographics mapping helper
-distritos_por_depto = {d[0]: [] for d in DEPARTAMENTOS_INFO}
+# Construir PROVINCIAS
+PROVINCIAS = []
+prov_name_to_id = {}
+p_idx = 1
+for dep_code in sorted(unique_provs.keys()):
+    dep_info = next(d for d in DEPARTAMENTOS_INFO if d[0] == dep_code)
+    dep_lat, dep_lon = dep_info[2], dep_info[3]
+    for prov_name in sorted(list(unique_provs[dep_code])):
+        prov_id = f"P{p_idx:03d}"
+        p_lat = dep_lat + random.uniform(-0.15, 0.15)
+        p_lon = dep_lon + random.uniform(-0.15, 0.15)
+        PROVINCIAS.append((prov_id, prov_name, dep_code, round(p_lat, 5), round(p_lon, 5)))
+        prov_name_to_id[(dep_code, prov_name)] = prov_id
+        p_idx += 1
+
+# Construir DISTRITOS
+DISTRITOS = []
+dist_name_to_id = {}
+d_idx = 1
+for prov_key in sorted(unique_dists.keys()):
+    dep_code, prov_name = prov_key
+    prov_id = prov_name_to_id[prov_key]
+    prov_info = next(p for p in PROVINCIAS if p[0] == prov_id)
+    p_lat, p_lon = prov_info[3], prov_info[4]
+    for dist_name in sorted(list(unique_dists[prov_key])):
+        dist_id = f"D{d_idx:04d}"
+        d_lat = p_lat + random.uniform(-0.05, 0.05)
+        d_lon = p_lon + random.uniform(-0.05, 0.05)
+        DISTRITOS.append((dist_id, dist_name, prov_id, round(d_lat, 5), round(d_lon, 5)))
+        dist_name_to_id[(dep_code, prov_name, dist_name)] = dist_id
+        d_idx += 1
+
+print(f"Estructura territorial final: {len(PROVINCIAS)} provincias y {len(DISTRITOS)} distritos.")
+
+# 6. Establecimientos y Profesionales
+ESTABLECIMIENTOS = []
+dist_to_est = {}
+est_idx = 1
 for dist in DISTRITOS:
     dist_id = dist[0]
-    prov_id = dist[2]
-    prov = next(p for p in PROVINCIAS if p[0] == prov_id)
-    dep_code = prov[2]
-    distritos_por_depto[dep_code].append(dist_id)
+    dist_name = dist[1]
+    categoria = random.choice(['Puesto de Salud', 'Centro de Salud', 'Hospital I'])
+    nombre_est = f"{categoria} {dist_name}"
+    ESTABLECIMIENTOS.append((est_idx, nombre_est, categoria, dist_id))
+    dist_to_est[dist_id] = est_idx
+    est_idx += 1
 
-establecimientos_por_depto = {d[0]: [] for d in DEPARTAMENTOS_INFO}
+PROFESIONALES = []
+nombres_pool = ['Juan', 'Maria', 'Carlos', 'Ana', 'Luis', 'Pedro', 'Rosa', 'Jorge', 'Jose', 'Carmen', 'Sofia', 'Miguel', 'David', 'Laura', 'Elena', 'Diego']
+apellidos_pool = ['Gomez', 'Rodriguez', 'Perez', 'Sanchez', 'Flores', 'Quispe', 'Mamani', 'Diaz', 'Ramos', 'García', 'Villanueva', 'Vargas', 'Castro', 'Chavez']
+cargos = ['Medico', 'Enfermero', 'Tecnico de Laboratorio', 'Epidemiologo']
+
+est_to_profs = {}
+prof_idx = 1
 for est in ESTABLECIMIENTOS:
     est_id = est[0]
-    dist_id = est[3]
-    dist = next(di for di in DISTRITOS if di[0] == dist_id)
-    prov = next(p for p in PROVINCIAS if p[0] == dist[2])
-    dep_code = prov[2]
-    establecimientos_por_depto[dep_code].append(est_id)
+    est_to_profs[est_id] = []
+    for _ in range(2):
+        nombres = random.choice(nombres_pool) + " " + random.choice(nombres_pool)
+        apellidos = random.choice(apellidos_pool) + " " + random.choice(apellidos_pool)
+        colegiatura = f"CMP{prof_idx:05d}" if prof_idx % 2 == 1 else f"CEP{prof_idx:05d}"
+        cargo = random.choice(cargos)
+        PROFESIONALES.append((prof_idx, nombres, apellidos, colegiatura, cargo, est_id))
+        est_to_profs[est_id].append(prof_idx)
+        prof_idx += 1
 
-profesionales_por_est = {e[0]: [] for e in ESTABLECIMIENTOS}
-for prof in PROFESIONALES:
-    prof_id = prof[0]
-    est_id = prof[5]
-    profesionales_por_est[est_id].append(prof_id)
+print(f"Cargados {len(ESTABLECIMIENTOS)} establecimientos de salud y {len(PROFESIONALES)} profesionales.")
 
-# Period pools by year
-periods_by_year = {year: [] for year in range(2014, 2026)}
-for p in PERIODOS:
-    periods_by_year[p[1]].append(p)
+# 7. Seleccionar Índices de Fallecidos Exactos para 2022 y 2023
+death_indices = {}
+for key, count in cases_count.items():
+    dep_code, year = key
+    if year in [2022, 2023]:
+        deaths_needed = REAL_DEATHS.get(dep_code, {}).get(year, 0)
+        if deaths_needed > 0:
+            death_indices[key] = set(random.sample(range(count), min(deaths_needed, count)))
 
-# Helper functions for seasonal distribution
-def get_week_weights(num_weeks):
-    import math
-    weights = []
-    for w in range(1, num_weeks + 1):
-        # peak at week 15 (April), low baseline of 0.05
-        val = math.sin(math.pi * (w - 2) / 26)
-        weight = max(0.05, val)
-        weights.append(weight)
-    return weights
+# 8. Streaming de Pacientes, Casos, Síntomas y Diagnósticos
+print("Streaming de pacientes y casos desde MINSA CSV a archivos CSV locales...")
 
-def build_period_pool(periods, weights):
-    pool = []
-    total_weight = sum(weights)
-    for i, p in enumerate(periods):
-        pct = weights[i] / total_weight
-        count = max(1, int(pct * 1000))
-        pool.extend([p] * count)
-    return pool
+paciente_file = os.path.join(DATOS_DIR, 'paciente.csv')
+caso_file = os.path.join(DATOS_DIR, 'caso_dengue.csv')
+sintoma_file = os.path.join(DATOS_DIR, 'caso_signo.csv')
+diagnostico_file = os.path.join(DATOS_DIR, 'diagnostico_laboratorio.csv')
 
-# Pre-generate period pools for 2022 and 2023
-weights_52 = get_week_weights(52)
-pool_2022 = build_period_pool(periods_by_year[2022], weights_52)
-weights_53 = get_week_weights(53)
-pool_2023 = build_period_pool(periods_by_year[2023], weights_53)
+processed_count = {}
+pac_id = 1
+caso_id = 1
+diag_id = 1
 
-# Generate cases and patients
+f_pac = open(paciente_file, 'w', newline='', encoding='utf-8')
+f_cas = open(caso_file, 'w', newline='', encoding='utf-8')
+f_sin = open(sintoma_file, 'w', newline='', encoding='utf-8')
+f_dia = open(diagnostico_file, 'w', newline='', encoding='utf-8')
+
+w_pac = csv.writer(f_pac)
+w_cas = csv.writer(f_cas)
+w_sin = csv.writer(f_sin)
+w_dia = csv.writer(f_dia)
+
+w_pac.writerow(['id_paciente', 'documento', 'nombres', 'apellidos', 'fecha_nacimiento', 'sexo', 'id_distrito'])
+w_cas.writerow(['id_caso', 'id_paciente', 'id_establecimiento', 'id_profesional', 'id_periodo', 'id_serotipo', 'id_clasificacion', 'fecha_notificacion', 'fecha_inicio_sintomas', 'tipo_diagnostico', 'condicion'])
+w_sin.writerow(['id_caso', 'id_sintoma'])
+w_dia.writerow(['id_diagnostico', 'id_caso', 'tipo_prueba', 'resultado', 'fecha_resultado'])
+
+with open(minsa_csv_path, 'r', encoding='utf-8-sig', errors='ignore') as f:
+    reader = csv.reader(f, delimiter=';')
+    next(reader) # skip headers
+    
+    for row in reader:
+        if len(row) <= max(dep_idx, prov_idx, dist_idx, ano_idx, semana_idx):
+            continue
+            
+        dep = row[dep_idx].strip().upper()
+        prov = row[prov_idx].strip().upper() or "SIN ESPECIFICAR"
+        dist = row[dist_idx].strip().upper() or "SIN ESPECIFICAR"
+        
+        try:
+            year = int(row[ano_idx])
+            week = int(row[semana_idx])
+        except ValueError:
+            continue
+            
+        dep_code = dep_map.get(dep)
+        if not dep_code:
+            continue
+            
+        # Get district ID
+        dist_id = dist_name_to_id.get((dep_code, prov, dist))
+        if not dist_id:
+            # Safe fallback
+            dist_id = DISTRITOS[0][0]
+            
+        # Get period ID
+        per_id = periodo_map.get((year, week))
+        if not per_id:
+            # Fallback to week 52
+            per_id = periodo_map.get((year, 52)) or 1
+            
+        # Get period start date
+        per_start_str = PERIODOS[per_id - 1][3]
+        per_start = datetime.strptime(per_start_str, '%Y-%m-%d')
+        
+        # Patient details
+        edad_str = row[headers.index('edad')].strip()
+        tipo_edad = row[headers.index('tipo_edad')].strip().upper()
+        sexo = row[headers.index('sexo')].strip().upper()
+        
+        try:
+            edad = int(edad_str)
+            if edad < 0 or edad > 120:
+                edad = 25
+        except ValueError:
+            edad = 25
+            
+        edad_years = edad if tipo_edad == 'A' else 0
+        if sexo not in ['M', 'F']:
+            sexo = 'F' if caso_id % 2 == 0 else 'M'
+            
+        # Documento y Nombres
+        documento = f"{10000000 + pac_id}"
+        nombres = f"{nombres_pool[pac_id % len(nombres_pool)]} {nombres_pool[(pac_id + 3) % len(nombres_pool)]}"
+        apellidos = f"{apellidos_pool[pac_id % len(apellidos_pool)]} {apellidos_pool[(pac_id + 7) % len(apellidos_pool)]}"
+        fecha_nacimiento = f"{year - edad_years}-06-15"
+        
+        w_pac.writerow([pac_id, documento, nombres, apellidos, fecha_nacimiento, sexo, dist_id])
+        
+        # Case Classification
+        enfermedad = row[headers.index('enfermedad')].strip().upper()
+        if 'GRAVE' in enfermedad:
+            id_clasificacion = 3
+        elif 'CON SIGNOS' in enfermedad or 'CON SEÑALES' in enfermedad:
+            id_clasificacion = 2
+        else:
+            id_clasificacion = 1
+            
+        # Condition (Death distribution)
+        key = (dep_code, year)
+        p_count = processed_count.get(key, 0)
+        processed_count[key] = p_count + 1
+        
+        if p_count in death_indices.get(key, set()):
+            condicion = 'Fallecido'
+            id_clasificacion = 3 # override classification to severe for deaths
+        else:
+            condicion = 'Vivo'
+            
+        # Dates
+        fecha_notificacion = per_start + timedelta(days=caso_id % 7)
+        fecha_inicio_sintomas = fecha_notificacion - timedelta(days=2 + (caso_id % 4))
+        
+        # Diagnosis and realistic weighted serotype distribution
+        tipo_diagnostico = 'Confirmado' if caso_id % 3 != 0 else 'Probable'
+        
+        if caso_id % 5 < 2: # 40% of cases are typed
+            rand_val = caso_id % 100
+            if rand_val < 50:
+                id_serotipo = 2  # DENV-2: 50%
+            elif rand_val < 80:
+                id_serotipo = 1  # DENV-1: 30%
+            elif rand_val < 95:
+                id_serotipo = 3  # DENV-3: 15%
+            else:
+                id_serotipo = 4  # DENV-4: 5%
+        else:
+            id_serotipo = None
+            
+        est_id = dist_to_est[dist_id]
+        prof_id = est_to_profs[est_id][caso_id % 2]
+        
+        w_cas.writerow([
+            caso_id,
+            pac_id,
+            est_id,
+            prof_id,
+            per_id,
+            id_serotipo,
+            id_clasificacion,
+            fecha_notificacion.strftime('%Y-%m-%d'),
+            fecha_inicio_sintomas.strftime('%Y-%m-%d'),
+            tipo_diagnostico,
+            condicion
+        ])
+        
+        # Symptoms
+        w_sin.writerow([caso_id, 1]) # Fever
+        if caso_id % 5 == 0:
+            w_sin.writerow([caso_id, 2]) # Headache
+        if caso_id % 7 == 0:
+            w_sin.writerow([caso_id, 3]) # Retroocular pain
+            
+        # Lab Diagnoses
+        if caso_id % 10 == 0:
+            tipo_prueba = 'RT-PCR' if caso_id % 30 == 0 else ('NS1' if caso_id % 20 == 0 else 'IgM')
+            resultado = 'Positivo' if tipo_diagnostico == 'Confirmado' else 'Negativo'
+            fecha_res = fecha_notificacion + timedelta(days=2)
+            w_dia.writerow([diag_id, caso_id, tipo_prueba, resultado, fecha_res.strftime('%Y-%m-%d')])
+            diag_id += 1
+            
+        pac_id += 1
+        caso_id += 1
+
+f_pac.close()
+f_cas.close()
+f_sin.close()
+f_dia.close()
+
+print(f"Streaming finalizado. Se han procesado {caso_id - 1} casos.")
+
+# 9. Medidas Climáticas
+print("Generando medidas climáticas...")
+clima_perfiles = {}
 for dep in DEPARTAMENTOS_INFO:
     dep_code = dep[0]
-    depto_dists = distritos_por_depto[dep_code]
-    depto_ests = establecimientos_por_depto[dep_code]
-    
-    for year in range(2014, 2024):
-        # Target counts
-        if year in [2022, 2023]:
-            cases_target = REAL_CASOS[dep_code][year]
-            deaths_target = REAL_DEATHS[dep_code][year]
-        else:
-            # Baseline: 30 cases, 0 deaths for prior years
-            cases_target = 30
-            deaths_target = 0
-            
-        # Select period pool
-        if year == 2022:
-            pool = pool_2022
-        elif year == 2023:
-            pool = pool_2023
-        else:
-            pool = periods_by_year[year]
-            
-        deaths_left = deaths_target
+    lat = dep[2]
+    temp_base = 25.0 - abs(lat) * 0.5
+    if dep_code in ['PE16', 'PE25', 'PE17']: # Selva
+        precip_base = 50.0
+        temp_base = 26.5
+    elif dep_code in ['PE20', 'PE24', 'PE14']: # Costa norte
+        precip_base = 10.0
+        temp_base = 24.5
+    elif dep_code in ['PE21', 'PE18', 'PE04']: # Sierra sur
+        precip_base = 8.0
+        temp_base = 12.0
+    else:
+        precip_base = 15.0
+    clima_perfiles[dep_code] = (temp_base, precip_base)
+
+MEDIDAS_CLIMATICAS = []
+medida_id = 1
+import math
+
+for dep in DEPARTAMENTOS_INFO:
+    dep_code = dep[0]
+    temp_base, precip_base = clima_perfiles[dep_code]
+    for per in PERIODOS:
+        per_id = per[0]
+        anio = per[1]
+        sem = per[2]
         
-        for c_idx in range(cases_target):
-            # 1. Patient
-            documento = f"{10000000 + pac_id}"
-            nombres = f"{nombres_pool[pac_id % len(nombres_pool)]} {nombres_pool[(pac_id + 3) % len(nombres_pool)]}"
-            apellidos = f"{apellidos_pool[pac_id % len(apellidos_pool)]} {apellidos_pool[(pac_id + 7) % len(apellidos_pool)]}"
-            edad = 5 + (pac_id % 75)
-            sexo = 'M' if pac_id % 2 == 0 else 'F'
-            dist_residencia = depto_dists[pac_id % len(depto_dists)]
+        factor_estacional = math.sin(2 * math.pi * (sem - 5) / 52)
+        temp = temp_base + factor_estacional * 3.0 + random.uniform(-1.0, 1.0)
+        precip = max(0.0, precip_base + factor_estacional * precip_base * 0.8 + random.uniform(-5.0, 10.0))
+        
+        if anio == 2023 and dep_code in ['PE20', 'PE24', 'PE14'] and sem in range(8, 20):
+            temp += 3.5
+            precip += random.uniform(50.0, 150.0)
             
-            PACIENTES.append((
-                pac_id,
-                documento,
-                nombres,
-                apellidos,
-                f"{year - edad}-06-15",
-                sexo,
-                dist_residencia
-            ))
-            
-            # 2. Case
-            est_id = depto_ests[caso_id % len(depto_ests)]
-            prof_id = profesionales_por_est[est_id][caso_id % len(profesionales_por_est[est_id])]
-            
-            # Period
-            per = pool[c_idx % len(pool)]
-            per_id = per[0]
-            per_start = datetime.strptime(per[3], '%Y-%m-%d')
-            
-            # Dates
-            notif_day = c_idx % 7
-            fecha_notificacion = per_start + timedelta(days=notif_day)
-            fecha_inicio_sintomas = fecha_notificacion - timedelta(days=2 + (c_idx % 5))
-            
-            # Serotype
-            id_serotipo = (caso_id % 4) + 1 if caso_id % 5 < 2 else None
-            
-            # Condition and Classification
-            if deaths_left > 0:
-                condicion = 'Fallecido'
-                id_clasificacion = 3  # grave
-                tipo_diagnostico = 'Confirmado'
-                deaths_left -= 1
-            else:
-                condicion = 'Vivo'
-                id_clasificacion = 1 if c_idx % 10 < 8 else (2 if c_idx % 10 < 9 else 3)
-                tipo_diagnostico = 'Confirmado' if c_idx % 3 != 0 else 'Probable'
-                
-            CASOS.append((
-                caso_id,
-                pac_id,
-                est_id,
-                prof_id,
-                per_id,
-                id_serotipo,
-                id_clasificacion,
-                fecha_notificacion.strftime('%Y-%m-%d'),
-                fecha_inicio_sintomas.strftime('%Y-%m-%d'),
-                tipo_diagnostico,
-                condicion
-            ))
-            
-            pac_id += 1
-            caso_id += 1
-
-# 10. Relación N:M Casos y Síntomas
-# Asignar Fiebre a todos los casos y otros síntomas determinísticamente para alto rendimiento
-caso_signo_lista = []
-for c in CASOS:
-    c_id = c[0]
-    # Fiebre
-    caso_signo_lista.append((c_id, 1))
-    # Otros síntomas
-    if c_id % 5 == 0:
-        caso_signo_lista.append((c_id, 2))  # Cefalea
-    if c_id % 7 == 0:
-        caso_signo_lista.append((c_id, 3))  # Dolor retroocular
-    if c_id % 9 == 0:
-        caso_signo_lista.append((c_id, 4))  # Mialgias
-
-# 11. Diagnósticos de Laboratorio (10% de los casos)
-DIAGNOSTICOS = []
-diag_id = 1
-for c in CASOS:
-    c_id = c[0]
-    if c_id % 10 == 0:
-        c_notif_str = c[7]
-        c_notif = datetime.strptime(c_notif_str, '%Y-%m-%d')
-        tipo_prueba = 'RT-PCR' if c_id % 30 == 0 else ('NS1' if c_id % 20 == 0 else 'IgM')
-        resultado = 'Positivo' if c[9] == 'Confirmado' else ('Negativo' if c_id % 4 == 0 else 'Positivo')
-        fecha_res = c_notif + timedelta(days=1 + (c_id % 4))
-        DIAGNOSTICOS.append((
-            diag_id,
-            c_id,
-            tipo_prueba,
-            resultado,
-            fecha_res.strftime('%Y-%m-%d')
+        temp_max = temp + random.uniform(3.0, 6.0)
+        MEDIDAS_CLIMATICAS.append((
+            medida_id,
+            dep_code,
+            per_id,
+            round(temp, 2),
+            round(temp_max, 2),
+            round(precip, 2)
         ))
-        diag_id += 1
+        medida_id += 1
 
-# 12. Predicción / Alerta (64 total)
+# 10. Predicciones / Alertas para 2024
+print("Generando predicciones y alertas...")
 PREDICCIONES = []
 pred_id = 1
-ultimos_periodos = [p[0] for p in PERIODOS if p[1] == 2023][-8:]  # últimas 8 semanas
-deptos_clave = ['PE20', 'PE14', 'PE15', 'PE16', 'PE25', 'PE22', 'PE24', 'PE13']  # 8 deptos
-
-# Mapear establecimientos a departamento para búsquedas ultra rápidas
-est_to_dep = {}
-for dep_code, ests in establecimientos_por_depto.items():
-    for est_id in ests:
-        est_to_dep[est_id] = dep_code
-
-# Precalculo de casos por depto y periodo
-cases_count_by_dep_per = {}
-for c in CASOS:
-    est_id = c[2]
-    per_id = c[4]
-    dep_code = est_to_dep[est_id]
-    key = (dep_code, per_id)
-    cases_count_by_dep_per[key] = cases_count_by_dep_per.get(key, 0) + 1
+# Seleccionar los últimos periodos de 2024 (últimas 8 semanas)
+ultimos_periodos = [p[0] for p in PERIODOS if p[1] == 2024][-8:]
+deptos_clave = ['PE20', 'PE14', 'PE15', 'PE16', 'PE25', 'PE22', 'PE24', 'PE13']
 
 for per_id in ultimos_periodos:
-    per = next(p for p in PERIODOS if p[0] == per_id)
     for dep_code in deptos_clave:
         casos_reales = cases_count_by_dep_per.get((dep_code, per_id), 0)
         error = int(random.normalvariate(0, max(2, casos_reales * 0.15)))
@@ -623,7 +549,7 @@ for per_id in ultimos_periodos:
         ))
         pred_id += 1
 
-# Función auxiliar para guardar a CSV
+# 11. Guardar archivos finales
 def guardar_csv(filename, headers, rows):
     path = os.path.join(DATOS_DIR, filename)
     with open(path, 'w', newline='', encoding='utf-8') as f:
@@ -632,20 +558,15 @@ def guardar_csv(filename, headers, rows):
         writer.writerows(rows)
     print(f"Archivo guardado: {filename} ({len(rows)} filas)")
 
-# Guardar todos los archivos modificados y catálogos
 guardar_csv('departamento.csv', ['id_departamento', 'nombre_departamento', 'latitud', 'longitud', 'area_km2'], DEPARTAMENTOS_INFO)
 guardar_csv('provincia.csv', ['id_provincia', 'nombre_provincia', 'id_departamento', 'latitud', 'longitud'], PROVINCIAS)
 guardar_csv('distrito.csv', ['id_distrito', 'nombre_distrito', 'id_provincia', 'latitud', 'longitud'], DISTRITOS)
 guardar_csv('establecimiento_salud.csv', ['id_establecimiento', 'nombre_establecimiento', 'categoria', 'id_distrito'], ESTABLECIMIENTOS)
 guardar_csv('profesional_salud.csv', ['id_profesional', 'nombres', 'apellidos', 'colegiatura', 'cargo', 'id_establecimiento'], PROFESIONALES)
-guardar_csv('paciente.csv', ['id_paciente', 'documento', 'nombres', 'apellidos', 'fecha_nacimiento', 'sexo', 'id_distrito'], PACIENTES)
 guardar_csv('periodo_epidemiologico.csv', ['id_periodo', 'anio', 'numero_semana', 'fecha_inicio', 'fecha_fin'], PERIODOS)
 guardar_csv('serotipo.csv', ['id_serotipo', 'codigo', 'descripcion'], SEROTIPOS)
 guardar_csv('clasificacion_caso.csv', ['id_clasificacion', 'nombre', 'descripcion'], CLASIFICACIONES)
 guardar_csv('signo_sintoma.csv', ['id_sintoma', 'nombre'], SINTOMAS)
-guardar_csv('caso_dengue.csv', ['id_caso', 'id_paciente', 'id_establecimiento', 'id_profesional', 'id_periodo', 'id_serotipo', 'id_clasificacion', 'fecha_notificacion', 'fecha_inicio_sintomas', 'tipo_diagnostico', 'condicion'], CASOS)
-guardar_csv('caso_signo.csv', ['id_caso', 'id_sintoma'], caso_signo_lista)
-guardar_csv('diagnostico_laboratorio.csv', ['id_diagnostico', 'id_caso', 'tipo_prueba', 'resultado', 'fecha_resultado'], DIAGNOSTICOS)
 guardar_csv('medida_climatica.csv', ['id_medida', 'id_departamento', 'id_periodo', 'temp_media_c', 'temp_max_c', 'precip_total_mm'], MEDIDAS_CLIMATICAS)
 guardar_csv('prediccion_alerta.csv', ['id_prediccion', 'id_departamento', 'id_periodo', 'casos_observados', 'casos_predichos', 'casos_esperados', 'nivel_alerta', 'modelo', 'mae', 'generado_en'], PREDICCIONES)
 guardar_csv('rol.csv', ['id_rol', 'nombre_rol', 'permisos', 'descripcion'], ROLES)

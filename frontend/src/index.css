@@ -1,6 +1,22 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
 @import "tailwindcss";
 
+@theme {
+  /* MINSA Peru Institutional Blue Palette */
+  --color-blue-50: #e6f0fa;
+  --color-blue-100: #cce1f5;
+  --color-blue-500: #005c8a;
+  --color-blue-600: #004b87; /* Core MINSA Blue */
+  --color-blue-700: #00355f;
+
+  /* MINSA Peru Institutional Red/Accent Palette */
+  --color-indigo-50: #fdf2f2;
+  --color-indigo-100: #fde8e8;
+  --color-indigo-500: #e02424;
+  --color-indigo-600: #c8102e; /* Core MINSA Crimson Red */
+  --color-indigo-700: #9b0c22;
+}
+
 :root {
   font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
   scroll-behavior: smooth;

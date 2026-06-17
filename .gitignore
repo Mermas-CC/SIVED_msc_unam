@@ -1,0 +1,28 @@
+# Entornos virtuales
+venv/
+.venv/
+env/
+
+# Compilados de Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Configuración local sensible
+.env
+
+# Archivos pesados de datos y bases de datos locales (exceden 50 MB)
+datos_abiertos_vigilancia_dengue_2000_2024.csv
+sql/datos/caso_dengue.csv
+sql/datos/paciente.csv
+
+# Frontend (Node y builds)
+frontend/node_modules/
+frontend/dist/
+frontend/.svelte-kit/
+frontend/build/
+
+# Sistema Operativo
+.DS_Store
+Thumbs.db

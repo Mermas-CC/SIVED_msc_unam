@@ -1,92 +1,265 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Bot, Send, Sparkles, RefreshCw, Copy, Download, Trash2, HelpCircle } from 'lucide-react';
 
-const renderBoldText = (text) => {
-  if (!text.includes('**')) return text;
-  const parts = text.split('**');
+const renderInlineText = (text) => {
+  if (!text) return '';
+  
+  // Regex to match bold (** or __), italic (* or _), inline code (`), and markdown links ([text](url))
+  const regex = /(\*\*.*?\*\*|__.*?__|`.*?`|\[.*?\]\(.*?\))/g;
+  const parts = text.split(regex);
+  
   return parts.map((part, idx) => {
-    if (idx % 2 === 1) {
-      return <strong key={idx} className="font-bold text-slate-900">{part}</strong>;
+    if ((part.startsWith('**') && part.endsWith('**')) || (part.startsWith('__') && part.endsWith('__'))) {
+      return <strong key={idx} className="font-bold">{part.slice(2, -2)}</strong>;
+    }
+    if ((part.startsWith('*') && part.endsWith('*')) || (part.startsWith('_') && part.endsWith('_'))) {
+      return <em key={idx} className="italic">{part.slice(1, -1)}</em>;
+    }
+    if (part.startsWith('`') && part.endsWith('`')) {
+      return <code key={idx} className="bg-slate-100 text-red-650 px-1.5 py-0.5 rounded-md font-mono text-[11px] font-medium border border-slate-200">{part.slice(1, -1)}</code>;
+    }
+    const linkMatch = part.match(/^\[(.*?)\]\((.*?)\)$/);
+    if (linkMatch) {
+      return (
+        <a 
+          key={idx} 
+          href={linkMatch[2]} 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          className="text-blue-600 hover:text-blue-800 underline font-medium"
+        >
+          {linkMatch[1]}
+        </a>
+      );
     }
     return part;
   });
 };
 
-const renderMessageContent = (content) => {
-  if (content.includes('|') && content.includes('\n|')) {
-    const lines = content.split('\n');
-    const tableRows = [];
-    let isTable = false;
-    let headers = [];
-    const parts = [];
-    let currentText = [];
-    
-    for (let i = 0; i < lines.length; i++) {
-      const line = lines[i].trim();
-      if (line.startsWith('|') && line.endsWith('|')) {
-        if (currentText.length > 0) {
-          parts.push({ type: 'text', value: currentText.join('\n') });
-          currentText = [];
-        }
-        if (line.includes('---') || line.includes('-:-')) {
-          continue;
-        }
-        const cells = line.split('|').map(c => c.trim()).filter((c, idx, arr) => idx > 0 && idx < arr.length - 1);
-        if (!isTable) {
-          isTable = true;
-          headers = cells;
-        } else {
-          tableRows.push(cells);
-        }
-      } else {
-        if (isTable) {
-          parts.push({ type: 'table', headers, rows: [...tableRows] });
-          isTable = false;
-          headers = [];
-          tableRows.length = 0;
-        }
-        currentText.push(lines[i]);
-      }
+const renderMessageContent = (content, isUser = false) => {
+  if (!content) return null;
+  const lines = content.split('\n');
+  const elements = [];
+  let currentParagraph = [];
+  let currentList = [];
+  let listType = null; // 'ul' or 'ol'
+  let currentTable = null;
+  let inTable = false;
+  let inCodeBlock = false;
+  let currentCodeLines = [];
+  let codeLanguage = '';
+
+  const textColorClass = isUser ? 'text-white' : 'text-slate-700';
+
+  const flushParagraph = () => {
+    if (currentParagraph.length > 0) {
+      elements.push(
+        <p key={`p-${elements.length}`} className={`mb-2 leading-relaxed ${textColorClass} whitespace-pre-line last:mb-0`}>
+          {renderInlineText(currentParagraph.join('\n'))}
+        </p>
+      );
+      currentParagraph = [];
     }
-    
-    if (currentText.length > 0) {
-      parts.push({ type: 'text', value: currentText.join('\n') });
+  };
+
+  const flushList = () => {
+    if (currentList.length > 0) {
+      const Tag = listType === 'ol' ? 'ol' : 'ul';
+      elements.push(
+        <Tag key={`list-${elements.length}`} className={`mb-3 pl-5 ${listType === 'ol' ? 'list-decimal' : 'list-disc'} space-y-1.5 ${textColorClass}`}>
+          {currentList.map((item, idx) => (
+            <li key={idx} className="leading-relaxed">{renderInlineText(item)}</li>
+          ))}
+        </Tag>
+      );
+      currentList = [];
+      listType = null;
     }
-    if (isTable) {
-      parts.push({ type: 'table', headers, rows: tableRows });
-    }
-    
-    return parts.map((part, idx) => {
-      if (part.type === 'text') {
-        return <div key={idx} className="whitespace-pre-line">{renderBoldText(part.value)}</div>;
-      } else {
-        return (
-          <div key={idx} className="my-3 overflow-x-auto border border-slate-200 rounded-xl bg-white shadow-xs max-w-full">
-            <table className="w-full text-left text-xs border-collapse">
-              <thead>
-                <tr className="bg-slate-800 text-white font-bold">
-                  {part.headers.map((h, hIdx) => (
-                    <th key={hIdx} className="px-4 py-2 border-b border-slate-200">{h.replace(/\*\*/g, '')}</th>
+  };
+
+  const flushTable = () => {
+    if (currentTable) {
+      elements.push(
+        <div key={`table-${elements.length}`} className="my-4 overflow-x-auto border border-slate-200 rounded-xl bg-white shadow-xs max-w-full">
+          <table className="w-full text-left text-xs border-collapse">
+            <thead>
+              <tr className="bg-slate-800 text-white font-bold">
+                {currentTable.headers.map((h, hIdx) => (
+                  <th key={hIdx} className="px-4 py-3.5 border-b border-slate-200 font-semibold tracking-wide">{renderInlineText(h)}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100 text-slate-700">
+              {currentTable.rows.map((row, rIdx) => (
+                <tr key={rIdx} className="hover:bg-slate-50/50 transition-colors">
+                  {row.map((cell, cIdx) => (
+                    <td key={cIdx} className="px-4 py-2.5 font-medium whitespace-nowrap">{renderInlineText(cell)}</td>
                   ))}
                 </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100 text-slate-700">
-                {part.rows.map((row, rIdx) => (
-                  <tr key={rIdx} className="hover:bg-slate-50">
-                    {row.map((cell, cIdx) => (
-                      <td key={cIdx} className="px-4 py-2 font-medium">{cell}</td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      );
+      currentTable = null;
+      inTable = false;
+    }
+  };
+
+  const flushCodeBlock = () => {
+    if (inCodeBlock && currentCodeLines.length > 0) {
+      elements.push(
+        <div key={`code-${elements.length}`} className="my-4 rounded-xl overflow-hidden border border-slate-200 shadow-xs bg-slate-900">
+          <div className="bg-slate-800 px-4 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider border-b border-slate-700 flex justify-between items-center">
+            <span>{codeLanguage || 'código'}</span>
+            <button 
+              type="button"
+              onClick={() => {
+                navigator.clipboard.writeText(currentCodeLines.join('\n'));
+                alert('Código copiado al portapapeles');
+              }}
+              className="hover:text-white transition-colors cursor-pointer text-[10px] uppercase font-bold"
+            >
+              Copiar
+            </button>
           </div>
-        );
+          <pre className="p-4 overflow-x-auto font-mono text-[11px] text-slate-200 leading-relaxed max-w-full">
+            <code>{currentCodeLines.join('\n')}</code>
+          </pre>
+        </div>
+      );
+      currentCodeLines = [];
+      inCodeBlock = false;
+      codeLanguage = '';
+    }
+  };
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    const trimmed = line.trim();
+
+    // 0. Code block support
+    if (trimmed.startsWith('```')) {
+      if (inCodeBlock) {
+        flushCodeBlock();
+      } else {
+        flushParagraph();
+        flushList();
+        flushTable();
+        inCodeBlock = true;
+        codeLanguage = trimmed.substring(3).trim();
       }
-    });
+      continue;
+    }
+
+    if (inCodeBlock) {
+      currentCodeLines.push(line);
+      continue;
+    }
+
+    // 1. Table support
+    if (trimmed.startsWith('|')) {
+      flushParagraph();
+      flushList();
+      
+      let rowText = trimmed;
+      if (rowText.startsWith('|')) rowText = rowText.slice(1);
+      if (rowText.endsWith('|')) rowText = rowText.slice(0, -1);
+      const cells = rowText.split('|').map(c => c.trim());
+      
+      const isSeparator = cells.every(cell => cell.match(/^[:\s-]+$/));
+      if (isSeparator) {
+        continue;
+      }
+      
+      if (!inTable) {
+        inTable = true;
+        currentTable = { headers: cells, rows: [] };
+      } else if (currentTable) {
+        currentTable.rows.push(cells);
+      }
+      continue;
+    } else {
+      if (inTable) {
+        flushTable();
+      }
+    }
+
+    // 2. Headers support
+    if (trimmed.startsWith('### ')) {
+      flushParagraph();
+      flushList();
+      elements.push(<h3 key={`h3-${elements.length}`} className="text-sm font-bold text-slate-800 mt-4 mb-2">{renderInlineText(trimmed.substring(4))}</h3>);
+      continue;
+    }
+    if (trimmed.startsWith('## ')) {
+      flushParagraph();
+      flushList();
+      elements.push(<h2 key={`h2-${elements.length}`} className="text-base font-bold text-slate-850 mt-5 mb-2.5">{renderInlineText(trimmed.substring(3))}</h2>);
+      continue;
+    }
+    if (trimmed.startsWith('# ')) {
+      flushParagraph();
+      flushList();
+      elements.push(<h1 key={`h1-${elements.length}`} className="text-lg font-bold text-slate-900 mt-6 mb-3">{renderInlineText(trimmed.substring(2))}</h1>);
+      continue;
+    }
+
+    // 3. Bullet list support
+    if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
+      flushParagraph();
+      if (listType !== 'ul') {
+        flushList();
+        listType = 'ul';
+      }
+      currentList.push(trimmed.substring(2));
+      continue;
+    }
+
+    // 4. Numbered list support
+    const numListMatch = trimmed.match(/^(\d+)\.\s(.*)/);
+    if (numListMatch) {
+      flushParagraph();
+      if (listType !== 'ol') {
+        flushList();
+        listType = 'ol';
+      }
+      currentList.push(numListMatch[2]);
+      continue;
+    }
+
+    // 5. Blockquote support
+    if (trimmed.startsWith('>')) {
+      flushParagraph();
+      flushList();
+      flushTable();
+      const quoteText = trimmed.startsWith('> ') ? trimmed.substring(2) : trimmed.substring(1);
+      elements.push(
+        <blockquote key={`quote-${elements.length}`} className="my-3 pl-4 border-l-4 border-blue-500 italic text-slate-650 bg-slate-50/50 py-2.5 rounded-r-xl">
+          {renderInlineText(quoteText)}
+        </blockquote>
+      );
+      continue;
+    }
+
+    // Empty line separates paragraphs
+    if (trimmed === '') {
+      flushParagraph();
+      flushList();
+      continue;
+    }
+
+    // Accumulate paragraph text
+    flushList();
+    currentParagraph.push(line);
   }
-  
-  return <div className="whitespace-pre-line">{renderBoldText(content)}</div>;
+
+  flushParagraph();
+  flushList();
+  flushTable();
+  flushCodeBlock();
+
+  return <div className="space-y-1.5">{elements}</div>;
 };
 
 export default function AsistenteIA() {
@@ -200,6 +373,7 @@ export default function AsistenteIA() {
         body: JSON.stringify({
           tipo: customType,
           prompt: promptToSend,
+          history: [...messages, newMsg],
           id_departamento: selectedDepto || null,
           id_provincia: selectedProv || null,
           id_distrito: selectedDist || null,
@@ -484,7 +658,7 @@ export default function AsistenteIA() {
                     ? 'bg-blue-600 text-white rounded-tr-none'
                     : 'bg-slate-100 text-slate-800 rounded-tl-none border border-slate-200 w-full'
                 }`}>
-                  {renderMessageContent(m.content)}
+                  {renderMessageContent(m.content, m.role === 'user')}
                 </div>
               </div>
             ))}

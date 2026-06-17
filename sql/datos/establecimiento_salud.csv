@@ -1,121 +1,665 @@
 id_establecimiento,nombre_establecimiento,categoria,id_distrito
-1,Puesto de Salud Distrito Provincia Amazonas,Puesto de Salud,D0001
-2,Hospital II Distrito Provincia Amazonas Aux 1,Hospital II,D0002
-3,Centro de Salud Distrito Provincia Ancash,Centro de Salud,D0003
-4,Centro de Salud Distrito Provincia Ancash Aux 1,Centro de Salud,D0004
-5,Hospital II Distrito Provincia Apurimac,Hospital II,D0005
-6,Puesto de Salud Distrito Provincia Apurimac Aux 1,Puesto de Salud,D0006
-7,Centro de Salud Distrito Provincia Arequipa,Centro de Salud,D0007
-8,Puesto de Salud Distrito Provincia Arequipa Aux 1,Puesto de Salud,D0008
-9,Hospital II Distrito Provincia Arequipa Aux 2,Hospital II,D0009
-10,Centro de Salud Distrito Provincia Ayacucho,Centro de Salud,D0010
-11,Hospital II Distrito Provincia Ayacucho Aux 1,Hospital II,D0011
-12,Hospital I Distrito Provincia Cajamarca,Hospital I,D0012
-13,Hospital II Distrito Provincia Cajamarca Aux 1,Hospital II,D0013
-14,Hospital Las Mercedes,Hospital II,D0014
-15,Hospital Nacional Arzobispo Loayza,Hospital II,D0015
-16,Hospital Apoyo Iquitos,Centro de Salud,D0016
-17,Hospital II Distrito Provincia Cusco Aux 1,Hospital II,D0017
-18,Hospital II Distrito Provincia Cusco Aux 2,Hospital II,D0018
-19,Hospital I Distrito Provincia Huancavelica,Hospital I,D0019
-20,Hospital Regional Cayetano Heredia,Centro de Salud,D0020
-21,Hospital I Distrito Provincia Huanuco,Hospital I,D0021
-22,Hospital II Distrito Provincia Huanuco Aux 1,Hospital II,D0022
-23,Centro de Salud Distrito Provincia Ica,Centro de Salud,D0023
-24,Hospital I Distrito Provincia Ica Aux 1,Hospital I,D0024
-25,Hospital II Calleria,Hospital II,D0025
-26,Puesto de Salud Distrito Provincia Junin Aux 1,Puesto de Salud,D0026
-27,Hospital I Distrito Provincia La Libertad,Hospital I,D0027
-28,Centro de Salud Distrito Provincia La Libertad Aux 1,Centro de Salud,D0028
-29,Hospital I Distrito Chiclayo,Hospital I,D0029
-30,Hospital I Distrito Provincia Lambayeque Aux 1,Hospital I,D0030
-31,Hospital I Distrito Provincia Lambayeque Aux 2,Hospital I,D0031
-32,Puesto de Salud Distrito Lima,Puesto de Salud,D0032
-33,Centro de Salud Distrito Provincia Lima Aux 1,Centro de Salud,D0033
-34,Centro de Salud Distrito Provincia Lima Aux 2,Centro de Salud,D0034
-35,Centro de Salud Distrito Maynas,Centro de Salud,D0035
-36,Hospital II Distrito Provincia Loreto Aux 1,Hospital II,D0036
-37,Centro de Salud Distrito Provincia Loreto Aux 2,Centro de Salud,D0037
-38,Centro de Salud Distrito Provincia Madre de Dios,Centro de Salud,D0038
-39,Puesto de Salud Distrito Provincia Madre de Dios Aux 1,Puesto de Salud,D0039
-40,Hospital II Distrito Mariscal Nieto,Hospital II,D0040
-41,Hospital II Distrito Provincia Moquegua Aux 1,Hospital II,D0041
-42,Hospital I Distrito Provincia Pasco,Hospital I,D0042
-43,Hospital II Distrito Provincia Pasco Aux 1,Hospital II,D0043
-44,Hospital II Distrito Piura,Hospital II,D0044
-45,Puesto de Salud Distrito Provincia Piura Aux 1,Puesto de Salud,D0045
-46,Centro de Salud Distrito Provincia Piura Aux 2,Centro de Salud,D0046
-47,Hospital II Distrito Provincia Puno,Hospital II,D0047
-48,Hospital II Distrito Provincia Puno Aux 1,Hospital II,D0048
-49,Puesto de Salud Distrito Provincia San Martin,Puesto de Salud,D0049
-50,Hospital II Distrito Provincia San Martin Aux 1,Hospital II,D0050
-51,Hospital II Distrito Provincia San Martin Aux 2,Hospital II,D0051
-52,Puesto de Salud Distrito Provincia Tacna,Puesto de Salud,D0052
-53,Hospital I Distrito Provincia Tacna Aux 1,Hospital I,D0053
-54,Hospital I Distrito Provincia Tumbes,Hospital I,D0054
-55,Hospital II Distrito Provincia Tumbes Aux 1,Hospital II,D0055
-56,Hospital II Distrito Coronel Portillo,Hospital II,D0056
-57,Centro de Salud Distrito Provincia Ucayali Aux 1,Centro de Salud,D0057
-58,Hospital II Distrito Provincia Ucayali Aux 2,Hospital II,D0058
-59,Centro de Salud Distrito Provincia Extra 59,Centro de Salud,D0059
-60,Hospital I Distrito Provincia Extra 60,Hospital I,D0060
-61,Hospital II Distrito Provincia Extra 61,Hospital II,D0061
-62,Hospital II Distrito Provincia Extra 62,Hospital II,D0062
-63,Puesto de Salud Distrito Provincia Extra 63,Puesto de Salud,D0063
-64,Hospital II Distrito Provincia Extra 64,Hospital II,D0064
-65,Hospital I Distrito Provincia Extra 65,Hospital I,D0065
-66,Hospital II Distrito Provincia Extra 66,Hospital II,D0066
-67,Centro de Salud Distrito Provincia Extra 67,Centro de Salud,D0067
-68,Hospital II Distrito Provincia Extra 68,Hospital II,D0068
-69,Centro de Salud Distrito Provincia Extra 69,Centro de Salud,D0069
-70,Puesto de Salud Distrito Provincia Callao Aux 70,Puesto de Salud,D0070
-71,Hospital II Distrito Provincia Loreto Aux 2 Aux 71,Hospital II,D0071
-72,Puesto de Salud Distrito Provincia La Libertad Aux 72,Puesto de Salud,D0072
-73,Puesto de Salud Distrito Provincia Extra 65 Aux 73,Puesto de Salud,D0073
-74,Hospital II Distrito Provincia Arequipa Aux 74,Hospital II,D0074
-75,Centro de Salud Distrito Provincia Loreto Aux 1 Aux 75,Centro de Salud,D0075
-76,Hospital II Distrito Provincia Cusco Aux 1 Aux 76,Hospital II,D0076
-77,Centro de Salud Distrito Provincia Ucayali Aux 1 Aux 77,Centro de Salud,D0077
-78,Puesto de Salud Distrito Provincia Amazonas Aux 1 Aux 78,Puesto de Salud,D0078
-79,Hospital I Distrito Provincia Huancavelica Aux 1 Aux 79,Hospital I,D0079
-80,Hospital II Distrito Provincia Huancavelica Aux 80,Hospital II,D0080
-81,Hospital I Distrito Provincia Puno Aux 81,Hospital I,D0081
-82,Centro de Salud Distrito Provincia Apurimac Aux 1 Aux 82,Centro de Salud,D0082
-83,Hospital II Distrito Lima Aux 83,Hospital II,D0083
-84,Hospital I Distrito Provincia Tacna Aux 1 Aux 84,Hospital I,D0084
-85,Hospital I Distrito Provincia Lambayeque Aux 2 Aux 85,Hospital I,D0085
-86,Hospital II Distrito Provincia Ica Aux 86,Hospital II,D0086
-87,Hospital I Distrito Provincia Pasco Aux 1 Aux 87,Hospital I,D0087
-88,Hospital II Distrito Lima Aux 88,Hospital II,D0088
-89,Hospital I Distrito Provincia Callao Aux 89,Hospital I,D0089
-90,Puesto de Salud Distrito Provincia Extra 61 Aux 90,Puesto de Salud,D0090
-91,Hospital II Distrito Provincia Extra 59 Aux 91,Hospital II,D0091
-92,Puesto de Salud Distrito Provincia Lambayeque Aux 1 Aux 92,Puesto de Salud,D0092
-93,Puesto de Salud Distrito Provincia Tacna Aux 93,Puesto de Salud,D0093
-94,Hospital I Distrito Provincia Loreto Aux 1 Aux 94,Hospital I,D0094
-95,Centro de Salud Distrito Provincia Extra 69 Aux 95,Centro de Salud,D0095
-96,Puesto de Salud Distrito Provincia Lima Aux 2 Aux 96,Puesto de Salud,D0096
-97,Puesto de Salud Distrito Provincia Lima Aux 2 Aux 97,Puesto de Salud,D0097
-98,Puesto de Salud Distrito Provincia Piura Aux 1 Aux 98,Puesto de Salud,D0098
-99,Centro de Salud Distrito Provincia Extra 66 Aux 99,Centro de Salud,D0099
-100,Centro de Salud Distrito Provincia Junin Aux 100,Centro de Salud,D0100
-101,Puesto de Salud Distrito Provincia Amazonas Aux 101,Puesto de Salud,D0101
-102,Centro de Salud Distrito Provincia Junin Aux 1 Aux 102,Centro de Salud,D0102
-103,Centro de Salud Distrito Provincia Pasco Aux 1 Aux 103,Centro de Salud,D0103
-104,Centro de Salud Distrito Provincia Cusco Aux 104,Centro de Salud,D0104
-105,Hospital II Distrito Mariscal Nieto Aux 105,Hospital II,D0105
-106,Puesto de Salud Distrito Provincia Madre de Dios Aux 106,Puesto de Salud,D0106
-107,Centro de Salud Distrito Provincia San Martin Aux 107,Centro de Salud,D0107
-108,Hospital II Distrito Provincia Madre de Dios Aux 1 Aux 108,Hospital II,D0108
-109,Hospital I Distrito Provincia Madre de Dios Aux 1 Aux 109,Hospital I,D0109
-110,Hospital I Distrito Provincia Pasco Aux 110,Hospital I,D0110
-111,Centro de Salud Distrito Provincia La Libertad Aux 1 Aux 111,Centro de Salud,D0111
-112,Puesto de Salud Distrito Provincia Huanuco Aux 1 Aux 112,Puesto de Salud,D0112
-113,Centro de Salud Distrito Provincia Pasco Aux 1 Aux 113,Centro de Salud,D0113
-114,Hospital I Distrito Provincia Lambayeque Aux 2 Aux 114,Hospital I,D0114
-115,Puesto de Salud Distrito Provincia Junin Aux 1 Aux 115,Puesto de Salud,D0115
-116,Puesto de Salud Distrito Provincia Extra 61 Aux 116,Puesto de Salud,D0116
-117,Hospital I Distrito Provincia Extra 59 Aux 117,Hospital I,D0117
-118,Hospital II Distrito Provincia Junin Aux 118,Hospital II,D0118
-119,Hospital II Distrito Provincia Tacna Aux 119,Hospital II,D0119
-120,Centro de Salud Distrito Provincia Amazonas Aux 120,Centro de Salud,D0120
+1,Centro de Salud ARAMANGO,Centro de Salud,D0001
+2,Hospital I BAGUA,Hospital I,D0002
+3,Puesto de Salud COPALLIN,Puesto de Salud,D0003
+4,Puesto de Salud EL PARCO,Puesto de Salud,D0004
+5,Hospital I IMAZA,Hospital I,D0005
+6,Puesto de Salud LA PECA,Puesto de Salud,D0006
+7,Centro de Salud CHURUJA,Centro de Salud,D0007
+8,Puesto de Salud FLORIDA,Puesto de Salud,D0008
+9,Puesto de Salud JAZAN,Puesto de Salud,D0009
+10,Centro de Salud SAN CARLOS,Centro de Salud,D0010
+11,Hospital I YAMBRASBAMBA,Hospital I,D0011
+12,Puesto de Salud BALSAS,Puesto de Salud,D0012
+13,Centro de Salud CHACHAPOYAS,Centro de Salud,D0013
+14,Hospital I EL CENEPA,Hospital I,D0014
+15,Centro de Salud NIEVA,Centro de Salud,D0015
+16,Puesto de Salud RIO SANTIAGO,Puesto de Salud,D0016
+17,Centro de Salud LIMABAMBA,Centro de Salud,D0017
+18,Puesto de Salud VISTA ALEGRE,Puesto de Salud,D0018
+19,Hospital I BAGUA GRANDE,Hospital I,D0019
+20,Hospital I CAJARURO,Hospital I,D0020
+21,Centro de Salud CUMBA,Centro de Salud,D0021
+22,Puesto de Salud EL MILAGRO,Puesto de Salud,D0022
+23,Hospital I JAMALCA,Hospital I,D0023
+24,Centro de Salud LONYA GRANDE,Centro de Salud,D0024
+25,Hospital I YAMON,Hospital I,D0025
+26,Hospital I BUENA VISTA ALTA,Hospital I,D0026
+27,Puesto de Salud CASMA,Puesto de Salud,D0027
+28,Hospital I COMANDANTE NOEL,Hospital I,D0028
+29,Hospital I YAUTAN,Hospital I,D0029
+30,Puesto de Salud HUARAZ,Puesto de Salud,D0030
+31,Hospital I PARIACOTO,Hospital I,D0031
+32,Hospital I CULEBRAS,Hospital I,D0032
+33,Puesto de Salud HUARMEY,Puesto de Salud,D0033
+34,Puesto de Salud HUALLANCA,Puesto de Salud,D0034
+35,Hospital I CABANA,Hospital I,D0035
+36,Hospital I CHIMBOTE,Hospital I,D0036
+37,Hospital I COISHCO,Hospital I,D0037
+38,Hospital I MORO,Hospital I,D0038
+39,Centro de Salud NEPE�A,Centro de Salud,D0039
+40,Hospital I NUEVO CHIMBOTE,Hospital I,D0040
+41,Puesto de Salud SAMANCO,Puesto de Salud,D0041
+42,Puesto de Salud SANTA,Puesto de Salud,D0042
+43,Puesto de Salud ABANCAY,Puesto de Salud,D0043
+44,Puesto de Salud CHACOCHE,Puesto de Salud,D0044
+45,Hospital I COLCABAMBA,Hospital I,D0045
+46,Hospital I TINTAY,Hospital I,D0046
+47,Centro de Salud AREQUIPA,Centro de Salud,D0047
+48,Hospital I ACARI,Hospital I,D0048
+49,Puesto de Salud ATICO,Puesto de Salud,D0049
+50,Hospital I BELLA UNION,Hospital I,D0050
+51,Centro de Salud YAUCA,Centro de Salud,D0051
+52,Hospital I COCACHACRA,Hospital I,D0052
+53,Hospital I CANGALLO,Hospital I,D0053
+54,Puesto de Salud ACOCRO,Puesto de Salud,D0054
+55,Centro de Salud AYACUCHO,Centro de Salud,D0055
+56,Hospital I JESUS NAZARENO,Hospital I,D0056
+57,Hospital I SAN JUAN BAUTISTA,Hospital I,D0057
+58,Centro de Salud CANAYRE,Centro de Salud,D0058
+59,Hospital I HUANTA,Hospital I,D0059
+60,Centro de Salud LLOCHEGUA,Centro de Salud,D0060
+61,Centro de Salud SIVIA,Centro de Salud,D0061
+62,Puesto de Salud ANCHIHUAY,Puesto de Salud,D0062
+63,Hospital I ANCO,Hospital I,D0063
+64,Centro de Salud AYNA,Centro de Salud,D0064
+65,Centro de Salud CHUNGUI,Centro de Salud,D0065
+66,Centro de Salud RIO MAGDALENA,Centro de Salud,D0066
+67,Puesto de Salud SAMUGARI,Puesto de Salud,D0067
+68,Hospital I SAN MIGUEL,Hospital I,D0068
+69,Puesto de Salud SANTA ROSA,Puesto de Salud,D0069
+70,Puesto de Salud UNION PROGRESO,Puesto de Salud,D0070
+71,Centro de Salud PUQUIO,Centro de Salud,D0071
+72,Centro de Salud CORACORA,Centro de Salud,D0072
+73,Centro de Salud SAN JAVIER DE ALPABAMBA,Centro de Salud,D0073
+74,Centro de Salud BELEN,Centro de Salud,D0074
+75,Puesto de Salud MORCOLLA,Puesto de Salud,D0075
+76,Centro de Salud CONDEBAMBA,Centro de Salud,D0076
+77,Hospital I SITACOCHA,Hospital I,D0077
+78,Puesto de Salud ASUNCION,Puesto de Salud,D0078
+79,Centro de Salud CAJAMARCA,Centro de Salud,D0079
+80,Hospital I MAGDALENA,Hospital I,D0080
+81,Centro de Salud CELENDIN,Centro de Salud,D0081
+82,Hospital I UTCO,Hospital I,D0082
+83,Centro de Salud CHOTA,Centro de Salud,D0083
+84,Centro de Salud COCHABAMBA,Centro de Salud,D0084
+85,Puesto de Salud HUAMBOS,Puesto de Salud,D0085
+86,Centro de Salud LLAMA,Centro de Salud,D0086
+87,Hospital I MIRACOSTA,Hospital I,D0087
+88,Hospital I QUEROCOTO,Hospital I,D0088
+89,Puesto de Salud CHILETE,Puesto de Salud,D0089
+90,Centro de Salud CONTUMAZA,Centro de Salud,D0090
+91,Puesto de Salud TANTARICA,Puesto de Salud,D0091
+92,Centro de Salud YONAN,Centro de Salud,D0092
+93,Puesto de Salud CALLAYUC,Puesto de Salud,D0093
+94,Centro de Salud CHOROS,Centro de Salud,D0094
+95,Centro de Salud CUTERVO,Centro de Salud,D0095
+96,Puesto de Salud PIMPINGOS,Puesto de Salud,D0096
+97,Puesto de Salud QUEROCOTILLO,Puesto de Salud,D0097
+98,Puesto de Salud SANTO TOMAS,Puesto de Salud,D0098
+99,Puesto de Salud HUALGAYOC,Puesto de Salud,D0099
+100,Centro de Salud BELLAVISTA,Centro de Salud,D0100
+101,Centro de Salud CHONTALI,Centro de Salud,D0101
+102,Hospital I COLASAY,Hospital I,D0102
+103,Centro de Salud HUABAL,Centro de Salud,D0103
+104,Puesto de Salud JAEN,Puesto de Salud,D0104
+105,Puesto de Salud LAS PIRIAS,Puesto de Salud,D0105
+106,Centro de Salud POMAHUACA,Centro de Salud,D0106
+107,Hospital I PUCARA,Hospital I,D0107
+108,Hospital I SALLIQUE,Hospital I,D0108
+109,Centro de Salud SAN FELIPE,Centro de Salud,D0109
+110,Puesto de Salud SAN JOSE DEL ALTO,Puesto de Salud,D0110
+111,Puesto de Salud SANTA ROSA,Puesto de Salud,D0111
+112,Centro de Salud CHIRINOS,Centro de Salud,D0112
+113,Hospital I HUARANGO,Hospital I,D0113
+114,Centro de Salud LA COIPA,Centro de Salud,D0114
+115,Centro de Salud NAMBALLE,Centro de Salud,D0115
+116,Centro de Salud SAN IGNACIO,Centro de Salud,D0116
+117,Centro de Salud SAN JOSE DE LOURDES,Centro de Salud,D0117
+118,Puesto de Salud TABACONAS,Puesto de Salud,D0118
+119,Puesto de Salud BOLIVAR,Puesto de Salud,D0119
+120,Centro de Salud LA FLORIDA,Centro de Salud,D0120
+121,Hospital I NANCHOC,Hospital I,D0121
+122,Centro de Salud SAN GREGORIO,Centro de Salud,D0122
+123,Puesto de Salud SAN MIGUEL,Puesto de Salud,D0123
+124,Puesto de Salud SAN BERNARDINO,Puesto de Salud,D0124
+125,Hospital I SAN LUIS,Hospital I,D0125
+126,Centro de Salud CATACHE,Centro de Salud,D0126
+127,Puesto de Salud LA ESPERANZA,Puesto de Salud,D0127
+128,Puesto de Salud NINABAMBA,Puesto de Salud,D0128
+129,Centro de Salud BELLAVISTA,Centro de Salud,D0129
+130,Centro de Salud CALLAO,Centro de Salud,D0130
+131,Hospital I CARMEN DE LA LEGUA-REYNOSO,Hospital I,D0131
+132,Hospital I LA PERLA,Hospital I,D0132
+133,Hospital I LA PUNTA,Hospital I,D0133
+134,Centro de Salud MI PERU,Centro de Salud,D0134
+135,Centro de Salud VENTANILLA,Centro de Salud,D0135
+136,Hospital I YANATILE,Hospital I,D0136
+137,Puesto de Salud CUSCO,Puesto de Salud,D0137
+138,Puesto de Salud CIELO PUNCO,Puesto de Salud,D0138
+139,Centro de Salud ECHARATE,Centro de Salud,D0139
+140,Puesto de Salud HUAYOPATA,Puesto de Salud,D0140
+141,Centro de Salud KIMBIRI,Centro de Salud,D0141
+142,Hospital I KUMPIRUSHIATO,Hospital I,D0142
+143,Centro de Salud MANITEA,Centro de Salud,D0143
+144,Centro de Salud MARANURA,Centro de Salud,D0144
+145,Centro de Salud MEGANTONI,Centro de Salud,D0145
+146,Puesto de Salud PICHARI,Puesto de Salud,D0146
+147,Centro de Salud QUELLOUNO,Centro de Salud,D0147
+148,Puesto de Salud SANTA ANA,Puesto de Salud,D0148
+149,Hospital I SANTA TERESA,Hospital I,D0149
+150,Hospital I UNION ASHANINKA,Hospital I,D0150
+151,Puesto de Salud VILCABAMBA,Puesto de Salud,D0151
+152,Centro de Salud VILLA KINTIARINA,Centro de Salud,D0152
+153,Hospital I VILLA VIRGEN,Hospital I,D0153
+154,Centro de Salud KOS�IPATA,Centro de Salud,D0154
+155,Puesto de Salud CAMANTI,Puesto de Salud,D0155
+156,Centro de Salud MACHUPICCHU,Centro de Salud,D0156
+157,Hospital I HUANCAVELICA,Hospital I,D0157
+158,Centro de Salud AMBO,Centro de Salud,D0158
+159,Hospital I SAN RAFAEL,Hospital I,D0159
+160,Centro de Salud TOMAY-KICHWA,Centro de Salud,D0160
+161,Hospital I MARIAS,Hospital I,D0161
+162,Hospital I COCHABAMBA,Hospital I,D0162
+163,Hospital I HUACAYBAMBA,Hospital I,D0163
+164,Puesto de Salud MONZON,Puesto de Salud,D0164
+165,Puesto de Salud PUNCHAO,Puesto de Salud,D0165
+166,Puesto de Salud AMARILIS,Puesto de Salud,D0166
+167,Centro de Salud CHINCHAO,Centro de Salud,D0167
+168,Centro de Salud HUANUCO,Centro de Salud,D0168
+169,Centro de Salud PILLCO MARCA,Centro de Salud,D0169
+170,Hospital I SANTA MARIA DEL VALLE,Hospital I,D0170
+171,Centro de Salud CASTILLO GRANDE,Centro de Salud,D0171
+172,Puesto de Salud DANIEL ALOMIA ROBLES,Puesto de Salud,D0172
+173,Puesto de Salud HERMILIO VALDIZAN,Puesto de Salud,D0173
+174,Hospital I JOSE CRESPO Y CASTILLO,Hospital I,D0174
+175,Hospital I LUYANDO,Hospital I,D0175
+176,Centro de Salud MARIANO DAMASO BERAUN,Centro de Salud,D0176
+177,Hospital I PUCAYACU,Hospital I,D0177
+178,Puesto de Salud PUEBLO NUEVO,Puesto de Salud,D0178
+179,Puesto de Salud RUPA-RUPA,Puesto de Salud,D0179
+180,Puesto de Salud SANTO DOMINGO DE ANDA,Puesto de Salud,D0180
+181,Puesto de Salud CHOLON,Puesto de Salud,D0181
+182,Hospital I LA MORADA,Hospital I,D0182
+183,Centro de Salud SANTA ROSA DE ALTO YANAJANCA,Centro de Salud,D0183
+184,Centro de Salud CHAGLLA,Centro de Salud,D0184
+185,Hospital I PANAO,Hospital I,D0185
+186,Centro de Salud UMARI,Centro de Salud,D0186
+187,Puesto de Salud CODO DEL POZUZO,Puesto de Salud,D0187
+188,Hospital I HONORIA,Hospital I,D0188
+189,Hospital I PUERTO INCA,Hospital I,D0189
+190,Puesto de Salud TOURNAVISTA,Puesto de Salud,D0190
+191,Centro de Salud YUYAPICHIS,Centro de Salud,D0191
+192,Hospital I ALTO LARAN,Hospital I,D0192
+193,Centro de Salud CHINCHA ALTA,Centro de Salud,D0193
+194,Puesto de Salud CHINCHA BAJA,Puesto de Salud,D0194
+195,Centro de Salud EL CARMEN,Centro de Salud,D0195
+196,Hospital I GROCIO PRADO,Hospital I,D0196
+197,Hospital I PUEBLO NUEVO,Hospital I,D0197
+198,Centro de Salud SUNAMPE,Centro de Salud,D0198
+199,Hospital I TAMBO DE MORA,Hospital I,D0199
+200,Centro de Salud ICA,Centro de Salud,D0200
+201,Hospital I LA TINGUI�A,Hospital I,D0201
+202,Hospital I LOS AQUIJES,Hospital I,D0202
+203,Hospital I OCUCAJE,Hospital I,D0203
+204,Centro de Salud PACHACUTEC,Centro de Salud,D0204
+205,Hospital I PARCONA,Hospital I,D0205
+206,Hospital I PUEBLO NUEVO,Hospital I,D0206
+207,Centro de Salud SALAS,Centro de Salud,D0207
+208,Centro de Salud SAN JOSE DE LOS MOLINOS,Centro de Salud,D0208
+209,Puesto de Salud SAN JUAN BAUTISTA,Puesto de Salud,D0209
+210,Centro de Salud SANTIAGO,Centro de Salud,D0210
+211,Centro de Salud SUBTANJALLA,Centro de Salud,D0211
+212,Hospital I TATE,Hospital I,D0212
+213,Puesto de Salud YAUCA DEL ROSARIO,Puesto de Salud,D0213
+214,Centro de Salud CHANGUILLO,Centro de Salud,D0214
+215,Hospital I EL INGENIO,Hospital I,D0215
+216,Centro de Salud MARCONA,Centro de Salud,D0216
+217,Hospital I NAZCA,Hospital I,D0217
+218,Hospital I VISTA ALEGRE,Hospital I,D0218
+219,Hospital I LLIPATA,Hospital I,D0219
+220,Puesto de Salud PALPA,Puesto de Salud,D0220
+221,Hospital I RIO GRANDE,Hospital I,D0221
+222,Centro de Salud SANTA CRUZ,Centro de Salud,D0222
+223,Centro de Salud HUANCANO,Centro de Salud,D0223
+224,Hospital I HUMAY,Hospital I,D0224
+225,Hospital I INDEPENDENCIA,Hospital I,D0225
+226,Hospital I PARACAS,Hospital I,D0226
+227,Puesto de Salud PISCO,Puesto de Salud,D0227
+228,Hospital I SAN ANDRES,Hospital I,D0228
+229,Puesto de Salud SAN CLEMENTE,Puesto de Salud,D0229
+230,Hospital I TUPAC AMARU INCA,Hospital I,D0230
+231,Centro de Salud CHANCHAMAYO,Centro de Salud,D0231
+232,Puesto de Salud PERENE,Puesto de Salud,D0232
+233,Hospital I PICHANAQUI,Hospital I,D0233
+234,Hospital I SAN LUIS DE SHUARO,Hospital I,D0234
+235,Hospital I SAN RAMON,Hospital I,D0235
+236,Hospital I VITOC,Hospital I,D0236
+237,Centro de Salud CHILCA,Centro de Salud,D0237
+238,Puesto de Salud HUANCAYO,Puesto de Salud,D0238
+239,Hospital I SAPALLANGA,Hospital I,D0239
+240,Puesto de Salud JUNIN,Puesto de Salud,D0240
+241,Puesto de Salud COVIRIALI,Puesto de Salud,D0241
+242,Hospital I LLAYLLA,Hospital I,D0242
+243,Hospital I MAZAMARI,Hospital I,D0243
+244,Puesto de Salud PAMPA HERMOSA,Puesto de Salud,D0244
+245,Puesto de Salud PANGOA,Puesto de Salud,D0245
+246,Puesto de Salud RIO NEGRO,Puesto de Salud,D0246
+247,Centro de Salud RIO TAMBO,Centro de Salud,D0247
+248,Centro de Salud SATIPO,Centro de Salud,D0248
+249,Centro de Salud VIZCATAN DEL ENE,Centro de Salud,D0249
+250,Puesto de Salud ASCOPE,Puesto de Salud,D0250
+251,Centro de Salud CASA GRANDE,Centro de Salud,D0251
+252,Hospital I CHICAMA,Hospital I,D0252
+253,Puesto de Salud CHOCOPE,Puesto de Salud,D0253
+254,Centro de Salud MAGDALENA DE CAO,Centro de Salud,D0254
+255,Hospital I PAIJAN,Hospital I,D0255
+256,Hospital I RAZURI,Hospital I,D0256
+257,Centro de Salud SANTIAGO DE CAO,Centro de Salud,D0257
+258,Hospital I BAMBAMARCA,Hospital I,D0258
+259,Hospital I LONGOTEA,Hospital I,D0259
+260,Puesto de Salud UCHUMARCA,Puesto de Salud,D0260
+261,Hospital I CHEPEN,Hospital I,D0261
+262,Puesto de Salud PACANGA,Puesto de Salud,D0262
+263,Hospital I PUEBLO NUEVO,Hospital I,D0263
+264,Puesto de Salud CASCAS,Puesto de Salud,D0264
+265,Hospital I LUCMA,Hospital I,D0265
+266,Centro de Salud MARMOT,Centro de Salud,D0266
+267,Hospital I OTUZCO,Hospital I,D0267
+268,Centro de Salud GUADALUPE,Centro de Salud,D0268
+269,Hospital I JEQUETEPEQUE,Hospital I,D0269
+270,Centro de Salud PACASMAYO,Centro de Salud,D0270
+271,Centro de Salud SAN JOSE,Centro de Salud,D0271
+272,Puesto de Salud SAN PEDRO DE LLOC,Puesto de Salud,D0272
+273,Centro de Salud PATAZ,Centro de Salud,D0273
+274,Hospital I COCHORCO,Hospital I,D0274
+275,Centro de Salud HUAMACHUCO,Centro de Salud,D0275
+276,Hospital I SANAGORAN,Hospital I,D0276
+277,Centro de Salud SARTIMBAMBA,Centro de Salud,D0277
+278,Hospital I MOLLEPATA,Hospital I,D0278
+279,Hospital I ALTO TRUJILLO,Hospital I,D0279
+280,Hospital I EL PORVENIR,Hospital I,D0280
+281,Hospital I FLORENCIA DE MORA,Hospital I,D0281
+282,Hospital I HUANCHACO,Hospital I,D0282
+283,Centro de Salud LA ESPERANZA,Centro de Salud,D0283
+284,Hospital I LAREDO,Hospital I,D0284
+285,Centro de Salud MOCHE,Centro de Salud,D0285
+286,Puesto de Salud POROTO,Puesto de Salud,D0286
+287,Puesto de Salud SALAVERRY,Puesto de Salud,D0287
+288,Centro de Salud SIMBAL,Centro de Salud,D0288
+289,Hospital I TRUJILLO,Hospital I,D0289
+290,Centro de Salud VICTOR LARCO HERRERA,Centro de Salud,D0290
+291,Puesto de Salud CHAO,Puesto de Salud,D0291
+292,Centro de Salud GUADALUPITO,Centro de Salud,D0292
+293,Centro de Salud VIRU,Centro de Salud,D0293
+294,Hospital I CAYALTI,Hospital I,D0294
+295,Puesto de Salud CHICLAYO,Puesto de Salud,D0295
+296,Hospital I CHONGOYAPE,Hospital I,D0296
+297,Hospital I ETEN,Hospital I,D0297
+298,Centro de Salud ETEN PUERTO,Centro de Salud,D0298
+299,Centro de Salud JOSE LEONARDO ORTIZ,Centro de Salud,D0299
+300,Centro de Salud LA VICTORIA,Centro de Salud,D0300
+301,Centro de Salud LAGUNAS,Centro de Salud,D0301
+302,Hospital I MONSEFU,Hospital I,D0302
+303,Hospital I NUEVA ARICA,Hospital I,D0303
+304,Centro de Salud OYOTUN,Centro de Salud,D0304
+305,Centro de Salud PATAPO,Centro de Salud,D0305
+306,Puesto de Salud PICSI,Puesto de Salud,D0306
+307,Hospital I PIMENTEL,Hospital I,D0307
+308,Hospital I POMALCA,Hospital I,D0308
+309,Hospital I PUCALA,Hospital I,D0309
+310,Centro de Salud REQUE,Centro de Salud,D0310
+311,Centro de Salud SANTA ROSA,Centro de Salud,D0311
+312,Centro de Salud SA�A,Centro de Salud,D0312
+313,Puesto de Salud TUMAN,Puesto de Salud,D0313
+314,Centro de Salud CA�ARIS,Centro de Salud,D0314
+315,Puesto de Salud FERRE�AFE,Puesto de Salud,D0315
+316,Centro de Salud MANUEL ANTONIO MESONES MURO,Centro de Salud,D0316
+317,Hospital I PITIPO,Hospital I,D0317
+318,Puesto de Salud PUEBLO NUEVO,Puesto de Salud,D0318
+319,Centro de Salud CHOCHOPE,Centro de Salud,D0319
+320,Centro de Salud ILLIMO,Centro de Salud,D0320
+321,Hospital I JAYANCA,Hospital I,D0321
+322,Centro de Salud LAMBAYEQUE,Centro de Salud,D0322
+323,Hospital I MOCHUMI,Hospital I,D0323
+324,Centro de Salud MORROPE,Centro de Salud,D0324
+325,Puesto de Salud MOTUPE,Puesto de Salud,D0325
+326,Puesto de Salud OLMOS,Puesto de Salud,D0326
+327,Hospital I PACORA,Hospital I,D0327
+328,Centro de Salud SALAS,Centro de Salud,D0328
+329,Hospital I SAN JOSE,Hospital I,D0329
+330,Hospital I TUCUME,Hospital I,D0330
+331,Centro de Salud BARRANCA,Centro de Salud,D0331
+332,Puesto de Salud PARAMONGA,Puesto de Salud,D0332
+333,Puesto de Salud PATIVILCA,Puesto de Salud,D0333
+334,Hospital I SUPE,Hospital I,D0334
+335,Hospital I SUPE PUERTO,Hospital I,D0335
+336,Hospital I CANTA,Hospital I,D0336
+337,Puesto de Salud SANTA ROSA DE QUIVES,Puesto de Salud,D0337
+338,Puesto de Salud ASIA,Puesto de Salud,D0338
+339,Puesto de Salud CALANGO,Puesto de Salud,D0339
+340,Hospital I CERRO AZUL,Hospital I,D0340
+341,Hospital I CHILCA,Hospital I,D0341
+342,Puesto de Salud IMPERIAL,Puesto de Salud,D0342
+343,Hospital I LUNAHUANA,Hospital I,D0343
+344,Puesto de Salud MALA,Puesto de Salud,D0344
+345,Puesto de Salud NUEVO IMPERIAL,Puesto de Salud,D0345
+346,Puesto de Salud PACARAN,Puesto de Salud,D0346
+347,Centro de Salud QUILMANA,Centro de Salud,D0347
+348,Centro de Salud SAN ANTONIO,Centro de Salud,D0348
+349,Hospital I SAN LUIS,Hospital I,D0349
+350,Centro de Salud SAN VICENTE DE CA�ETE,Centro de Salud,D0350
+351,Puesto de Salud SANTA CRUZ DE FLORES,Puesto de Salud,D0351
+352,Hospital I ZU�IGA,Hospital I,D0352
+353,Puesto de Salud AUCALLAMA,Puesto de Salud,D0353
+354,Puesto de Salud CHANCAY,Puesto de Salud,D0354
+355,Hospital I HUARAL,Hospital I,D0355
+356,Puesto de Salud HUAROCHIRI,Puesto de Salud,D0356
+357,Centro de Salud RICARDO PALMA,Centro de Salud,D0357
+358,Hospital I SAN ANTONIO,Hospital I,D0358
+359,Centro de Salud SANTA CRUZ DE COCACHACRA,Centro de Salud,D0359
+360,Centro de Salud SANTA EULALIA,Centro de Salud,D0360
+361,Hospital I SANTO DOMINGO DE LOS OLLEROS,Hospital I,D0361
+362,Puesto de Salud CALETA DE CARQUIN,Puesto de Salud,D0362
+363,Centro de Salud HUACHO,Centro de Salud,D0363
+364,Centro de Salud HUALMAY,Centro de Salud,D0364
+365,Centro de Salud HUAURA,Centro de Salud,D0365
+366,Hospital I SANTA MARIA,Hospital I,D0366
+367,Puesto de Salud SAYAN,Puesto de Salud,D0367
+368,Puesto de Salud VEGUETA,Puesto de Salud,D0368
+369,Hospital I ANCON,Hospital I,D0369
+370,Hospital I ATE,Hospital I,D0370
+371,Puesto de Salud BARRANCO,Puesto de Salud,D0371
+372,Hospital I BRE�A,Hospital I,D0372
+373,Hospital I CARABAYLLO,Hospital I,D0373
+374,Hospital I CHACLACAYO,Hospital I,D0374
+375,Puesto de Salud CHORRILLOS,Puesto de Salud,D0375
+376,Puesto de Salud CIENEGUILLA,Puesto de Salud,D0376
+377,Centro de Salud COMAS,Centro de Salud,D0377
+378,Puesto de Salud EL AGUSTINO,Puesto de Salud,D0378
+379,Puesto de Salud INDEPENDENCIA,Puesto de Salud,D0379
+380,Centro de Salud JESUS MARIA,Centro de Salud,D0380
+381,Centro de Salud LA MOLINA,Centro de Salud,D0381
+382,Puesto de Salud LA VICTORIA,Puesto de Salud,D0382
+383,Hospital I LIMA,Hospital I,D0383
+384,Centro de Salud LINCE,Centro de Salud,D0384
+385,Puesto de Salud LOS OLIVOS,Puesto de Salud,D0385
+386,Puesto de Salud LURIGANCHO,Puesto de Salud,D0386
+387,Centro de Salud LURIN,Centro de Salud,D0387
+388,Hospital I MAGDALENA DEL MAR,Hospital I,D0388
+389,Hospital I MIRAFLORES,Hospital I,D0389
+390,Puesto de Salud PACHACAMAC,Puesto de Salud,D0390
+391,Centro de Salud PUCUSANA,Centro de Salud,D0391
+392,Centro de Salud PUEBLO LIBRE,Centro de Salud,D0392
+393,Centro de Salud PUENTE PIEDRA,Centro de Salud,D0393
+394,Hospital I PUNTA HERMOSA,Hospital I,D0394
+395,Hospital I PUNTA NEGRA,Hospital I,D0395
+396,Hospital I RIMAC,Hospital I,D0396
+397,Centro de Salud SAN BARTOLO,Centro de Salud,D0397
+398,Puesto de Salud SAN BORJA,Puesto de Salud,D0398
+399,Hospital I SAN ISIDRO,Hospital I,D0399
+400,Centro de Salud SAN JUAN DE LURIGANCHO,Centro de Salud,D0400
+401,Centro de Salud SAN JUAN DE MIRAFLORES,Centro de Salud,D0401
+402,Puesto de Salud SAN LUIS,Puesto de Salud,D0402
+403,Puesto de Salud SAN MARTIN DE PORRES,Puesto de Salud,D0403
+404,Centro de Salud SAN MIGUEL,Centro de Salud,D0404
+405,Puesto de Salud SANTA ANITA,Puesto de Salud,D0405
+406,Hospital I SANTA MARIA DEL MAR,Hospital I,D0406
+407,Centro de Salud SANTA ROSA,Centro de Salud,D0407
+408,Hospital I SANTIAGO DE SURCO,Hospital I,D0408
+409,Centro de Salud SURQUILLO,Centro de Salud,D0409
+410,Hospital I VILLA EL SALVADOR,Hospital I,D0410
+411,Puesto de Salud VILLA MARIA DEL TRIUNFO,Puesto de Salud,D0411
+412,Puesto de Salud BALSAPUERTO,Puesto de Salud,D0412
+413,Hospital I JEBEROS,Hospital I,D0413
+414,Centro de Salud LAGUNAS,Centro de Salud,D0414
+415,Centro de Salud SANTA CRUZ,Centro de Salud,D0415
+416,Hospital I TENIENTE CESAR LOPEZ ROJAS,Hospital I,D0416
+417,Hospital I YURIMAGUAS,Hospital I,D0417
+418,Puesto de Salud ANDOAS,Puesto de Salud,D0418
+419,Puesto de Salud BARRANCA,Puesto de Salud,D0419
+420,Hospital I CAHUAPANAS,Hospital I,D0420
+421,Hospital I MANSERICHE,Hospital I,D0421
+422,Centro de Salud MORONA,Centro de Salud,D0422
+423,Centro de Salud PASTAZA,Centro de Salud,D0423
+424,Hospital I NAUTA,Hospital I,D0424
+425,Centro de Salud PARINARI,Centro de Salud,D0425
+426,Puesto de Salud TIGRE,Puesto de Salud,D0426
+427,Centro de Salud TROMPETEROS,Centro de Salud,D0427
+428,Hospital I URARINAS,Hospital I,D0428
+429,Puesto de Salud PEBAS,Puesto de Salud,D0429
+430,Puesto de Salud RAMON CASTILLA,Puesto de Salud,D0430
+431,Puesto de Salud SAN PABLO,Puesto de Salud,D0431
+432,Centro de Salud YAVARI,Centro de Salud,D0432
+433,Centro de Salud ALTO NANAY,Centro de Salud,D0433
+434,Puesto de Salud BELEN,Puesto de Salud,D0434
+435,Puesto de Salud FERNANDO LORES,Puesto de Salud,D0435
+436,Centro de Salud INDIANA,Centro de Salud,D0436
+437,Centro de Salud IQUITOS,Centro de Salud,D0437
+438,Puesto de Salud LAS AMAZONAS,Puesto de Salud,D0438
+439,Centro de Salud MAZAN,Centro de Salud,D0439
+440,Centro de Salud NAPO,Centro de Salud,D0440
+441,Centro de Salud PUNCHANA,Centro de Salud,D0441
+442,Centro de Salud SAN JUAN BAUTISTA,Centro de Salud,D0442
+443,Hospital I TORRES CAUSANA,Hospital I,D0443
+444,Hospital I PUTUMAYO,Hospital I,D0444
+445,Hospital I ROSA PANDURO,Hospital I,D0445
+446,Puesto de Salud TENIENTE MANUEL CLAVERO,Puesto de Salud,D0446
+447,Centro de Salud YAGUAS,Centro de Salud,D0447
+448,Hospital I ALTO TAPICHE,Hospital I,D0448
+449,Centro de Salud CAPELO,Centro de Salud,D0449
+450,Hospital I EMILIO SAN MARTIN,Hospital I,D0450
+451,Puesto de Salud JENARO HERRERA,Puesto de Salud,D0451
+452,Puesto de Salud MAQUIA,Puesto de Salud,D0452
+453,Hospital I PUINAHUA,Hospital I,D0453
+454,Puesto de Salud REQUENA,Puesto de Salud,D0454
+455,Centro de Salud SAQUENA,Centro de Salud,D0455
+456,Centro de Salud SOPLIN,Centro de Salud,D0456
+457,Puesto de Salud TAPICHE,Puesto de Salud,D0457
+458,Centro de Salud YAQUERANA,Centro de Salud,D0458
+459,Hospital I CONTAMANA,Hospital I,D0459
+460,Hospital I INAHUAYA,Hospital I,D0460
+461,Hospital I PADRE MARQUEZ,Hospital I,D0461
+462,Centro de Salud PAMPA HERMOSA,Centro de Salud,D0462
+463,Hospital I SARAYACU,Hospital I,D0463
+464,Puesto de Salud VARGAS GUERRA,Puesto de Salud,D0464
+465,Hospital I FITZCARRALD,Hospital I,D0465
+466,Centro de Salud HUEPETUHE,Centro de Salud,D0466
+467,Centro de Salud MADRE DE DIOS,Centro de Salud,D0467
+468,Hospital I MANU,Hospital I,D0468
+469,Puesto de Salud IBERIA,Puesto de Salud,D0469
+470,Puesto de Salud I�APARI,Puesto de Salud,D0470
+471,Puesto de Salud TAHUAMANU,Puesto de Salud,D0471
+472,Centro de Salud INAMBARI,Centro de Salud,D0472
+473,Puesto de Salud LABERINTO,Puesto de Salud,D0473
+474,Centro de Salud LAS PIEDRAS,Centro de Salud,D0474
+475,Hospital I TAMBOPATA,Hospital I,D0475
+476,Hospital I MOQUEGUA,Hospital I,D0476
+477,Centro de Salud CHONTABAMBA,Centro de Salud,D0477
+478,Centro de Salud CONSTITUCION,Centro de Salud,D0478
+479,Hospital I OXAPAMPA,Hospital I,D0479
+480,Hospital I PALCAZU,Hospital I,D0480
+481,Centro de Salud POZUZO,Centro de Salud,D0481
+482,Hospital I PUERTO BERMUDEZ,Hospital I,D0482
+483,Hospital I VILLA RICA,Hospital I,D0483
+484,Puesto de Salud AYABACA,Puesto de Salud,D0484
+485,Puesto de Salud FRIAS,Puesto de Salud,D0485
+486,Hospital I JILILI,Hospital I,D0486
+487,Hospital I PACAIPAMPA,Hospital I,D0487
+488,Puesto de Salud PAIMAS,Puesto de Salud,D0488
+489,Hospital I SAPILLICA,Hospital I,D0489
+490,Centro de Salud SUYO,Centro de Salud,D0490
+491,Hospital I CANCHAQUE,Hospital I,D0491
+492,Hospital I EL CARMEN DE LA FRONTERA,Hospital I,D0492
+493,Centro de Salud HUANCABAMBA,Centro de Salud,D0493
+494,Puesto de Salud HUARMACA,Puesto de Salud,D0494
+495,Hospital I LALAQUIZ,Hospital I,D0495
+496,Puesto de Salud SAN MIGUEL DE EL FAIQUE,Puesto de Salud,D0496
+497,Puesto de Salud SONDOR,Puesto de Salud,D0497
+498,Hospital I SONDORILLO,Hospital I,D0498
+499,Hospital I BUENOS AIRES,Hospital I,D0499
+500,Puesto de Salud CHALACO,Puesto de Salud,D0500
+501,Hospital I CHULUCANAS,Hospital I,D0501
+502,Hospital I LA MATANZA,Hospital I,D0502
+503,Puesto de Salud MORROPON,Puesto de Salud,D0503
+504,Puesto de Salud SALITRAL,Puesto de Salud,D0504
+505,Centro de Salud SAN JUAN DE BIGOTE,Centro de Salud,D0505
+506,Hospital I SANTA CATALINA DE MOSSA,Hospital I,D0506
+507,Centro de Salud SANTO DOMINGO,Centro de Salud,D0507
+508,Puesto de Salud YAMANGO,Puesto de Salud,D0508
+509,Hospital I AMOTAPE,Hospital I,D0509
+510,Puesto de Salud ARENAL,Puesto de Salud,D0510
+511,Hospital I COLAN,Hospital I,D0511
+512,Hospital I LA HUACA,Hospital I,D0512
+513,Centro de Salud PAITA,Centro de Salud,D0513
+514,Puesto de Salud TAMARINDO,Puesto de Salud,D0514
+515,Hospital I VICHAYAL,Hospital I,D0515
+516,Centro de Salud CASTILLA,Centro de Salud,D0516
+517,Puesto de Salud CATACAOS,Puesto de Salud,D0517
+518,Centro de Salud CURA MORI,Centro de Salud,D0518
+519,Puesto de Salud EL TALLAN,Puesto de Salud,D0519
+520,Hospital I LA ARENA,Hospital I,D0520
+521,Centro de Salud LA UNION,Centro de Salud,D0521
+522,Centro de Salud LAS LOMAS,Centro de Salud,D0522
+523,Hospital I PIURA,Hospital I,D0523
+524,Puesto de Salud TAMBO GRANDE,Puesto de Salud,D0524
+525,Hospital I VEINTISEIS DE OCTUBRE,Hospital I,D0525
+526,Centro de Salud BELLAVISTA DE LA UNION,Centro de Salud,D0526
+527,Hospital I BERNAL,Hospital I,D0527
+528,Centro de Salud CRISTO NOS VALGA,Centro de Salud,D0528
+529,Hospital I RINCONADA-LLICUAR,Hospital I,D0529
+530,Puesto de Salud SECHURA,Puesto de Salud,D0530
+531,Centro de Salud VICE,Centro de Salud,D0531
+532,Centro de Salud BELLAVISTA,Centro de Salud,D0532
+533,Puesto de Salud IGNACIO ESCUDERO,Puesto de Salud,D0533
+534,Hospital I LANCONES,Hospital I,D0534
+535,Puesto de Salud MARCAVELICA,Puesto de Salud,D0535
+536,Hospital I MIGUEL CHECA,Hospital I,D0536
+537,Puesto de Salud QUERECOTILLO,Puesto de Salud,D0537
+538,Puesto de Salud SALITRAL,Puesto de Salud,D0538
+539,Centro de Salud SULLANA,Centro de Salud,D0539
+540,Centro de Salud EL ALTO,Centro de Salud,D0540
+541,Hospital I LA BREA,Hospital I,D0541
+542,Puesto de Salud LOBITOS,Puesto de Salud,D0542
+543,Hospital I LOS ORGANOS,Hospital I,D0543
+544,Puesto de Salud MANCORA,Puesto de Salud,D0544
+545,Puesto de Salud PARI�AS,Puesto de Salud,D0545
+546,Centro de Salud AYAPATA,Centro de Salud,D0546
+547,Puesto de Salud OLLACHEA,Puesto de Salud,D0547
+548,Centro de Salud SAN GABAN,Centro de Salud,D0548
+549,Centro de Salud PUTINA,Centro de Salud,D0549
+550,Puesto de Salud ALTO INAMBARI,Puesto de Salud,D0550
+551,Puesto de Salud SAN JUAN DEL ORO,Puesto de Salud,D0551
+552,Hospital I SAN PEDRO DE PUTINA PUNCO,Hospital I,D0552
+553,Hospital I SANDIA,Hospital I,D0553
+554,Hospital I ALTO BIAVO,Hospital I,D0554
+555,Centro de Salud BAJO BIAVO,Centro de Salud,D0555
+556,Centro de Salud BELLAVISTA,Centro de Salud,D0556
+557,Centro de Salud HUALLAGA,Centro de Salud,D0557
+558,Centro de Salud SAN PABLO,Centro de Salud,D0558
+559,Centro de Salud SAN RAFAEL,Centro de Salud,D0559
+560,Centro de Salud AGUA BLANCA,Centro de Salud,D0560
+561,Puesto de Salud SAN JOSE DE SISA,Puesto de Salud,D0561
+562,Hospital I SAN MARTIN,Hospital I,D0562
+563,Hospital I SANTA ROSA,Hospital I,D0563
+564,Hospital I SHATOJA,Hospital I,D0564
+565,Puesto de Salud ALTO SAPOSOA,Puesto de Salud,D0565
+566,Hospital I EL ESLABON,Hospital I,D0566
+567,Centro de Salud PISCOYACU,Centro de Salud,D0567
+568,Puesto de Salud SACANCHE,Puesto de Salud,D0568
+569,Puesto de Salud SAPOSOA,Puesto de Salud,D0569
+570,Hospital I TINGO DE SAPOSOA,Hospital I,D0570
+571,Centro de Salud ALONSO DE ALVARADO,Centro de Salud,D0571
+572,Hospital I BARRANQUITA,Hospital I,D0572
+573,Puesto de Salud CAYNARACHI,Puesto de Salud,D0573
+574,Hospital I CU�UMBUQUI,Hospital I,D0574
+575,Puesto de Salud LAMAS,Puesto de Salud,D0575
+576,Puesto de Salud PINTO RECODO,Puesto de Salud,D0576
+577,Puesto de Salud RUMISAPA,Puesto de Salud,D0577
+578,Centro de Salud SAN ROQUE DE CUMBAZA,Centro de Salud,D0578
+579,Centro de Salud SHANAO,Centro de Salud,D0579
+580,Hospital I TABALOSOS,Hospital I,D0580
+581,Hospital I ZAPATERO,Hospital I,D0581
+582,Hospital I CAMPANILLA,Hospital I,D0582
+583,Centro de Salud HUICUNGO,Centro de Salud,D0583
+584,Hospital I JUANJUI,Hospital I,D0584
+585,Centro de Salud PACHIZA,Centro de Salud,D0585
+586,Puesto de Salud PAJARILLO,Puesto de Salud,D0586
+587,Puesto de Salud CALZADA,Puesto de Salud,D0587
+588,Centro de Salud HABANA,Centro de Salud,D0588
+589,Centro de Salud JEPELACIO,Centro de Salud,D0589
+590,Puesto de Salud MOYOBAMBA,Puesto de Salud,D0590
+591,Centro de Salud SORITOR,Centro de Salud,D0591
+592,Puesto de Salud YANTALO,Puesto de Salud,D0592
+593,Hospital I BUENOS AIRES,Hospital I,D0593
+594,Puesto de Salud CASPIZAPA,Puesto de Salud,D0594
+595,Puesto de Salud PICOTA,Puesto de Salud,D0595
+596,Hospital I PILLUANA,Hospital I,D0596
+597,Centro de Salud PUCACACA,Centro de Salud,D0597
+598,Hospital I SAN CRISTOBAL,Hospital I,D0598
+599,Puesto de Salud SAN HILARION,Puesto de Salud,D0599
+600,Puesto de Salud SHAMBOYACU,Puesto de Salud,D0600
+601,Puesto de Salud TINGO DE PONASA,Puesto de Salud,D0601
+602,Puesto de Salud TRES UNIDOS,Puesto de Salud,D0602
+603,Puesto de Salud AWAJUN,Puesto de Salud,D0603
+604,Hospital I ELIAS SOPLIN VARGAS,Hospital I,D0604
+605,Puesto de Salud NUEVA CAJAMARCA,Puesto de Salud,D0605
+606,Centro de Salud PARDO MIGUEL,Centro de Salud,D0606
+607,Hospital I POSIC,Hospital I,D0607
+608,Hospital I RIOJA,Hospital I,D0608
+609,Hospital I SAN FERNANDO,Hospital I,D0609
+610,Puesto de Salud YORONGOS,Puesto de Salud,D0610
+611,Puesto de Salud YURACYACU,Puesto de Salud,D0611
+612,Hospital I ALBERTO LEVEAU,Hospital I,D0612
+613,Puesto de Salud CACATACHI,Puesto de Salud,D0613
+614,Centro de Salud CHAZUTA,Centro de Salud,D0614
+615,Centro de Salud CHIPURANA,Centro de Salud,D0615
+616,Puesto de Salud EL PORVENIR,Puesto de Salud,D0616
+617,Hospital I HUIMBAYOC,Hospital I,D0617
+618,Puesto de Salud JUAN GUERRA,Puesto de Salud,D0618
+619,Puesto de Salud LA BANDA DE SHILCAYO,Puesto de Salud,D0619
+620,Puesto de Salud MORALES,Puesto de Salud,D0620
+621,Hospital I PAPAPLAYA,Hospital I,D0621
+622,Centro de Salud SAN ANTONIO,Centro de Salud,D0622
+623,Puesto de Salud SAUCE,Puesto de Salud,D0623
+624,Hospital I SHAPAJA,Hospital I,D0624
+625,Hospital I TARAPOTO,Hospital I,D0625
+626,Centro de Salud NUEVO PROGRESO,Centro de Salud,D0626
+627,Hospital I POLVORA,Hospital I,D0627
+628,Hospital I SANTA LUCIA,Hospital I,D0628
+629,Hospital I SHUNTE,Hospital I,D0629
+630,Centro de Salud TOCACHE,Centro de Salud,D0630
+631,Puesto de Salud UCHIZA,Puesto de Salud,D0631
+632,Centro de Salud TACNA,Centro de Salud,D0632
+633,Puesto de Salud CANOAS DE PUNTA SAL,Puesto de Salud,D0633
+634,Hospital I CASITAS,Hospital I,D0634
+635,Hospital I ZORRITOS,Hospital I,D0635
+636,Puesto de Salud CORRALES,Puesto de Salud,D0636
+637,Centro de Salud LA CRUZ,Centro de Salud,D0637
+638,Centro de Salud PAMPAS DE HOSPITAL,Centro de Salud,D0638
+639,Centro de Salud SAN JACINTO,Centro de Salud,D0639
+640,Puesto de Salud SAN JUAN DE LA VIRGEN,Puesto de Salud,D0640
+641,Hospital I TUMBES,Hospital I,D0641
+642,Hospital I AGUAS VERDES,Hospital I,D0642
+643,Hospital I MATAPALO,Hospital I,D0643
+644,Puesto de Salud PAPAYAL,Puesto de Salud,D0644
+645,Hospital I ZARUMILLA,Hospital I,D0645
+646,Hospital I RAIMONDI,Hospital I,D0646
+647,Centro de Salud SEPAHUA,Centro de Salud,D0647
+648,Hospital I TAHUANIA,Hospital I,D0648
+649,Centro de Salud YURUA,Centro de Salud,D0649
+650,Puesto de Salud CALLERIA,Puesto de Salud,D0650
+651,Centro de Salud CAMPOVERDE,Centro de Salud,D0651
+652,Hospital I IPARIA,Hospital I,D0652
+653,Hospital I MANANTAY,Hospital I,D0653
+654,Centro de Salud MASISEA,Centro de Salud,D0654
+655,Hospital I NUEVA REQUENA,Hospital I,D0655
+656,Centro de Salud YARINACOCHA,Centro de Salud,D0656
+657,Hospital I ALEXANDER VON HUMBOLDT,Hospital I,D0657
+658,Centro de Salud BOQUERON,Centro de Salud,D0658
+659,Centro de Salud CURIMANA,Centro de Salud,D0659
+660,Puesto de Salud HUIPOCA,Puesto de Salud,D0660
+661,Centro de Salud IRAZOLA,Centro de Salud,D0661
+662,Centro de Salud NESHUYA,Centro de Salud,D0662
+663,Puesto de Salud PADRE ABAD,Puesto de Salud,D0663
+664,Hospital I PURUS,Hospital I,D0664

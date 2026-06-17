@@ -771,7 +771,7 @@ class RepositorioClima(RepositorioBase):
 
 class RepositorioEstadistica:
     @staticmethod
-    def obtener_casos_semanales(depto_id=None):
+    def obtener_casos_semanales(depto_id=None, prov_id=None, dist_id=None, anio=None, semana_inicio=None, semana_fin=None):
         conn = DatabaseConnection.get_connection()
         cur = conn.cursor(cursor_factory=RealDictCursor)
         try:
@@ -780,15 +780,50 @@ class RepositorioEstadistica:
                 FROM periodo_epidemiologico pe
                 LEFT JOIN caso_dengue c ON c.id_periodo = pe.id_periodo
             """
+            joins = ""
+            where_clauses = ["pe.id_periodo <= (SELECT COALESCE(MAX(id_periodo), 0) FROM caso_dengue)"]
             params = []
-            if depto_id:
-                query += """
+
+            if depto_id or prov_id or dist_id:
+                joins += """
                     LEFT JOIN establecimiento_salud e ON c.id_establecimiento = e.id_establecimiento
                     LEFT JOIN distrito d ON e.id_distrito = d.id_distrito
                     LEFT JOIN provincia pr ON d.id_provincia = pr.id_provincia
-                    WHERE pr.id_departamento = %s
                 """
-                params.append(depto_id)
+                if depto_id:
+                    where_clauses.append("pr.id_departamento = %s")
+                    params.append(depto_id)
+                if prov_id:
+                    where_clauses.append("pr.id_provincia = %s")
+                    params.append(prov_id)
+                if dist_id:
+                    where_clauses.append("d.id_distrito = %s")
+                    params.append(dist_id)
+
+            if anio:
+                try:
+                    where_clauses.append("pe.anio = %s")
+                    params.append(int(anio))
+                except ValueError:
+                    pass
+
+            if semana_inicio:
+                try:
+                    where_clauses.append("pe.numero_semana >= %s")
+                    params.append(int(semana_inicio))
+                except ValueError:
+                    pass
+
+            if semana_fin:
+                try:
+                    where_clauses.append("pe.numero_semana <= %s")
+                    params.append(int(semana_fin))
+                except ValueError:
+                    pass
+
+            query += joins
+            if where_clauses:
+                query += " WHERE " + " AND ".join(where_clauses)
                 
             query += " GROUP BY pe.id_periodo, pe.anio, pe.numero_semana ORDER BY pe.id_periodo"
             cur.execute(query, params)
@@ -798,7 +833,7 @@ class RepositorioEstadistica:
             conn.close()
 
     @staticmethod
-    def obtener_distribucion_serotipos(depto_id=None):
+    def obtener_distribucion_serotipos(depto_id=None, prov_id=None, dist_id=None, anio=None, semana_inicio=None, semana_fin=None):
         conn = DatabaseConnection.get_connection()
         cur = conn.cursor(cursor_factory=RealDictCursor)
         try:
@@ -806,16 +841,52 @@ class RepositorioEstadistica:
                 SELECT s.codigo AS serotipo, COUNT(c.id_caso) AS casos
                 FROM serotipo s
                 JOIN caso_dengue c ON c.id_serotipo = s.id_serotipo
+                JOIN periodo_epidemiologico pe ON c.id_periodo = pe.id_periodo
             """
+            joins = ""
+            where_clauses = []
             params = []
-            if depto_id:
-                query += """
+
+            if depto_id or prov_id or dist_id:
+                joins += """
                     JOIN establecimiento_salud e ON c.id_establecimiento = e.id_establecimiento
                     JOIN distrito d ON e.id_distrito = d.id_distrito
                     JOIN provincia pr ON d.id_provincia = pr.id_provincia
-                    WHERE pr.id_departamento = %s
                 """
-                params.append(depto_id)
+                if depto_id:
+                    where_clauses.append("pr.id_departamento = %s")
+                    params.append(depto_id)
+                if prov_id:
+                    where_clauses.append("pr.id_provincia = %s")
+                    params.append(prov_id)
+                if dist_id:
+                    where_clauses.append("d.id_distrito = %s")
+                    params.append(dist_id)
+
+            if anio:
+                try:
+                    where_clauses.append("pe.anio = %s")
+                    params.append(int(anio))
+                except ValueError:
+                    pass
+
+            if semana_inicio:
+                try:
+                    where_clauses.append("pe.numero_semana >= %s")
+                    params.append(int(semana_inicio))
+                except ValueError:
+                    pass
+
+            if semana_fin:
+                try:
+                    where_clauses.append("pe.numero_semana <= %s")
+                    params.append(int(semana_fin))
+                except ValueError:
+                    pass
+
+            query += joins
+            if where_clauses:
+                query += " WHERE " + " AND ".join(where_clauses)
                 
             query += " GROUP BY s.codigo ORDER BY casos DESC"
             cur.execute(query, params)
@@ -825,31 +896,83 @@ class RepositorioEstadistica:
             conn.close()
 
     @staticmethod
-    def obtener_letalidad_departamentos():
+    def obtener_letalidad_departamentos(depto_id=None, prov_id=None, dist_id=None, anio=None, semana_inicio=None, semana_fin=None):
         conn = DatabaseConnection.get_connection()
         cur = conn.cursor(cursor_factory=RealDictCursor)
         try:
-            query = """
-                SELECT d.id_departamento, d.nombre_departamento,
+            # Seleccionar nivel de agregación según los filtros geográficos
+            if dist_id:
+                select_clause = "es.id_establecimiento AS id_lugar, es.nombre_establecimiento AS nombre_lugar"
+                group_clause = "es.id_establecimiento, es.nombre_establecimiento"
+            elif prov_id:
+                select_clause = "di.id_distrito AS id_lugar, di.nombre_distrito AS nombre_lugar"
+                group_clause = "di.id_distrito, di.nombre_distrito"
+            elif depto_id:
+                select_clause = "p.id_provincia AS id_lugar, p.nombre_provincia AS nombre_lugar"
+                group_clause = "p.id_provincia, p.nombre_provincia"
+            else:
+                select_clause = "d.id_departamento AS id_lugar, d.nombre_departamento AS nombre_lugar"
+                group_clause = "d.id_departamento, d.nombre_departamento"
+
+            query = f"""
+                SELECT {select_clause},
                        COUNT(*) AS casos,
                        SUM(CASE WHEN c.condicion = 'Fallecido' THEN 1 ELSE 0 END) AS fallecidos,
                        ROUND(100.0 * SUM(CASE WHEN c.condicion = 'Fallecido' THEN 1 ELSE 0 END) / COUNT(*), 2) AS letalidad_pct
                 FROM caso_dengue c
-                JOIN establecimiento_salud e ON c.id_establecimiento = e.id_establecimiento
-                JOIN distrito di ON e.id_distrito = di.id_distrito
+                JOIN establecimiento_salud es ON c.id_establecimiento = es.id_establecimiento
+                JOIN distrito di ON es.id_distrito = di.id_distrito
                 JOIN provincia p ON di.id_provincia = p.id_provincia
                 JOIN departamento d ON p.id_departamento = d.id_departamento
-                GROUP BY d.id_departamento, d.nombre_departamento
-                ORDER BY casos DESC
+                JOIN periodo_epidemiologico pe ON c.id_periodo = pe.id_periodo
             """
-            cur.execute(query)
+            
+            where_clauses = []
+            params = []
+            
+            if depto_id:
+                where_clauses.append("d.id_departamento = %s")
+                params.append(depto_id)
+            if prov_id:
+                where_clauses.append("p.id_provincia = %s")
+                params.append(prov_id)
+            if dist_id:
+                where_clauses.append("di.id_distrito = %s")
+                params.append(dist_id)
+                
+            if anio:
+                try:
+                    where_clauses.append("pe.anio = %s")
+                    params.append(int(anio))
+                except ValueError:
+                    pass
+
+            if semana_inicio:
+                try:
+                    where_clauses.append("pe.numero_semana >= %s")
+                    params.append(int(semana_inicio))
+                except ValueError:
+                    pass
+
+            if semana_fin:
+                try:
+                    where_clauses.append("pe.numero_semana <= %s")
+                    params.append(int(semana_fin))
+                except ValueError:
+                    pass
+
+            if where_clauses:
+                query += " WHERE " + " AND ".join(where_clauses)
+                
+            query += f" GROUP BY {group_clause} ORDER BY casos DESC"
+            cur.execute(query, params)
             return cur.fetchall()
         finally:
             cur.close()
             conn.close()
 
     @staticmethod
-    def obtener_distribucion_sintomas(depto_id=None):
+    def obtener_distribucion_sintomas(depto_id=None, prov_id=None, dist_id=None, anio=None, semana_inicio=None, semana_fin=None):
         conn = DatabaseConnection.get_connection()
         cur = conn.cursor(cursor_factory=RealDictCursor)
         try:
@@ -857,17 +980,53 @@ class RepositorioEstadistica:
                 SELECT ss.nombre AS sintoma, COUNT(cs.id_caso) AS casos
                 FROM signo_sintoma ss
                 JOIN caso_signo cs ON cs.id_sintoma = ss.id_sintoma
+                JOIN caso_dengue c ON cs.id_caso = c.id_caso
+                JOIN periodo_epidemiologico pe ON c.id_periodo = pe.id_periodo
             """
+            joins = ""
+            where_clauses = []
             params = []
-            if depto_id:
-                query += """
-                    JOIN caso_dengue c ON cs.id_caso = c.id_caso
+
+            if depto_id or prov_id or dist_id:
+                joins += """
                     JOIN establecimiento_salud e ON c.id_establecimiento = e.id_establecimiento
                     JOIN distrito d ON e.id_distrito = d.id_distrito
                     JOIN provincia pr ON d.id_provincia = pr.id_provincia
-                    WHERE pr.id_departamento = %s
                 """
-                params.append(depto_id)
+                if depto_id:
+                    where_clauses.append("pr.id_departamento = %s")
+                    params.append(depto_id)
+                if prov_id:
+                    where_clauses.append("pr.id_provincia = %s")
+                    params.append(prov_id)
+                if dist_id:
+                    where_clauses.append("d.id_distrito = %s")
+                    params.append(dist_id)
+
+            if anio:
+                try:
+                    where_clauses.append("pe.anio = %s")
+                    params.append(int(anio))
+                except ValueError:
+                    pass
+
+            if semana_inicio:
+                try:
+                    where_clauses.append("pe.numero_semana >= %s")
+                    params.append(int(semana_inicio))
+                except ValueError:
+                    pass
+
+            if semana_fin:
+                try:
+                    where_clauses.append("pe.numero_semana <= %s")
+                    params.append(int(semana_fin))
+                except ValueError:
+                    pass
+
+            query += joins
+            if where_clauses:
+                query += " WHERE " + " AND ".join(where_clauses)
                 
             query += " GROUP BY ss.nombre ORDER BY casos DESC"
             cur.execute(query, params)
@@ -877,15 +1036,12 @@ class RepositorioEstadistica:
             conn.close()
 
     @staticmethod
-    def obtener_resumen_indicadores(depto_id=None):
+    def obtener_resumen_indicadores(depto_id=None, prov_id=None, dist_id=None, anio=None, semana_inicio=None, semana_fin=None):
         conn = DatabaseConnection.get_connection()
         cur = conn.cursor(cursor_factory=RealDictCursor)
         try:
-            # Población de referencia para tasa de incidencia
-            # Usamos una población de ejemplo por depto, o total Perú ~33 millones
             poblacion = 33000000.0
             if depto_id:
-                # Población estimada por depto de ejemplo (p. ej. Piura ~2M, Lima ~10M, etc.)
                 pob_dict = {
                     'PE01': 430000, 'PE02': 1200000, 'PE03': 430000, 'PE04': 1500000,
                     'PE05': 670000, 'PE06': 1500000, 'PE07': 1100000, 'PE08': 1400000,
@@ -896,61 +1052,95 @@ class RepositorioEstadistica:
                     'PE25': 600000
                 }
                 poblacion = pob_dict.get(depto_id, 500000)
-                
-            # Total casos
-            cases_query = "SELECT COUNT(*) FROM caso_dengue c"
+                if dist_id:
+                    poblacion = 40000.0
+                elif prov_id:
+                    poblacion = 150000.0
+
+            # Consulta unificada para obtener casos totales, fallecidos y confirmados
+            query = """
+                SELECT 
+                    COUNT(c.id_caso) AS total_casos,
+                    SUM(CASE WHEN c.condicion = 'Fallecido' THEN 1 ELSE 0 END) AS total_fallecidos,
+                    SUM(CASE WHEN c.tipo_diagnostico = 'Confirmado' THEN 1 ELSE 0 END) AS total_confirmados
+                FROM caso_dengue c
+                JOIN establecimiento_salud e ON c.id_establecimiento = e.id_establecimiento
+                JOIN distrito d ON e.id_distrito = d.id_distrito
+                JOIN provincia pr ON d.id_provincia = pr.id_provincia
+                JOIN periodo_epidemiologico pe ON c.id_periodo = pe.id_periodo
+            """
+            where_clauses = []
             params = []
+            
             if depto_id:
-                cases_query += """
-                    JOIN establecimiento_salud e ON c.id_establecimiento = e.id_establecimiento
-                    JOIN distrito d ON e.id_distrito = d.id_distrito
-                    JOIN provincia pr ON d.id_provincia = pr.id_provincia
-                    WHERE pr.id_departamento = %s
-                """
+                where_clauses.append("pr.id_departamento = %s")
                 params.append(depto_id)
-            cur.execute(cases_query, params)
-            total_casos = cur.fetchone()['count']
+            if prov_id:
+                where_clauses.append("pr.id_provincia = %s")
+                params.append(prov_id)
+            if dist_id:
+                where_clauses.append("d.id_distrito = %s")
+                params.append(dist_id)
+            if anio:
+                try:
+                    where_clauses.append("pe.anio = %s")
+                    params.append(int(anio))
+                except ValueError:
+                    pass
+            if semana_inicio:
+                try:
+                    where_clauses.append("pe.numero_semana >= %s")
+                    params.append(int(semana_inicio))
+                except ValueError:
+                    pass
+            if semana_fin:
+                try:
+                    where_clauses.append("pe.numero_semana <= %s")
+                    params.append(int(semana_fin))
+                except ValueError:
+                    pass
+
+            if where_clauses:
+                query += " WHERE " + " AND ".join(where_clauses)
+                
+            cur.execute(query, params)
+            res = cur.fetchone()
             
-            # Fallecidos
-            dead_query = "SELECT COUNT(*) FROM caso_dengue c WHERE condicion = 'Fallecido'"
-            if depto_id:
-                dead_query += """
-                    AND id_establecimiento IN (
-                        SELECT id_establecimiento FROM establecimiento_salud e
-                        JOIN distrito d ON e.id_distrito = d.id_distrito
-                        JOIN provincia pr ON d.id_provincia = pr.id_provincia
-                        WHERE pr.id_departamento = %s
-                    )
-                """
-            cur.execute(dead_query, params)
-            total_fallecidos = cur.fetchone()['count']
-            
-            # Confirmados
-            conf_query = "SELECT COUNT(*) FROM caso_dengue c WHERE tipo_diagnostico = 'Confirmado'"
-            if depto_id:
-                conf_query += """
-                    AND id_establecimiento IN (
-                        SELECT id_establecimiento FROM establecimiento_salud e
-                        JOIN distrito d ON e.id_distrito = d.id_distrito
-                        JOIN provincia pr ON d.id_provincia = pr.id_provincia
-                        WHERE pr.id_departamento = %s
-                    )
-                """
-            cur.execute(conf_query, params)
-            total_confirmados = cur.fetchone()['count']
-            
-            # Alertas activas en la última semana
-            # Una alerta activa es si hay predicción con nivel_alerta = 'Alerta' en el último periodo
-            alert_query = "SELECT COUNT(*) FROM prediccion_alerta WHERE nivel_alerta = 'Alerta' AND id_periodo = (SELECT MAX(id_periodo) FROM prediccion_alerta)"
-            if depto_id:
-                alert_query += " AND id_departamento = %s"
-                cur.execute(alert_query, (depto_id,))
-            else:
-                cur.execute(alert_query)
-            alertas = cur.fetchone()['count']
+            total_casos = res['total_casos'] if res and res['total_casos'] else 0
+            total_fallecidos = res['total_fallecidos'] if res and res['total_fallecidos'] else 0
+            total_confirmados = res['total_confirmados'] if res and res['total_confirmados'] else 0
             
             letalidad = round(100.0 * total_fallecidos / total_casos, 2) if total_casos > 0 else 0.0
             incidencia = round(100000.0 * total_casos / poblacion, 2)
+            
+            # Alertas activas
+            alert_query = "SELECT COUNT(*) FROM prediccion_alerta WHERE nivel_alerta = 'Alerta'"
+            alert_params = []
+            
+            if depto_id:
+                alert_query += " AND id_departamento = %s"
+                alert_params.append(depto_id)
+                
+            if anio or semana_inicio or semana_fin:
+                pe_id_sub = "SELECT id_periodo FROM periodo_epidemiologico WHERE 1=1"
+                pe_params = []
+                if anio:
+                    pe_id_sub += " AND anio = %s"
+                    pe_params.append(int(anio))
+                if semana_fin:
+                    pe_id_sub += " AND numero_semana <= %s"
+                    pe_params.append(int(semana_fin))
+                if semana_inicio:
+                    pe_id_sub += " AND numero_semana >= %s"
+                    pe_params.append(int(semana_inicio))
+                pe_id_sub += " ORDER BY id_periodo DESC LIMIT 1"
+                alert_query += f" AND id_periodo = ({pe_id_sub})"
+                alert_params.extend(pe_params)
+            else:
+                alert_query += " AND id_periodo = (SELECT MAX(id_periodo) FROM prediccion_alerta)"
+                
+            cur.execute(alert_query, alert_params)
+            alertas = cur.fetchone()['count'] if cur.rowcount > 0 else 0
             
             return {
                 'total_casos': total_casos,
