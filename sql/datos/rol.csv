@@ -1,0 +1,5 @@
+id_rol,nombre_rol,permisos,descripcion
+1,Administrador,all,Administrador del sistema con acceso total
+2,Epidemiologo,"validar_casos,ver_dashboard,ejecutar_pronosticos,exportar_reportes",Epidemiólogo encargado de vigilancia y análisis
+3,Notificador,"registrar_casos,editar_casos,consultar_casos",Personal de salud que notifica casos de dengue
+4,Autoridad,"ver_dashboard,exportar_reportes",Autoridad de salud con acceso de solo lectura al dashboard

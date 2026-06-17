@@ -1,0 +1,241 @@
+id_profesional,nombres,apellidos,colegiatura,cargo,id_establecimiento
+1,Carlos Jorge,Rodriguez Vargas,CMP00001,Tecnico de Laboratorio,1
+2,Ana Maria,Quispe Ramos,CEP00002,Epidemiologo,1
+3,Miguel Carlos,Ramos Villanueva,CMP00003,Tecnico de Laboratorio,2
+4,Juan Laura,Chavez Diaz,CEP00004,Medico,2
+5,Laura Miguel,Villanueva Chavez,CMP00005,Epidemiologo,3
+6,Luis Laura,Perez Vargas,CEP00006,Tecnico de Laboratorio,3
+7,Diego Elena,Mamani Chavez,CMP00007,Tecnico de Laboratorio,4
+8,Sofia Jorge,Chavez Rodriguez,CEP00008,Tecnico de Laboratorio,4
+9,Elena Jorge,Castro Diaz,CMP00009,Epidemiologo,5
+10,Sofia Juan,Diaz Chavez,CEP00010,Tecnico de Laboratorio,5
+11,Pedro Diego,Sanchez Quispe,CMP00011,Tecnico de Laboratorio,6
+12,Sofia Jose,García Vargas,CEP00012,Tecnico de Laboratorio,6
+13,Juan Rosa,Rodriguez Sanchez,CMP00013,Epidemiologo,7
+14,Diego Jorge,Vargas Diaz,CEP00014,Epidemiologo,7
+15,Elena Juan,Rodriguez Flores,CMP00015,Enfermero,8
+16,David Jorge,Flores Villanueva,CEP00016,Tecnico de Laboratorio,8
+17,Diego Miguel,Mamani Vargas,CMP00017,Tecnico de Laboratorio,9
+18,Miguel Elena,Flores Flores,CEP00018,Tecnico de Laboratorio,9
+19,Jorge Ana,Vargas Sanchez,CMP00019,Tecnico de Laboratorio,10
+20,Ana Pedro,Sanchez Sanchez,CEP00020,Epidemiologo,10
+21,Jose Carmen,Rodriguez Chavez,CMP00021,Enfermero,11
+22,Carmen Jorge,Quispe Perez,CEP00022,Tecnico de Laboratorio,11
+23,Juan Luis,Flores Gomez,CMP00023,Medico,12
+24,Carmen Luis,Villanueva Chavez,CEP00024,Epidemiologo,12
+25,Ana Juan,García Flores,CMP00025,Epidemiologo,13
+26,Diego Elena,Quispe Perez,CEP00026,Medico,13
+27,Jose Diego,Rodriguez Chavez,CMP00027,Medico,14
+28,David Diego,Rodriguez García,CEP00028,Medico,14
+29,Luis Luis,Castro García,CMP00029,Tecnico de Laboratorio,15
+30,Carlos Jorge,Rodriguez Ramos,CEP00030,Epidemiologo,15
+31,Jorge David,Diaz Diaz,CMP00031,Tecnico de Laboratorio,16
+32,Laura Carmen,García García,CEP00032,Medico,16
+33,Ana Rosa,Villanueva Sanchez,CMP00033,Tecnico de Laboratorio,17
+34,Carlos Pedro,Sanchez Perez,CEP00034,Medico,17
+35,Pedro Juan,Mamani Diaz,CMP00035,Epidemiologo,18
+36,Carmen Maria,Sanchez Flores,CEP00036,Tecnico de Laboratorio,18
+37,Elena Carlos,Villanueva Sanchez,CMP00037,Tecnico de Laboratorio,19
+38,Rosa Laura,Rodriguez Ramos,CEP00038,Enfermero,19
+39,Luis Jose,Chavez Perez,CMP00039,Medico,20
+40,Maria Pedro,Castro Flores,CEP00040,Tecnico de Laboratorio,20
+41,Elena Ana,Diaz Vargas,CMP00041,Tecnico de Laboratorio,21
+42,David Jose,Ramos Ramos,CEP00042,Epidemiologo,21
+43,Elena Carlos,García Gomez,CMP00043,Epidemiologo,22
+44,Sofia Jose,Gomez Rodriguez,CEP00044,Enfermero,22
+45,Juan Jose,García Gomez,CMP00045,Enfermero,23
+46,Diego Elena,Flores Perez,CEP00046,Epidemiologo,23
+47,Diego Carlos,Diaz Quispe,CMP00047,Epidemiologo,24
+48,Sofia Sofia,Villanueva Rodriguez,CEP00048,Enfermero,24
+49,Sofia Laura,Vargas Diaz,CMP00049,Tecnico de Laboratorio,25
+50,David Maria,Diaz Rodriguez,CEP00050,Tecnico de Laboratorio,25
+51,Jose Sofia,Rodriguez Castro,CMP00051,Epidemiologo,26
+52,Juan Elena,Mamani Gomez,CEP00052,Enfermero,26
+53,Miguel Diego,Villanueva Diaz,CMP00053,Medico,27
+54,Rosa Jose,Ramos Perez,CEP00054,Tecnico de Laboratorio,27
+55,Elena Diego,Rodriguez Gomez,CMP00055,Enfermero,28
+56,Pedro Carmen,Ramos Gomez,CEP00056,Epidemiologo,28
+57,Carlos Jorge,Chavez Rodriguez,CMP00057,Epidemiologo,29
+58,Ana Luis,Diaz Vargas,CEP00058,Tecnico de Laboratorio,29
+59,Jose Laura,Chavez Diaz,CMP00059,Epidemiologo,30
+60,Jorge Elena,Ramos Perez,CEP00060,Epidemiologo,30
+61,Rosa Luis,Chavez Rodriguez,CMP00061,Tecnico de Laboratorio,31
+62,Laura Sofia,Castro Ramos,CEP00062,Tecnico de Laboratorio,31
+63,Juan Carmen,Vargas Flores,CMP00063,Epidemiologo,32
+64,Luis Elena,Ramos Diaz,CEP00064,Tecnico de Laboratorio,32
+65,Sofia David,Diaz Quispe,CMP00065,Enfermero,33
+66,Jorge David,Sanchez Chavez,CEP00066,Epidemiologo,33
+67,Maria Sofia,Vargas Diaz,CMP00067,Epidemiologo,34
+68,David Luis,Diaz Gomez,CEP00068,Enfermero,34
+69,Sofia Ana,Chavez Chavez,CMP00069,Epidemiologo,35
+70,Ana Elena,Gomez Vargas,CEP00070,Enfermero,35
+71,Laura Luis,Rodriguez Diaz,CMP00071,Tecnico de Laboratorio,36
+72,Sofia David,Villanueva Rodriguez,CEP00072,Tecnico de Laboratorio,36
+73,David Sofia,Villanueva Vargas,CMP00073,Epidemiologo,37
+74,Maria Carlos,Sanchez Villanueva,CEP00074,Tecnico de Laboratorio,37
+75,Jorge Carlos,Mamani Rodriguez,CMP00075,Medico,38
+76,Elena Pedro,Vargas Flores,CEP00076,Medico,38
+77,Maria Sofia,Castro Gomez,CMP00077,Tecnico de Laboratorio,39
+78,Miguel Miguel,Mamani Perez,CEP00078,Enfermero,39
+79,Laura Pedro,Perez Perez,CMP00079,Medico,40
+80,David Jorge,Diaz García,CEP00080,Enfermero,40
+81,Jorge Elena,Villanueva Flores,CMP00081,Epidemiologo,41
+82,Jose Juan,Castro Diaz,CEP00082,Tecnico de Laboratorio,41
+83,Pedro Carlos,Diaz Quispe,CMP00083,Tecnico de Laboratorio,42
+84,Laura Jose,Diaz Chavez,CEP00084,Tecnico de Laboratorio,42
+85,Rosa David,Chavez Diaz,CMP00085,Medico,43
+86,Jorge David,García Quispe,CEP00086,Tecnico de Laboratorio,43
+87,Carmen Juan,Chavez Villanueva,CMP00087,Epidemiologo,44
+88,Jose Juan,García Chavez,CEP00088,Medico,44
+89,Diego Carmen,Castro Castro,CMP00089,Enfermero,45
+90,Miguel Jorge,Villanueva Sanchez,CEP00090,Tecnico de Laboratorio,45
+91,Luis Ana,Villanueva Villanueva,CMP00091,Medico,46
+92,Carmen Elena,Gomez García,CEP00092,Tecnico de Laboratorio,46
+93,Luis Carlos,Flores Quispe,CMP00093,Epidemiologo,47
+94,Pedro Rosa,Perez Castro,CEP00094,Tecnico de Laboratorio,47
+95,Jose Pedro,Flores Chavez,CMP00095,Epidemiologo,48
+96,Carmen Sofia,Castro Rodriguez,CEP00096,Epidemiologo,48
+97,Carlos Luis,Castro Sanchez,CMP00097,Epidemiologo,49
+98,Miguel Carlos,Castro Mamani,CEP00098,Medico,49
+99,Jose Ana,Diaz Quispe,CMP00099,Tecnico de Laboratorio,50
+100,David Miguel,Rodriguez Villanueva,CEP00100,Enfermero,50
+101,Diego Juan,García Ramos,CMP00101,Tecnico de Laboratorio,51
+102,Jorge Carlos,Villanueva Chavez,CEP00102,Epidemiologo,51
+103,Carmen Laura,Rodriguez Perez,CMP00103,Medico,52
+104,Maria Carmen,Diaz Rodriguez,CEP00104,Medico,52
+105,Jorge Luis,Mamani Diaz,CMP00105,Tecnico de Laboratorio,53
+106,Laura Luis,Mamani Villanueva,CEP00106,Medico,53
+107,Diego Laura,Flores Gomez,CMP00107,Tecnico de Laboratorio,54
+108,Rosa Elena,Diaz Sanchez,CEP00108,Tecnico de Laboratorio,54
+109,Ana Miguel,Ramos Villanueva,CMP00109,Tecnico de Laboratorio,55
+110,Maria David,Flores Sanchez,CEP00110,Medico,55
+111,Elena Carlos,Villanueva Sanchez,CMP00111,Medico,56
+112,Maria Sofia,Sanchez Perez,CEP00112,Enfermero,56
+113,Carlos Rosa,García Sanchez,CMP00113,Enfermero,57
+114,Sofia Luis,Castro García,CEP00114,Medico,57
+115,Jose Luis,Perez Ramos,CMP00115,Tecnico de Laboratorio,58
+116,Pedro Ana,Villanueva Chavez,CEP00116,Medico,58
+117,Luis Juan,Quispe Castro,CMP00117,Enfermero,59
+118,Sofia Juan,Perez Flores,CEP00118,Medico,59
+119,Luis Laura,Ramos Rodriguez,CMP00119,Medico,60
+120,Diego Elena,Castro Quispe,CEP00120,Medico,60
+121,Elena Jorge,García Gomez,CMP00121,Tecnico de Laboratorio,61
+122,Elena Juan,Gomez Diaz,CEP00122,Epidemiologo,61
+123,Laura Ana,Diaz Vargas,CMP00123,Epidemiologo,62
+124,Carlos Carlos,Quispe García,CEP00124,Enfermero,62
+125,Carlos Luis,Flores García,CMP00125,Tecnico de Laboratorio,63
+126,David Carmen,Diaz Ramos,CEP00126,Epidemiologo,63
+127,Ana Ana,Chavez Villanueva,CMP00127,Enfermero,64
+128,Laura Elena,Sanchez Mamani,CEP00128,Tecnico de Laboratorio,64
+129,Elena David,Mamani Vargas,CMP00129,Medico,65
+130,Sofia Laura,Quispe Villanueva,CEP00130,Tecnico de Laboratorio,65
+131,Miguel Luis,Villanueva Diaz,CMP00131,Medico,66
+132,Carlos Carlos,Rodriguez Mamani,CEP00132,Medico,66
+133,Miguel Luis,Ramos Gomez,CMP00133,Tecnico de Laboratorio,67
+134,Ana Laura,Quispe Chavez,CEP00134,Epidemiologo,67
+135,Maria Carmen,García Flores,CMP00135,Tecnico de Laboratorio,68
+136,Ana Rosa,Perez Villanueva,CEP00136,Epidemiologo,68
+137,Jorge Ana,Quispe Chavez,CMP00137,Tecnico de Laboratorio,69
+138,Ana Jose,García Sanchez,CEP00138,Epidemiologo,69
+139,Juan Jose,Gomez Perez,CMP00139,Tecnico de Laboratorio,70
+140,Carmen Sofia,Quispe Gomez,CEP00140,Enfermero,70
+141,Luis David,Rodriguez Perez,CMP00141,Medico,71
+142,Carlos Rosa,Mamani Mamani,CEP00142,Epidemiologo,71
+143,Sofia Pedro,Quispe Flores,CMP00143,Tecnico de Laboratorio,72
+144,Carlos Maria,Perez Perez,CEP00144,Medico,72
+145,Carlos Jose,Diaz Villanueva,CMP00145,Epidemiologo,73
+146,Diego Elena,Mamani Flores,CEP00146,Enfermero,73
+147,Ana Miguel,Mamani Rodriguez,CMP00147,Tecnico de Laboratorio,74
+148,Diego Carmen,Gomez Sanchez,CEP00148,Epidemiologo,74
+149,Maria Juan,Sanchez Flores,CMP00149,Enfermero,75
+150,Luis Jose,Flores Quispe,CEP00150,Medico,75
+151,Juan Diego,Vargas Mamani,CMP00151,Enfermero,76
+152,Luis David,Ramos Vargas,CEP00152,Enfermero,76
+153,Miguel Carlos,Mamani Chavez,CMP00153,Medico,77
+154,Laura Juan,Diaz Rodriguez,CEP00154,Tecnico de Laboratorio,77
+155,Laura David,Vargas Villanueva,CMP00155,Epidemiologo,78
+156,Carmen Ana,Mamani Gomez,CEP00156,Tecnico de Laboratorio,78
+157,Pedro Elena,Chavez Vargas,CMP00157,Tecnico de Laboratorio,79
+158,Carlos Laura,Chavez Rodriguez,CEP00158,Enfermero,79
+159,Laura David,Ramos Rodriguez,CMP00159,Epidemiologo,80
+160,Carmen Sofia,Sanchez Quispe,CEP00160,Enfermero,80
+161,Carlos Ana,Ramos Ramos,CMP00161,Enfermero,81
+162,Miguel Miguel,Vargas Chavez,CEP00162,Enfermero,81
+163,Jorge Ana,Perez Flores,CMP00163,Enfermero,82
+164,Pedro Luis,Castro Castro,CEP00164,Medico,82
+165,Pedro Diego,Diaz Castro,CMP00165,Epidemiologo,83
+166,Sofia Sofia,Perez Diaz,CEP00166,Medico,83
+167,Diego Elena,Villanueva Flores,CMP00167,Tecnico de Laboratorio,84
+168,Maria Miguel,Ramos Rodriguez,CEP00168,Tecnico de Laboratorio,84
+169,Elena Elena,Gomez Gomez,CMP00169,Tecnico de Laboratorio,85
+170,Carmen Carlos,Villanueva Chavez,CEP00170,Medico,85
+171,David Elena,García Ramos,CMP00171,Medico,86
+172,Elena Rosa,Quispe García,CEP00172,Epidemiologo,86
+173,Luis Maria,Diaz Rodriguez,CMP00173,Tecnico de Laboratorio,87
+174,Carlos Pedro,Gomez Sanchez,CEP00174,Epidemiologo,87
+175,Elena Pedro,Quispe Quispe,CMP00175,Tecnico de Laboratorio,88
+176,David Laura,Castro Quispe,CEP00176,Medico,88
+177,Sofia Carlos,Quispe Rodriguez,CMP00177,Epidemiologo,89
+178,Carmen Jose,Vargas Chavez,CEP00178,Enfermero,89
+179,Sofia Carlos,García Villanueva,CMP00179,Enfermero,90
+180,Miguel Carmen,Villanueva Vargas,CEP00180,Epidemiologo,90
+181,Luis Carlos,Flores Ramos,CMP00181,Epidemiologo,91
+182,Sofia Luis,Villanueva Vargas,CEP00182,Medico,91
+183,Laura Miguel,Gomez Quispe,CMP00183,Tecnico de Laboratorio,92
+184,Pedro Rosa,Quispe Castro,CEP00184,Epidemiologo,92
+185,Rosa Jorge,Perez Perez,CMP00185,Medico,93
+186,Carmen Ana,Ramos Castro,CEP00186,Medico,93
+187,Sofia Luis,García Mamani,CMP00187,Enfermero,94
+188,Pedro Pedro,Chavez Vargas,CEP00188,Enfermero,94
+189,Elena Maria,Mamani Quispe,CMP00189,Enfermero,95
+190,Elena Carmen,Castro Vargas,CEP00190,Epidemiologo,95
+191,Jorge Jorge,Flores Castro,CMP00191,Epidemiologo,96
+192,Rosa Miguel,Villanueva García,CEP00192,Epidemiologo,96
+193,Elena Carmen,Castro Mamani,CMP00193,Epidemiologo,97
+194,Pedro Rosa,Castro García,CEP00194,Enfermero,97
+195,Jose Maria,Villanueva Diaz,CMP00195,Tecnico de Laboratorio,98
+196,Ana Ana,Flores Rodriguez,CEP00196,Enfermero,98
+197,Jose Elena,Ramos Perez,CMP00197,Epidemiologo,99
+198,Carlos Jorge,Chavez Diaz,CEP00198,Tecnico de Laboratorio,99
+199,Juan Laura,Gomez Mamani,CMP00199,Tecnico de Laboratorio,100
+200,Jorge David,Rodriguez Quispe,CEP00200,Enfermero,100
+201,Juan Sofia,Rodriguez Chavez,CMP00201,Tecnico de Laboratorio,101
+202,Luis Luis,Gomez Flores,CEP00202,Epidemiologo,101
+203,Luis Diego,Diaz García,CMP00203,Medico,102
+204,Carlos Juan,Flores Sanchez,CEP00204,Enfermero,102
+205,Laura Ana,Castro Flores,CMP00205,Enfermero,103
+206,Carmen Ana,Gomez Sanchez,CEP00206,Epidemiologo,103
+207,Elena Carlos,Rodriguez Chavez,CMP00207,Epidemiologo,104
+208,Juan Jorge,Vargas Perez,CEP00208,Tecnico de Laboratorio,104
+209,Laura Juan,García Quispe,CMP00209,Enfermero,105
+210,Laura Pedro,Villanueva Villanueva,CEP00210,Medico,105
+211,Miguel Carlos,Ramos Ramos,CMP00211,Medico,106
+212,David Diego,Gomez Villanueva,CEP00212,Epidemiologo,106
+213,Miguel Jose,Vargas Gomez,CMP00213,Tecnico de Laboratorio,107
+214,Carlos Miguel,Sanchez Vargas,CEP00214,Medico,107
+215,Sofia Luis,Gomez Quispe,CMP00215,Tecnico de Laboratorio,108
+216,Pedro Elena,Vargas Diaz,CEP00216,Enfermero,108
+217,Luis Carlos,Vargas Castro,CMP00217,Epidemiologo,109
+218,Maria Carmen,Sanchez Gomez,CEP00218,Enfermero,109
+219,Maria Sofia,Flores Ramos,CMP00219,Epidemiologo,110
+220,Diego Jose,Gomez Castro,CEP00220,Enfermero,110
+221,Carmen Miguel,Chavez Castro,CMP00221,Medico,111
+222,Sofia Jose,Rodriguez Castro,CEP00222,Tecnico de Laboratorio,111
+223,Laura David,Vargas Diaz,CMP00223,Epidemiologo,112
+224,Sofia Pedro,Diaz Vargas,CEP00224,Epidemiologo,112
+225,Miguel Jose,Castro Rodriguez,CMP00225,Epidemiologo,113
+226,Carlos Laura,García Chavez,CEP00226,Enfermero,113
+227,Carmen Sofia,Rodriguez Rodriguez,CMP00227,Tecnico de Laboratorio,114
+228,Carmen Carmen,Diaz García,CEP00228,Epidemiologo,114
+229,Pedro Elena,Quispe Diaz,CMP00229,Medico,115
+230,Miguel Laura,Flores Villanueva,CEP00230,Medico,115
+231,Carlos David,Quispe Ramos,CMP00231,Enfermero,116
+232,Juan Luis,Chavez García,CEP00232,Epidemiologo,116
+233,Maria Luis,Rodriguez Sanchez,CMP00233,Tecnico de Laboratorio,117
+234,Miguel David,García Gomez,CEP00234,Enfermero,117
+235,Elena Miguel,Quispe Diaz,CMP00235,Medico,118
+236,Luis Miguel,Mamani Quispe,CEP00236,Tecnico de Laboratorio,118
+237,Jorge Ana,Gomez Vargas,CMP00237,Enfermero,119
+238,Diego David,Ramos Rodriguez,CEP00238,Tecnico de Laboratorio,119
+239,Jose Elena,Sanchez García,CMP00239,Tecnico de Laboratorio,120
+240,Diego Rosa,Rodriguez Perez,CEP00240,Medico,120

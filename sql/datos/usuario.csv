@@ -1,0 +1,5 @@
+id_usuario,nombre_usuario,hash_contrasena,correo,id_rol,id_profesional,activo
+1,admin,pbkdf2:sha256:260000$Z7yqB9zN$1bc44f0bb6c12b9a71221147a4694b29bb8968ee8dc1f5f2479f648d8b9d3655,admin@sived.gob.pe,1,,True
+2,epidemio,pbkdf2:sha256:260000$Z7yqB9zN$1bc44f0bb6c12b9a71221147a4694b29bb8968ee8dc1f5f2479f648d8b9d3655,epidemio@sived.gob.pe,2,,True
+3,notifica,pbkdf2:sha256:260000$Z7yqB9zN$1bc44f0bb6c12b9a71221147a4694b29bb8968ee8dc1f5f2479f648d8b9d3655,notifica@sived.gob.pe,3,1,True
+4,autoridad,pbkdf2:sha256:260000$Z7yqB9zN$1bc44f0bb6c12b9a71221147a4694b29bb8968ee8dc1f5f2479f648d8b9d3655,autoridad@sived.gob.pe,4,,True

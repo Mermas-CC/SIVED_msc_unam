@@ -1,0 +1,121 @@
+id_establecimiento,nombre_establecimiento,categoria,id_distrito
+1,Puesto de Salud Distrito Provincia Amazonas,Puesto de Salud,D0001
+2,Hospital II Distrito Provincia Amazonas Aux 1,Hospital II,D0002
+3,Centro de Salud Distrito Provincia Ancash,Centro de Salud,D0003
+4,Centro de Salud Distrito Provincia Ancash Aux 1,Centro de Salud,D0004
+5,Hospital II Distrito Provincia Apurimac,Hospital II,D0005
+6,Puesto de Salud Distrito Provincia Apurimac Aux 1,Puesto de Salud,D0006
+7,Centro de Salud Distrito Provincia Arequipa,Centro de Salud,D0007
+8,Puesto de Salud Distrito Provincia Arequipa Aux 1,Puesto de Salud,D0008
+9,Hospital II Distrito Provincia Arequipa Aux 2,Hospital II,D0009
+10,Centro de Salud Distrito Provincia Ayacucho,Centro de Salud,D0010
+11,Hospital II Distrito Provincia Ayacucho Aux 1,Hospital II,D0011
+12,Hospital I Distrito Provincia Cajamarca,Hospital I,D0012
+13,Hospital II Distrito Provincia Cajamarca Aux 1,Hospital II,D0013
+14,Hospital Las Mercedes,Hospital II,D0014
+15,Hospital Nacional Arzobispo Loayza,Hospital II,D0015
+16,Hospital Apoyo Iquitos,Centro de Salud,D0016
+17,Hospital II Distrito Provincia Cusco Aux 1,Hospital II,D0017
+18,Hospital II Distrito Provincia Cusco Aux 2,Hospital II,D0018
+19,Hospital I Distrito Provincia Huancavelica,Hospital I,D0019
+20,Hospital Regional Cayetano Heredia,Centro de Salud,D0020
+21,Hospital I Distrito Provincia Huanuco,Hospital I,D0021
+22,Hospital II Distrito Provincia Huanuco Aux 1,Hospital II,D0022
+23,Centro de Salud Distrito Provincia Ica,Centro de Salud,D0023
+24,Hospital I Distrito Provincia Ica Aux 1,Hospital I,D0024
+25,Hospital II Calleria,Hospital II,D0025
+26,Puesto de Salud Distrito Provincia Junin Aux 1,Puesto de Salud,D0026
+27,Hospital I Distrito Provincia La Libertad,Hospital I,D0027
+28,Centro de Salud Distrito Provincia La Libertad Aux 1,Centro de Salud,D0028
+29,Hospital I Distrito Chiclayo,Hospital I,D0029
+30,Hospital I Distrito Provincia Lambayeque Aux 1,Hospital I,D0030
+31,Hospital I Distrito Provincia Lambayeque Aux 2,Hospital I,D0031
+32,Puesto de Salud Distrito Lima,Puesto de Salud,D0032
+33,Centro de Salud Distrito Provincia Lima Aux 1,Centro de Salud,D0033
+34,Centro de Salud Distrito Provincia Lima Aux 2,Centro de Salud,D0034
+35,Centro de Salud Distrito Maynas,Centro de Salud,D0035
+36,Hospital II Distrito Provincia Loreto Aux 1,Hospital II,D0036
+37,Centro de Salud Distrito Provincia Loreto Aux 2,Centro de Salud,D0037
+38,Centro de Salud Distrito Provincia Madre de Dios,Centro de Salud,D0038
+39,Puesto de Salud Distrito Provincia Madre de Dios Aux 1,Puesto de Salud,D0039
+40,Hospital II Distrito Mariscal Nieto,Hospital II,D0040
+41,Hospital II Distrito Provincia Moquegua Aux 1,Hospital II,D0041
+42,Hospital I Distrito Provincia Pasco,Hospital I,D0042
+43,Hospital II Distrito Provincia Pasco Aux 1,Hospital II,D0043
+44,Hospital II Distrito Piura,Hospital II,D0044
+45,Puesto de Salud Distrito Provincia Piura Aux 1,Puesto de Salud,D0045
+46,Centro de Salud Distrito Provincia Piura Aux 2,Centro de Salud,D0046
+47,Hospital II Distrito Provincia Puno,Hospital II,D0047
+48,Hospital II Distrito Provincia Puno Aux 1,Hospital II,D0048
+49,Puesto de Salud Distrito Provincia San Martin,Puesto de Salud,D0049
+50,Hospital II Distrito Provincia San Martin Aux 1,Hospital II,D0050
+51,Hospital II Distrito Provincia San Martin Aux 2,Hospital II,D0051
+52,Puesto de Salud Distrito Provincia Tacna,Puesto de Salud,D0052
+53,Hospital I Distrito Provincia Tacna Aux 1,Hospital I,D0053
+54,Hospital I Distrito Provincia Tumbes,Hospital I,D0054
+55,Hospital II Distrito Provincia Tumbes Aux 1,Hospital II,D0055
+56,Hospital II Distrito Coronel Portillo,Hospital II,D0056
+57,Centro de Salud Distrito Provincia Ucayali Aux 1,Centro de Salud,D0057
+58,Hospital II Distrito Provincia Ucayali Aux 2,Hospital II,D0058
+59,Centro de Salud Distrito Provincia Extra 59,Centro de Salud,D0059
+60,Hospital I Distrito Provincia Extra 60,Hospital I,D0060
+61,Hospital II Distrito Provincia Extra 61,Hospital II,D0061
+62,Hospital II Distrito Provincia Extra 62,Hospital II,D0062
+63,Puesto de Salud Distrito Provincia Extra 63,Puesto de Salud,D0063
+64,Hospital II Distrito Provincia Extra 64,Hospital II,D0064
+65,Hospital I Distrito Provincia Extra 65,Hospital I,D0065
+66,Hospital II Distrito Provincia Extra 66,Hospital II,D0066
+67,Centro de Salud Distrito Provincia Extra 67,Centro de Salud,D0067
+68,Hospital II Distrito Provincia Extra 68,Hospital II,D0068
+69,Centro de Salud Distrito Provincia Extra 69,Centro de Salud,D0069
+70,Puesto de Salud Distrito Provincia Callao Aux 70,Puesto de Salud,D0070
+71,Hospital II Distrito Provincia Loreto Aux 2 Aux 71,Hospital II,D0071
+72,Puesto de Salud Distrito Provincia La Libertad Aux 72,Puesto de Salud,D0072
+73,Puesto de Salud Distrito Provincia Extra 65 Aux 73,Puesto de Salud,D0073
+74,Hospital II Distrito Provincia Arequipa Aux 74,Hospital II,D0074
+75,Centro de Salud Distrito Provincia Loreto Aux 1 Aux 75,Centro de Salud,D0075
+76,Hospital II Distrito Provincia Cusco Aux 1 Aux 76,Hospital II,D0076
+77,Centro de Salud Distrito Provincia Ucayali Aux 1 Aux 77,Centro de Salud,D0077
+78,Puesto de Salud Distrito Provincia Amazonas Aux 1 Aux 78,Puesto de Salud,D0078
+79,Hospital I Distrito Provincia Huancavelica Aux 1 Aux 79,Hospital I,D0079
+80,Hospital II Distrito Provincia Huancavelica Aux 80,Hospital II,D0080
+81,Hospital I Distrito Provincia Puno Aux 81,Hospital I,D0081
+82,Centro de Salud Distrito Provincia Apurimac Aux 1 Aux 82,Centro de Salud,D0082
+83,Hospital II Distrito Lima Aux 83,Hospital II,D0083
+84,Hospital I Distrito Provincia Tacna Aux 1 Aux 84,Hospital I,D0084
+85,Hospital I Distrito Provincia Lambayeque Aux 2 Aux 85,Hospital I,D0085
+86,Hospital II Distrito Provincia Ica Aux 86,Hospital II,D0086
+87,Hospital I Distrito Provincia Pasco Aux 1 Aux 87,Hospital I,D0087
+88,Hospital II Distrito Lima Aux 88,Hospital II,D0088
+89,Hospital I Distrito Provincia Callao Aux 89,Hospital I,D0089
+90,Puesto de Salud Distrito Provincia Extra 61 Aux 90,Puesto de Salud,D0090
+91,Hospital II Distrito Provincia Extra 59 Aux 91,Hospital II,D0091
+92,Puesto de Salud Distrito Provincia Lambayeque Aux 1 Aux 92,Puesto de Salud,D0092
+93,Puesto de Salud Distrito Provincia Tacna Aux 93,Puesto de Salud,D0093
+94,Hospital I Distrito Provincia Loreto Aux 1 Aux 94,Hospital I,D0094
+95,Centro de Salud Distrito Provincia Extra 69 Aux 95,Centro de Salud,D0095
+96,Puesto de Salud Distrito Provincia Lima Aux 2 Aux 96,Puesto de Salud,D0096
+97,Puesto de Salud Distrito Provincia Lima Aux 2 Aux 97,Puesto de Salud,D0097
+98,Puesto de Salud Distrito Provincia Piura Aux 1 Aux 98,Puesto de Salud,D0098
+99,Centro de Salud Distrito Provincia Extra 66 Aux 99,Centro de Salud,D0099
+100,Centro de Salud Distrito Provincia Junin Aux 100,Centro de Salud,D0100
+101,Puesto de Salud Distrito Provincia Amazonas Aux 101,Puesto de Salud,D0101
+102,Centro de Salud Distrito Provincia Junin Aux 1 Aux 102,Centro de Salud,D0102
+103,Centro de Salud Distrito Provincia Pasco Aux 1 Aux 103,Centro de Salud,D0103
+104,Centro de Salud Distrito Provincia Cusco Aux 104,Centro de Salud,D0104
+105,Hospital II Distrito Mariscal Nieto Aux 105,Hospital II,D0105
+106,Puesto de Salud Distrito Provincia Madre de Dios Aux 106,Puesto de Salud,D0106
+107,Centro de Salud Distrito Provincia San Martin Aux 107,Centro de Salud,D0107
+108,Hospital II Distrito Provincia Madre de Dios Aux 1 Aux 108,Hospital II,D0108
+109,Hospital I Distrito Provincia Madre de Dios Aux 1 Aux 109,Hospital I,D0109
+110,Hospital I Distrito Provincia Pasco Aux 110,Hospital I,D0110
+111,Centro de Salud Distrito Provincia La Libertad Aux 1 Aux 111,Centro de Salud,D0111
+112,Puesto de Salud Distrito Provincia Huanuco Aux 1 Aux 112,Puesto de Salud,D0112
+113,Centro de Salud Distrito Provincia Pasco Aux 1 Aux 113,Centro de Salud,D0113
+114,Hospital I Distrito Provincia Lambayeque Aux 2 Aux 114,Hospital I,D0114
+115,Puesto de Salud Distrito Provincia Junin Aux 1 Aux 115,Puesto de Salud,D0115
+116,Puesto de Salud Distrito Provincia Extra 61 Aux 116,Puesto de Salud,D0116
+117,Hospital I Distrito Provincia Extra 59 Aux 117,Hospital I,D0117
+118,Hospital II Distrito Provincia Junin Aux 118,Hospital II,D0118
+119,Hospital II Distrito Provincia Tacna Aux 119,Hospital II,D0119
+120,Centro de Salud Distrito Provincia Amazonas Aux 120,Centro de Salud,D0120

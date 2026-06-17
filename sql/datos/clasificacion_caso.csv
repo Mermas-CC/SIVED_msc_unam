@@ -1,0 +1,4 @@
+id_clasificacion,nombre,descripcion
+1,Dengue sin senales de alarma,Caso con fiebre y síntomas generales sin complicaciones
+2,Dengue con senales de alarma,"Caso con dolor abdominal persistente, vómitos, acumulación de líquidos o sangrado"
+3,Dengue grave,"Caso con choque por extravasación, sangrado grave o compromiso orgánico severo"
