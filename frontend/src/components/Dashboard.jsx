@@ -1,27 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, BarChart, Bar, Legend } from 'recharts';
-import { Activity, ShieldAlert, Award, Users, RefreshCw, Filter, Download, Sparkles, Send, Calendar, MapPin, RotateCcw, Stethoscope, Skull, HeartPulse, FileText } from 'lucide-react';
+import { Activity, RefreshCw, Download, Sparkles, Send, Stethoscope, Skull, HeartPulse, FileText } from 'lucide-react';
 
 // Soft, harmonious clinical color palette (Blue, Sky, Teal, Muted Slate)
 const COLORS = ['#3b82f6', '#0ea5e9', '#10b981', '#64748b'];
 
-export default function Dashboard() {
+export default function Dashboard({
+  selectedDepto = '',
+  selectedProv = '',
+  selectedDist = '',
+  selectedAnio = '',
+  selectedSemanaInicio = '',
+  selectedSemanaFin = ''
+}) {
   const [indicadores, setIndicadores] = useState(null);
   const [casosSemanales, setCasosSemanales] = useState([]);
   const [serotipos, setSerotipos] = useState([]);
   const [letalidad, setLetalidad] = useState([]);
   const [sintomas, setSintomas] = useState([]);
-  const [departamentos, setDepartamentos] = useState([]);
-  const [provincias, setProvincias] = useState([]);
-  const [distritos, setDistritos] = useState([]);
-  
-  // Filter States
-  const [selectedDepto, setSelectedDepto] = useState('');
-  const [selectedProv, setSelectedProv] = useState('');
-  const [selectedDist, setSelectedDist] = useState('');
-  const [selectedAnio, setSelectedAnio] = useState('');
-  const [selectedSemanaInicio, setSelectedSemanaInicio] = useState('');
-  const [selectedSemanaFin, setSelectedSemanaFin] = useState('');
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -34,77 +30,10 @@ export default function Dashboard() {
 
   const token = localStorage.getItem('token');
 
-  // Load departments on mount
-  useEffect(() => {
-    fetchDepartamentos();
-  }, []);
-
-  // Cascading Geography: load provinces when department changes
-  useEffect(() => {
-    if (selectedDepto) {
-      fetchProvincias(selectedDepto);
-    } else {
-      setProvincias([]);
-      setSelectedProv('');
-      setDistritos([]);
-      setSelectedDist('');
-    }
-  }, [selectedDepto]);
-
-  // Cascading Geography: load districts when province changes
-  useEffect(() => {
-    if (selectedProv) {
-      fetchDistritos(selectedProv);
-    } else {
-      setDistritos([]);
-      setSelectedDist('');
-    }
-  }, [selectedProv]);
-
-  // Fetch statistics when any filter changes
+  // Reload data whenever filter props change
   useEffect(() => {
     fetchData();
   }, [selectedDepto, selectedProv, selectedDist, selectedAnio, selectedSemanaInicio, selectedSemanaFin]);
-
-  const fetchDepartamentos = async () => {
-    try {
-      const res = await fetch('http://localhost:5001/api/geografia/departamentos', {
-        headers: { 'Authorization': token }
-      });
-      if (res.ok) {
-        const data = await res.json();
-        setDepartamentos(data);
-      }
-    } catch (err) {
-      console.error("Error al cargar departamentos", err);
-    }
-  };
-
-  const fetchProvincias = async (deptoId) => {
-    try {
-      const res = await fetch(`http://localhost:5001/api/geografia/provincias?id_departamento=${deptoId}`, {
-        headers: { 'Authorization': token }
-      });
-      if (res.ok) {
-        setProvincias(await res.json());
-      }
-    } catch (err) {
-      console.error("Error al cargar provincias", err);
-    }
-  };
-
-  const fetchDistritos = async (provId) => {
-    try {
-      const res = await fetch(`http://localhost:5001/api/geografia/distritos?id_provincia=${provId}`, {
-        headers: { 'Authorization': token }
-      });
-      if (res.ok) {
-        setDistritos(await res.json());
-      }
-    } catch (err) {
-      console.error("Error al cargar distritos", err);
-    }
-  };
 
   const fetchData = async () => {
     setLoading(true);
@@ -320,240 +249,95 @@ export default function Dashboard() {
   return (
     <div className="space-y-6 overflow-y-auto max-h-[calc(100vh-2rem)] pr-2 scrollbar-thin">
 
-      {/* Alerta Epidemiológica (Muted colors) */}
-      {alertStatus && (
-        <div className={`p-4 rounded-md flex items-start gap-3 ${alertStatus.bg} ${alertStatus.border}`}>
-          <div>
-            <h4 className="text-xs font-bold uppercase tracking-wider">{alertStatus.label}</h4>
-            <p className="text-[11px] opacity-80 mt-0.5">{alertStatus.desc}</p>
-          </div>
-        </div>
-      )}
-
-      {/* Panel de Filtros Dinámicos (Más pequeño pero resaltante con borde institucional y fondo suave) */}
-      <div className="bg-slate-50/40 p-3.5 rounded-md border border-slate-200 border-l-4 border-l-[#004b87] shadow-2xs space-y-3">
-        <div className="flex items-center justify-between border-b border-slate-200/60 pb-2">
-          <div className="flex items-center gap-1.5">
-            <Filter className="w-3.5 h-3.5 text-[#004b87]" />
-            <h2 className="text-[9.5px] font-bold text-slate-600 uppercase tracking-wider">Parámetros de Localización y Temporalidad</h2>
-          </div>
-          {(selectedDepto || selectedProv || selectedDist || selectedAnio || selectedSemanaInicio || selectedSemanaFin) && (
-            <button
-              onClick={() => {
-                setSelectedDepto('');
-                setSelectedProv('');
-                setSelectedDist('');
-                setSelectedAnio('');
-                setSelectedSemanaInicio('');
-                setSelectedSemanaFin('');
-              }}
-              className="flex items-center gap-1 px-2 py-0.5 bg-white hover:bg-slate-100 text-slate-500 border border-slate-200 rounded-md text-[10px] font-bold transition-colors cursor-pointer"
-            >
-              <RotateCcw className="w-2.5 h-2.5" />
-              Limpiar Filtros
-            </button>
-          )}
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3">
-          {/* Región */}
-          <div className="flex flex-col space-y-1">
-            <label className="text-[9px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1">
-              <MapPin className="w-2.5 h-2.5 text-[#004b87]" /> Región / Diresa
-            </label>
-            <select
-              value={selectedDepto}
-              onChange={(e) => setSelectedDepto(e.target.value)}
-              className="w-full bg-white border border-slate-200 rounded-md px-2 py-1 text-slate-700 text-[11px] font-medium focus:outline-hidden focus:border-[#004b87] focus:ring-1 focus:ring-[#004b87]/20 transition-all cursor-pointer"
-            >
-              <option value="">Nacional (Todos)</option>
-              {departamentos.map((d) => (
-                <option key={d.id_departamento} value={d.id_departamento}>
-                  {d.nombre_departamento}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* Provincia */}
-          <div className="flex flex-col space-y-1">
-            <label className="text-[9px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1">
-              <MapPin className="w-2.5 h-2.5 text-[#004b87]" /> Provincia
-            </label>
-            <select
-              value={selectedProv}
-              onChange={(e) => setSelectedProv(e.target.value)}
-              disabled={!selectedDepto}
-              className="w-full bg-white border border-slate-200 disabled:opacity-50 rounded-md px-2 py-1 text-slate-700 text-[11px] font-medium focus:outline-hidden focus:border-[#004b87] focus:ring-1 focus:ring-[#004b87]/20 transition-all cursor-pointer"
-            >
-              <option value="">Todas las Provincias</option>
-              {provincias.map((p) => (
-                <option key={p.id_provincia} value={p.id_provincia}>
-                  {p.nombre_provincia}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* Distrito */}
-          <div className="flex flex-col space-y-1">
-            <label className="text-[9px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1">
-              <MapPin className="w-2.5 h-2.5 text-[#004b87]" /> Distrito
-            </label>
-            <select
-              value={selectedDist}
-              onChange={(e) => setSelectedDist(e.target.value)}
-              disabled={!selectedProv}
-              className="w-full bg-white border border-slate-200 disabled:opacity-50 rounded-md px-2 py-1 text-slate-700 text-[11px] font-medium focus:outline-hidden focus:border-[#004b87] focus:ring-1 focus:ring-[#004b87]/20 transition-all cursor-pointer"
-            >
-              <option value="">Todos los Distritos</option>
-              {distritos.map((d) => (
-                <option key={d.id_distrito} value={d.id_distrito}>
-                  {d.nombre_distrito}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* Año */}
-          <div className="flex flex-col space-y-1">
-            <label className="text-[9px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1">
-              <Calendar className="w-2.5 h-2.5 text-[#004b87]" /> Año Epidemiológico
-            </label>
-            <select
-              value={selectedAnio}
-              onChange={(e) => setSelectedAnio(e.target.value)}
-              className="w-full bg-white border border-slate-200 rounded-md px-2 py-1 text-slate-700 text-[11px] font-medium focus:outline-hidden focus:border-[#004b87] focus:ring-1 focus:ring-[#004b87]/20 transition-all cursor-pointer"
-            >
-              <option value="">Histórico (2000 - 2024)</option>
-              {Array.from({ length: 25 }, (_, i) => 2024 - i).map((y) => (
-                <option key={y} value={y}>
-                  {y}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* Rango Semanas */}
-          <div className="flex flex-col space-y-1">
-            <label className="text-[9px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1">
-              <Calendar className="w-2.5 h-2.5 text-[#004b87]" /> Rango Semanal (SE)
-            </label>
-            <div className="flex items-center gap-2">
-              <select
-                value={selectedSemanaInicio}
-                onChange={(e) => setSelectedSemanaInicio(e.target.value)}
-                className="w-1/2 bg-white border border-slate-200 rounded-md px-1.5 py-1 text-slate-700 text-[11px] font-medium focus:outline-hidden focus:border-[#004b87] focus:ring-1 focus:ring-[#004b87]/20 transition-all cursor-pointer"
-              >
-                <option value="">Inicio</option>
-                {Array.from({ length: 53 }, (_, i) => i + 1).map((w) => (
-                  <option key={w} value={w}>
-                    SE {w}
-                  </option>
-                ))}
-              </select>
-              <span className="text-slate-350 text-[11px]">-</span>
-              <select
-                value={selectedSemanaFin}
-                onChange={(e) => setSelectedSemanaFin(e.target.value)}
-                className="w-1/2 bg-white border border-slate-200 rounded-md px-1.5 py-1 text-slate-700 text-[11px] font-medium focus:outline-hidden focus:border-[#004b87] focus:ring-1 focus:ring-[#004b87]/20 transition-all cursor-pointer"
-              >
-                <option value="">Fin</option>
-                {Array.from({ length: 53 }, (_, i) => i + 1).map((w) => (
-                  <option key={w} value={w}>
-                    SE {w}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Panel Unificado de Indicadores Médicos (Muted labels y colores suaves) */}
-      <div className="bg-white border border-slate-200 rounded-md divide-y md:divide-y-0 md:divide-x divide-slate-100 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5">
+      {/* Panel Unificado de Indicadores Médicos — KPIs con colores vivos */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
         {/* Casos Notificados */}
-        <div className="p-4 flex items-center gap-3.5">
-          <div className="text-slate-300 shrink-0">
+        <div className="kpi-card bg-white border border-blue-100 rounded-xl p-4 flex items-center gap-3.5 relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-50/60 to-transparent pointer-events-none rounded-xl" />
+          <div className="shrink-0 p-2 bg-blue-100 rounded-lg text-[#004b87]">
             <FileText className="w-5 h-5" />
           </div>
           <div>
-            <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider leading-none">Casos Notificados</p>
-            <h3 className="text-lg font-semibold text-slate-700 mt-1.5 leading-none">{indicadores?.total_casos?.toLocaleString()}</h3>
+            <p className="text-[9px] font-bold text-blue-600 uppercase tracking-wider leading-none">Casos Notificados</p>
+            <h3 className="text-xl font-bold text-slate-800 mt-1.5 leading-none tabular-nums">{indicadores?.total_casos?.toLocaleString()}</h3>
           </div>
         </div>
 
         {/* Casos Confirmados */}
-        <div className="p-4 flex items-center gap-3.5">
-          <div className="text-slate-300 shrink-0">
+        <div className="kpi-card bg-white border border-emerald-100 rounded-xl p-4 flex items-center gap-3.5 relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/60 to-transparent pointer-events-none rounded-xl" />
+          <div className="shrink-0 p-2 bg-emerald-100 rounded-lg text-emerald-700">
             <Stethoscope className="w-5 h-5" />
           </div>
           <div>
-            <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider leading-none">Casos Confirmados</p>
-            <h3 className="text-lg font-semibold text-slate-700 mt-1.5 leading-none">{indicadores?.total_confirmados?.toLocaleString()}</h3>
+            <p className="text-[9px] font-bold text-emerald-700 uppercase tracking-wider leading-none">Casos Confirmados</p>
+            <h3 className="text-xl font-bold text-slate-800 mt-1.5 leading-none tabular-nums">{indicadores?.total_confirmados?.toLocaleString()}</h3>
           </div>
         </div>
 
         {/* Defunciones */}
-        <div className="p-4 flex items-center gap-3.5">
-          <div className="text-slate-300 shrink-0">
+        <div className="kpi-card bg-white border border-rose-100 rounded-xl p-4 flex items-center gap-3.5 relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-rose-50/60 to-transparent pointer-events-none rounded-xl" />
+          <div className="shrink-0 p-2 bg-rose-100 rounded-lg text-rose-700">
             <Skull className="w-5 h-5" />
           </div>
           <div>
-            <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider leading-none">Defunciones</p>
-            <h3 className="text-lg font-semibold text-slate-700 mt-1.5 leading-none">{indicadores?.total_fallecidos?.toLocaleString()}</h3>
+            <p className="text-[9px] font-bold text-rose-700 uppercase tracking-wider leading-none">Defunciones</p>
+            <h3 className="text-xl font-bold text-slate-800 mt-1.5 leading-none tabular-nums">{indicadores?.total_fallecidos?.toLocaleString()}</h3>
           </div>
         </div>
 
         {/* Letalidad (CFR) */}
-        <div className="p-4 flex items-center gap-3.5">
-          <div className="text-slate-300 shrink-0">
+        <div className="kpi-card bg-white border border-amber-100 rounded-xl p-4 flex items-center gap-3.5 relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-amber-50/60 to-transparent pointer-events-none rounded-xl" />
+          <div className="shrink-0 p-2 bg-amber-100 rounded-lg text-amber-700">
             <HeartPulse className="w-5 h-5" />
           </div>
           <div>
-            <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider leading-none">Letalidad (CFR)</p>
-            <h3 className="text-lg font-semibold text-slate-700 mt-1.5 leading-none">{indicadores?.letalidad_pct}%</h3>
+            <p className="text-[9px] font-bold text-amber-700 uppercase tracking-wider leading-none">Letalidad (CFR)</p>
+            <h3 className="text-xl font-bold text-slate-800 mt-1.5 leading-none tabular-nums">{indicadores?.letalidad_pct}%</h3>
           </div>
         </div>
 
         {/* Incidencia */}
-        <div className="p-4 flex items-center gap-3.5">
-          <div className="text-slate-300 shrink-0">
+        <div className="kpi-card bg-white border border-violet-100 rounded-xl p-4 flex items-center gap-3.5 relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-violet-50/60 to-transparent pointer-events-none rounded-xl" />
+          <div className="shrink-0 p-2 bg-violet-100 rounded-lg text-violet-700">
             <Activity className="w-5 h-5" />
           </div>
           <div>
-            <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider leading-none">Incidencia / 100K hab.</p>
-            <h3 className="text-lg font-semibold text-slate-700 mt-1.5 leading-none">{indicadores?.incidencia_por_100k?.toLocaleString()}</h3>
+            <p className="text-[9px] font-bold text-violet-700 uppercase tracking-wider leading-none">Incidencia / 100K hab.</p>
+            <h3 className="text-xl font-bold text-slate-800 mt-1.5 leading-none tabular-nums">{indicadores?.incidencia_por_100k?.toLocaleString()}</h3>
           </div>
         </div>
       </div>
 
-      {/* Curva Epidémica e Histograma (Horizontal Grid Lines Only) */}
-      <div className="bg-white p-5 border border-slate-200 rounded-md">
-        <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-4 border-b border-slate-100 pb-2">
-          Curva Epidémica e Histograma de Vigilancia {selectedAnio ? `del Año ${selectedAnio}` : '(Casos por Semana Epidemiológica)'}
+      {/* Curva Epidémica e Histograma */}
+      <div className="chart-card bg-white p-5 border border-slate-200 rounded-xl">
+        <h3 className="text-[10px] font-bold text-[#004b87] uppercase tracking-wider mb-4 border-b border-blue-100 pb-2">
+          📈 Curva Epidémica de Vigilancia {selectedAnio ? `— Año ${selectedAnio}` : '(Casos por Semana Epidemiológica)'}
         </h3>
         <div className="h-72">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={casosSemanales} margin={{ left: 10, right: 10, top: 10, bottom: 5 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
-              <XAxis dataKey="numero_semana" tickFormatter={(val) => `Sem ${val}`} stroke="#94a3b8" style={{ fontSize: 9 }} />
-              <YAxis stroke="#94a3b8" style={{ fontSize: 9 }} />
-              <Tooltip contentStyle={{ background: '#0f172a', color: '#fff', borderRadius: '4px', border: 'none', fontSize: 11 }} />
-              <Line type="monotone" dataKey="casos" stroke="#004b87" strokeWidth={2} dot={false} activeDot={{ r: 4 }} name="Casos Notificados" />
+              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
+              <XAxis dataKey="numero_semana" tickFormatter={(val) => `Sem ${val}`} stroke="#64748b" style={{ fontSize: 9 }} />
+              <YAxis stroke="#64748b" style={{ fontSize: 9 }} />
+              <Tooltip contentStyle={{ background: '#0f172a', color: '#fff', borderRadius: '8px', border: 'none', fontSize: 11, boxShadow: '0 8px 24px rgba(0,0,0,0.3)' }} />
+              <Line type="monotone" dataKey="casos" stroke="#2563eb" strokeWidth={2.5} dot={false} activeDot={{ r: 5, fill: '#2563eb', strokeWidth: 2, stroke: '#fff' }} name="Casos Notificados" />
             </LineChart>
           </ResponsiveContainer>
         </div>
       </div>
 
-      {/* Cocurculación de Serotipos e Inteligencia Epidemiológica (SIVED-AI) */}
-      <div className="bg-white p-5 border border-slate-200 rounded-md">
-        <div className="flex items-center gap-2 mb-4 border-b border-slate-100 pb-2">
-          <div className="text-slate-400">
+      {/* Cocirculación de Serotipos e Inteligencia Epidemiológica (SIVED-AI) */}
+      <div className="chart-card bg-white p-5 border border-slate-200 rounded-xl">
+        <div className="flex items-center gap-2 mb-4 border-b border-indigo-100 pb-2">
+          <div className="p-1.5 bg-indigo-50 rounded-lg text-indigo-600">
             <Sparkles className="w-4 h-4" />
           </div>
           <div>
-            <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Cocirculación de Serotipos e Inteligencia Epidemiológica (SIVED-AI)</h3>
+            <h3 className="text-[10px] font-bold text-indigo-700 uppercase tracking-wider">✦ Cocirculación de Serotipos & Inteligencia Epidemiológica SIVED-AI</h3>
           </div>
         </div>
         
@@ -673,12 +457,12 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Gráficos Secundarios (Horizontal Grid Lines Only, Muted Colors) */}
+      {/* Gráficos Secundarios */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Distribución de Carga de Enfermedad por Localidad */}
-        <div className="bg-white p-5 border border-slate-200 rounded-md">
-          <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4 border-b border-slate-100 pb-2">
-            {selectedDist 
+        <div className="chart-card bg-white p-5 border border-slate-200 rounded-xl">
+          <h3 className="text-xs font-bold text-blue-700 uppercase tracking-wider mb-4 border-b border-blue-100 pb-2">
+            🏥 {selectedDist 
               ? "Carga de Enfermedad por Establecimiento de Salud" 
               : selectedProv 
               ? "Carga de Enfermedad por Distritos" 
@@ -689,33 +473,31 @@ export default function Dashboard() {
           <div className="h-72">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={letalidad.slice(0, 6)} margin={{ left: 15, right: 10, top: 10, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
-                <XAxis dataKey="nombre_lugar" stroke="#94a3b8" style={{ fontSize: 9 }} />
-                <YAxis stroke="#94a3b8" style={{ fontSize: 9 }} />
-                <Tooltip contentStyle={{ background: '#0f172a', color: '#fff', borderRadius: '4px', border: 'none', fontSize: 11 }} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
+                <XAxis dataKey="nombre_lugar" stroke="#64748b" style={{ fontSize: 9 }} />
+                <YAxis stroke="#64748b" style={{ fontSize: 9 }} />
+                <Tooltip contentStyle={{ background: '#0f172a', color: '#fff', borderRadius: '8px', border: 'none', fontSize: 11, boxShadow: '0 8px 24px rgba(0,0,0,0.3)' }} />
                 <Legend style={{ fontSize: 10 }} />
-                {/* Softer color palette for bars */}
-                <Bar dataKey="casos" fill="#3b82f6" name="Casos Notificados" radius={[2, 2, 0, 0]} />
-                <Bar dataKey="fallecidos" fill="#f43f5e" name="Defunciones" radius={[2, 2, 0, 0]} />
+                <Bar dataKey="casos" fill="#2563eb" name="Casos Notificados" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="fallecidos" fill="#e11d48" name="Defunciones" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
         </div>
 
         {/* Perfil Clínico y Síntomas de Alarma */}
-        <div className="bg-white p-5 border border-slate-200 rounded-md">
-          <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4 border-b border-slate-100 pb-2">
-            Perfil Clínico y Síntomas de Alarma Frecuentes
+        <div className="chart-card bg-white p-5 border border-slate-200 rounded-xl">
+          <h3 className="text-xs font-bold text-teal-700 uppercase tracking-wider mb-4 border-b border-teal-100 pb-2">
+            🩺 Perfil Clínico y Síntomas de Alarma Frecuentes
           </h3>
           <div className="h-72">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={sintomas} layout="vertical" margin={{ left: 10, right: 10, top: 10, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
-                <XAxis dataKey="casos" type="number" stroke="#94a3b8" style={{ fontSize: 9 }} />
-                <YAxis dataKey="sintoma" type="category" stroke="#94a3b8" style={{ fontSize: 9 }} width={85} />
-                <Tooltip contentStyle={{ background: '#0f172a', color: '#fff', borderRadius: '4px', border: 'none', fontSize: 11 }} />
-                {/* Soft teal color for symptoms */}
-                <Bar dataKey="casos" fill="#0d9488" name="Frecuencia Clínica" radius={[0, 2, 2, 0]} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
+                <XAxis dataKey="casos" type="number" stroke="#64748b" style={{ fontSize: 9 }} />
+                <YAxis dataKey="sintoma" type="category" stroke="#64748b" style={{ fontSize: 9 }} width={85} />
+                <Tooltip contentStyle={{ background: '#0f172a', color: '#fff', borderRadius: '8px', border: 'none', fontSize: 11, boxShadow: '0 8px 24px rgba(0,0,0,0.3)' }} />
+                <Bar dataKey="casos" fill="#0d9488" name="Frecuencia Clínica" radius={[0, 4, 4, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -723,20 +505,23 @@ export default function Dashboard() {
       </div>
 
       {/* Botones de Descarga al Final del Dashboard */}
-      <div className="flex flex-col sm:flex-row justify-between items-center gap-4 pt-4 border-t border-slate-200 bg-white p-4 rounded-md">
-        <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
-          Dirección General de Epidemiología — Sala de Situación (MINSA Perú)
-        </span>
+      <div className="flex flex-col sm:flex-row justify-between items-center gap-4 pt-4 border-t border-slate-200 bg-white p-4 rounded-xl">
+        <div className="flex flex-col">
+          <span className="text-[10px] font-bold text-slate-600 uppercase tracking-wider">
+            Dirección General de Epidemiología — MINSA Perú
+          </span>
+          <span className="text-[9px] text-slate-400 mt-0.5">Sala de Situación Epidemiológica · Datos de Vigilancia en Tiempo Real</span>
+        </div>
         <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
           <button
             onClick={() => handleExport('csv')}
-            className="flex items-center gap-1.5 px-3.5 py-2 bg-white hover:bg-slate-50 text-slate-600 border border-slate-200 rounded-md text-xs font-semibold transition-colors cursor-pointer"
+            className="btn-premium flex items-center gap-1.5 px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 rounded-xl text-xs font-bold shadow-sm transition-all cursor-pointer"
           >
-            <Download className="w-3.5 h-3.5" /> Descargar Datos (CSV)
+            <Download className="w-3.5 h-3.5 text-blue-600" /> Descargar Datos (CSV)
           </button>
           <button
             onClick={() => handleExport('pdf')}
-            className="flex items-center gap-1.5 px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white border border-blue-700 rounded-md text-xs font-semibold transition-colors cursor-pointer"
+            className="btn-premium flex items-center gap-1.5 px-4 py-2 bg-[#004b87] hover:bg-[#00355f] text-white border border-[#00355f] rounded-xl text-xs font-bold shadow-md transition-all cursor-pointer"
           >
             <Download className="w-3.5 h-3.5" /> Descargar Reporte PDF
           </button>
