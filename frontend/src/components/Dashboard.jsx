@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, BarChart, Bar, Legend } from 'recharts';
-import { Activity, RefreshCw, Download, Sparkles, Send, Stethoscope, Skull, HeartPulse, FileText } from 'lucide-react';
+import { Activity, RefreshCw, Download, Stethoscope, Skull, HeartPulse, FileText } from 'lucide-react';
+import { API_BASE_URL } from '../config';
 
 // Soft, harmonious clinical color palette (Blue, Sky, Teal, Muted Slate)
 const COLORS = ['#3b82f6', '#0ea5e9', '#10b981', '#64748b'];
@@ -22,24 +23,23 @@ export default function Dashboard({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // AI Serotype Analysis States
-  const [aiResponse, setAiResponse] = useState('');
-  const [aiLoading, setAiLoading] = useState(false);
-  const [customQuery, setCustomQuery] = useState('');
-  const [chatHistory, setChatHistory] = useState([]);
-
+  // Cargar departamentos del localStorage para los nombres en reportes
+  const [departamentos, setDepartamentos] = useState([]);
   const token = localStorage.getItem('token');
 
   // Reload data whenever filter props change
   useEffect(() => {
     fetchData();
+    // Recuperar departamentos del localStorage si existen
+    const cachedDeptos = localStorage.getItem('departamentos');
+    if (cachedDeptos) {
+      try { setDepartamentos(JSON.parse(cachedDeptos)); } catch (e) {}
+    }
   }, [selectedDepto, selectedProv, selectedDist, selectedAnio, selectedSemanaInicio, selectedSemanaFin]);
 
   const fetchData = async () => {
     setLoading(true);
     setError(null);
-    setAiResponse('');
-    setChatHistory([]);
     try {
       const headers = { 'Authorization': token };
       
@@ -54,15 +54,15 @@ export default function Dashboard({
       const query = params.toString() ? `?${params.toString()}` : '';
 
       // 1. Indicadores
-      const indRes = await fetch(`http://localhost:5001/api/dashboard/indicadores${query}`, { headers });
+      const indRes = await fetch(`${API_BASE_URL}/api/dashboard/indicadores${query}`, { headers });
       // 2. Casos semanales
-      const semRes = await fetch(`http://localhost:5001/api/dashboard/graficos/casos-semanales${query}`, { headers });
+      const semRes = await fetch(`${API_BASE_URL}/api/dashboard/graficos/casos-semanales${query}`, { headers });
       // 3. Serotipos
-      const serRes = await fetch(`http://localhost:5001/api/dashboard/graficos/serotipos${query}`, { headers });
+      const serRes = await fetch(`${API_BASE_URL}/api/dashboard/graficos/serotipos${query}`, { headers });
       // 4. Letalidad
-      const letRes = await fetch(`http://localhost:5001/api/dashboard/graficos/letalidad${query}`, { headers });
+      const letRes = await fetch(`${API_BASE_URL}/api/dashboard/graficos/letalidad${query}`, { headers });
       // 5. Síntomas
-      const sinRes = await fetch(`http://localhost:5001/api/dashboard/graficos/sintomas${query}`, { headers });
+      const sinRes = await fetch(`${API_BASE_URL}/api/dashboard/graficos/sintomas${query}`, { headers });
 
       if (indRes.ok && semRes.ok && serRes.ok && letRes.ok && sinRes.ok) {
         setIndicadores(await indRes.json());
@@ -83,88 +83,6 @@ export default function Dashboard({
     }
   };
 
-  const handleFetchAiAnalysis = async () => {
-    if (aiLoading) return;
-    setAiLoading(true);
-    try {
-      const deptoName = selectedDepto 
-        ? departamentos.find(d => d.id_departamento === selectedDepto)?.nombre_departamento 
-        : 'Perú (Nacional)';
-      
-      const serotiposStr = serotipos.map(s => `${s.serotipo}: ${s.casos} casos`).join(', ');
-      
-      const prompt = `Como epidemiólogo experto, genera un reporte clínico y sanitario breve (máximo 85 palabras) sobre la distribución de serotipos de dengue en ${deptoName}. La distribución es: ${serotiposStr}. Explica el peligro específico de Dengue Grave (Fiebre Hemorrágica) debido a la cocirculación y los serotipos predominantes. Presenta la respuesta de forma concisa y profesional.`;
-      
-      const res = await fetch('http://localhost:5001/api/pronostico/asistente-ia', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': token
-        },
-        body: JSON.stringify({
-          tipo: 'chat',
-          prompt: prompt
-        })
-      });
-      
-      if (res.ok) {
-        const data = await res.json();
-        const responseText = data.respuesta || 'No se pudo generar el análisis.';
-        setAiResponse(responseText);
-        setChatHistory([{ sender: 'ai', text: responseText }]);
-      } else {
-        setAiResponse('Error al consultar al asistente de IA.');
-      }
-    } catch (err) {
-      console.error("Error al obtener análisis de IA", err);
-      setAiResponse('No se pudo conectar con el asistente de IA.');
-    } finally {
-      setAiLoading(false);
-    }
-  };
-
-  const handleSendCustomQuery = async (e) => {
-    e.preventDefault();
-    if (!customQuery.trim() || aiLoading) return;
-    
-    const queryText = customQuery;
-    setCustomQuery('');
-    setChatHistory(prev => [...prev, { sender: 'user', text: queryText }]);
-    setAiLoading(true);
-    
-    try {
-      const deptoName = selectedDepto 
-        ? departamentos.find(d => d.id_departamento === selectedDepto)?.nombre_departamento 
-        : 'Perú (Nacional)';
-        
-      const contextPrompt = `Pregunta médica/epidemiológica del usuario sobre la distribución de serotipos en ${deptoName}: "${queryText}". Responde brevemente (máximo 80 palabras) basándote en los datos de serotipos: ${serotipos.map(s => `${s.serotipo}: ${s.casos} casos`).join(', ')}.`;
-      
-      const res = await fetch('http://localhost:5001/api/pronostico/asistente-ia', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': token
-        },
-        body: JSON.stringify({
-          tipo: 'chat',
-          prompt: contextPrompt
-        })
-      });
-      
-      if (res.ok) {
-        const data = await res.json();
-        setChatHistory(prev => [...prev, { sender: 'ai', text: data.respuesta || 'No obtuve respuesta.' }]);
-      } else {
-        setChatHistory(prev => [...prev, { sender: 'ai', text: 'Error al procesar tu consulta.' }]);
-      }
-    } catch (err) {
-      console.error("Error en consulta custom", err);
-      setChatHistory(prev => [...prev, { sender: 'ai', text: 'Error de conexión.' }]);
-    } finally {
-      setAiLoading(false);
-    }
-  };
-
   const handleExport = async (formato) => {
     try {
       const params = new URLSearchParams();
@@ -177,7 +95,7 @@ export default function Dashboard({
       
       const query = params.toString() ? `?${params.toString()}` : '';
       
-      const res = await fetch(`http://localhost:5001/api/dashboard/exportar/${formato}${query}`, {
+      const res = await fetch(`${API_BASE_URL}/api/dashboard/exportar/${formato}${query}`, {
         headers: { 'Authorization': token }
       });
       if (res.ok) {
@@ -322,29 +240,32 @@ export default function Dashboard({
             <LineChart data={casosSemanales} margin={{ left: 10, right: 10, top: 10, bottom: 5 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
               <XAxis dataKey="numero_semana" tickFormatter={(val) => `Sem ${val}`} stroke="#64748b" style={{ fontSize: 9 }} />
-              <YAxis stroke="#64748b" style={{ fontSize: 9 }} />
+              <YAxis yAxisId="left" stroke="#64748b" style={{ fontSize: 9 }} />
+              <YAxis yAxisId="right" orientation="right" stroke="#f97316" style={{ fontSize: 9 }} unit="°C" />
               <Tooltip contentStyle={{ background: '#0f172a', color: '#fff', borderRadius: '8px', border: 'none', fontSize: 11, boxShadow: '0 8px 24px rgba(0,0,0,0.3)' }} />
-              <Line type="monotone" dataKey="casos" stroke="#2563eb" strokeWidth={2.5} dot={false} activeDot={{ r: 5, fill: '#2563eb', strokeWidth: 2, stroke: '#fff' }} name="Casos Notificados" />
+              <Legend wrapperStyle={{ fontSize: 10, paddingTop: 10 }} />
+              <Line yAxisId="left" type="monotone" dataKey="casos" stroke="#2563eb" strokeWidth={2.5} dot={false} activeDot={{ r: 5, fill: '#2563eb', strokeWidth: 2, stroke: '#fff' }} name="Casos Notificados" />
+              <Line yAxisId="right" type="monotone" dataKey="temperatura" stroke="#f97316" strokeWidth={2} dot={false} activeDot={{ r: 4, fill: '#f97316', strokeWidth: 2, stroke: '#fff' }} name="Temp. Promedio (°C)" connectNulls={true} />
             </LineChart>
           </ResponsiveContainer>
         </div>
       </div>
 
-      {/* Cocirculación de Serotipos e Inteligencia Epidemiológica (SIVED-AI) */}
+      {/* Cocirculación de Serotipos */}
       <div className="chart-card bg-white p-5 border border-slate-200 rounded-xl">
-        <div className="flex items-center gap-2 mb-4 border-b border-indigo-100 pb-2">
-          <div className="p-1.5 bg-indigo-50 rounded-lg text-indigo-600">
-            <Sparkles className="w-4 h-4" />
+        <div className="flex items-center gap-2 mb-4 border-b border-blue-100 pb-2">
+          <div className="p-1.5 bg-blue-50 rounded-lg text-blue-600">
+            <Activity className="w-4 h-4" />
           </div>
           <div>
-            <h3 className="text-[10px] font-bold text-indigo-700 uppercase tracking-wider">✦ Cocirculación de Serotipos & Inteligencia Epidemiológica SIVED-AI</h3>
+            <h3 className="text-[10px] font-bold text-blue-700 uppercase tracking-wider">✦ Cocirculación de Serotipos</h3>
           </div>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
-          {/* Lado Izquierdo: Gráfico de Serotipos */}
-          <div className="flex flex-col justify-between h-72">
-            <h4 className="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-2">Distribución por Genotipos y Serotipos</h4>
+        <div className="flex flex-col items-center justify-center">
+          {/* Gráfico de Serotipos */}
+          <div className="w-full max-w-xl flex flex-col justify-between h-72">
+            <h4 className="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-2 text-center">Distribución por Genotipos y Serotipos</h4>
             {serotipos.length > 0 ? (
               <div className="w-full flex-1 flex flex-col justify-center">
                 <div className="h-44 w-full">
@@ -384,75 +305,9 @@ export default function Dashboard({
               </div>
             ) : (
               <div className="flex-1 flex items-center justify-center border border-dashed border-slate-200 rounded-md">
-                <p className="text-slate-400 text-xs font-medium">No se han registrado serotipos tipificados en esta región</p>
+                <p className="text-slate-400 text-xs font-medium text-center">No se han registrado serotipos tipificados en esta región</p>
               </div>
             )}
-          </div>
-
-          {/* Lado Derecho: Asistente IA */}
-          <div className="flex flex-col justify-between h-72 bg-slate-50/50 p-4 border border-slate-200 rounded-md">
-            {chatHistory.length === 0 ? (
-              <div className="flex-1 flex flex-col items-center justify-center text-center p-4">
-                <div className="w-8 h-8 rounded-md bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-500 mb-2.5">
-                  <Sparkles className="w-4 h-4" />
-                </div>
-                <h4 className="text-xs font-bold text-slate-700 mb-1">Consultor Epidemiológico SIVED-AI</h4>
-                <p className="text-slate-400 text-[10px] leading-relaxed max-w-[280px] mb-3">
-                  La presencia de múltiples serotipos simultáneos incrementa el riesgo de Dengue Grave. Obtenga recomendaciones clínicas y sanitarias rápidas.
-                </p>
-                <button
-                  onClick={handleFetchAiAnalysis}
-                  disabled={aiLoading || serotipos.length === 0}
-                  className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white border border-indigo-700 rounded-md text-xs font-medium transition-colors"
-                >
-                  <Sparkles className="w-3 h-3" />
-                  Analizar Serotipos con IA
-                </button>
-              </div>
-            ) : (
-              <div className="overflow-y-auto space-y-3 flex-1 pr-1 scrollbar-thin">
-                {chatHistory.map((msg, index) => (
-                  <div 
-                    key={index} 
-                    className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
-                  >
-                    <div className={`max-w-[90%] rounded-md p-2.5 text-xs ${
-                      msg.sender === 'user' 
-                        ? 'bg-blue-600 text-white' 
-                        : 'bg-white text-slate-700 border border-slate-200 shadow-2xs'
-                    }`}>
-                      <p className="leading-relaxed whitespace-pre-wrap">{msg.text}</p>
-                    </div>
-                  </div>
-                ))}
-                {aiLoading && (
-                  <div className="flex justify-start">
-                    <div className="bg-white text-slate-400 border border-slate-200 rounded-md p-2 flex items-center gap-1.5 text-xs">
-                      <RefreshCw className="w-3.5 h-3.5 animate-spin text-indigo-500" />
-                      <span>Analizando variables clínicas...</span>
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-            
-            <form onSubmit={handleSendCustomQuery} className="mt-3 flex gap-2">
-              <input
-                type="text"
-                placeholder="Consultar a la IA sobre severidad o contención..."
-                value={customQuery}
-                onChange={(e) => setCustomQuery(e.target.value)}
-                className="flex-1 bg-white border border-slate-200 rounded-md px-2.5 py-1.5 text-xs text-slate-600 focus:outline-hidden focus:border-indigo-500 transition-colors"
-                disabled={aiLoading}
-              />
-              <button
-                type="submit"
-                disabled={aiLoading || !customQuery.trim()}
-                className="bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white px-2.5 rounded-md flex items-center justify-center transition-colors"
-              >
-                <Send className="w-3.5 h-3.5" />
-              </button>
-            </form>
           </div>
         </div>
       </div>

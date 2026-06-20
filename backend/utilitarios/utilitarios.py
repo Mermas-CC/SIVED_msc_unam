@@ -46,22 +46,57 @@ class Hasher:
     def verificar_password(password, pw_hash):
         return check_password_hash(pw_hash, password)
 
-
 class ExportadorReportes:
     @staticmethod
-    def exportar_csv(encabezados, filas):
-        """Genera un archivo CSV en memoria y retorna su contenido como string."""
+    def exportar_csv_consolidado(titulo, indicadores, geografia, serotipos):
         output = io.StringIO()
-        # Escribir UTF-8 con BOM para que Excel reconozca caracteres especiales en español
+        # Escribir UTF-8 con BOM para compatibilidad con Excel
         output.write('\ufeff')
         writer = csv.writer(output, delimiter=',')
-        writer.writerow(encabezados)
-        writer.writerows(filas)
+        
+        # Información de metadatos
+        writer.writerow([titulo])
+        writer.writerow(["SIVED-Perú — Reporte Oficial Epidemiológico"])
+        writer.writerow([f"Generado el: {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}"])
+        writer.writerow([])
+        
+        # 1. Resumen general
+        writer.writerow(["=== 1. RESUMEN DE INDICADORES GENERALES ==="])
+        writer.writerow(["Indicador", "Valor"])
+        writer.writerow(["Total de Casos Notificados", indicadores.get('total_casos', 0)])
+        writer.writerow(["Casos Confirmados", indicadores.get('total_confirmados', 0)])
+        writer.writerow(["Casos Probables", indicadores.get('total_casos', 0) - indicadores.get('total_confirmados', 0)])
+        writer.writerow(["Total de Defunciones", indicadores.get('total_fallecidos', 0)])
+        writer.writerow(["Tasa de Letalidad (%)", f"{indicadores.get('letalidad', 0.0)}%"])
+        writer.writerow(["Tasa de Incidencia (por 100k hab.)", indicadores.get('incidencia', 0.0)])
+        writer.writerow(["Alertas Activas Detectadas", indicadores.get('alertas', 0)])
+        writer.writerow([])
+        
+        # 2. Geografía
+        writer.writerow(["=== 2. DISTRIBUCION EPIDEMIOLOGICA GEOGRAFICA ==="])
+        writer.writerow(["Ubicación", "Casos Notificados", "Defunciones", "Letalidad (%)"])
+        for g in geografia:
+            writer.writerow([
+                g.get('nombre_lugar'),
+                g.get('casos', 0),
+                g.get('fallecidos', 0),
+                f"{g.get('letalidad_pct', 0.0)}%"
+            ])
+        writer.writerow([])
+        
+        # 3. Serotipos
+        writer.writerow(["=== 3. DISTRIBUCION POR SEROTIPO ==="])
+        writer.writerow(["Serotipo", "Casos Notificados"])
+        for s in serotipos:
+            writer.writerow([
+                s.get('serotipo') or 'No Tipificado',
+                s.get('casos', 0)
+            ])
+            
         return output.getvalue()
 
     @staticmethod
-    def exportar_pdf(titulo, encabezados, filas):
-        """Genera un reporte PDF formal utilizando ReportLab y lo retorna como bytes."""
+    def exportar_pdf_consolidado(titulo, indicadores, geografia, serotipos):
         buffer = io.BytesIO()
         doc = SimpleDocTemplate(
             buffer,
@@ -76,19 +111,30 @@ class ExportadorReportes:
             'TitleStyle',
             parent=styles['Heading1'],
             fontName='Helvetica-Bold',
-            fontSize=18,
-            textColor=colors.HexColor('#0F172A'), # Slate 900
-            spaceAfter=20,
-            alignment=1 # Centrado
+            fontSize=16,
+            textColor=colors.HexColor('#0F172A'),
+            spaceAfter=5,
+            alignment=1
         )
         
         style_meta = ParagraphStyle(
             'MetaStyle',
             parent=styles['Normal'],
             fontName='Helvetica',
-            fontSize=9,
-            textColor=colors.HexColor('#64748B'), # Slate 500
-            spaceAfter=15
+            fontSize=8,
+            textColor=colors.HexColor('#64748B'),
+            spaceAfter=15,
+            alignment=1
+        )
+        
+        style_section = ParagraphStyle(
+            'SectionStyle',
+            parent=styles['Heading2'],
+            fontName='Helvetica-Bold',
+            fontSize=11,
+            textColor=colors.HexColor('#1E3A8A'),
+            spaceBefore=12,
+            spaceAfter=8
         )
         
         style_cell = ParagraphStyle(
@@ -96,7 +142,7 @@ class ExportadorReportes:
             parent=styles['Normal'],
             fontName='Helvetica',
             fontSize=8,
-            textColor=colors.HexColor('#334155') # Slate 700
+            textColor=colors.HexColor('#334155')
         )
         
         style_header = ParagraphStyle(
@@ -109,41 +155,82 @@ class ExportadorReportes:
 
         elements = []
         
-        # Título y metadatos
+        # Cabecera
         elements.append(Paragraph(titulo, style_title))
         fecha_gen = datetime.now().strftime('%d/%m/%Y %H:%M:%S')
-        elements.append(Paragraph(f"SIVED-Perú — Reporte Oficial Epidemiológico | Generado el: {fecha_gen}", style_meta))
+        elements.append(Paragraph(f"Reporte Consolidado Epidemiológico Oficial — SIVED-Perú | Generado: {fecha_gen}", style_meta))
+        
+        # --- TABLA 1: INDICADORES GENERALES ---
+        elements.append(Paragraph("1. Resumen de Indicadores Generales", style_section))
+        ind_headers = ["Indicador", "Valor"]
+        ind_rows = [
+            ["Total de Casos Notificados", str(indicadores.get('total_casos', 0))],
+            ["Casos Confirmados", str(indicadores.get('total_confirmados', 0))],
+            ["Casos Probables", str(indicadores.get('total_casos', 0) - indicadores.get('total_confirmados', 0))],
+            ["Total de Defunciones", str(indicadores.get('total_fallecidos', 0))],
+            ["Tasa de Letalidad (%)", f"{indicadores.get('letalidad', 0.0)}%"],
+            ["Tasa de Incidencia (por 100k hab.)", str(indicadores.get('incidencia', 0.0))],
+            ["Alertas Activas", str(indicadores.get('alertas', 0))]
+        ]
+        
+        t1_data = [[Paragraph(h, style_header) for h in ind_headers]]
+        for row in ind_rows:
+            t1_data.append([Paragraph(cell, style_cell) for cell in row])
+            
+        t1 = Table(t1_data, colWidths=[doc.width * 0.7, doc.width * 0.3])
+        t1.setStyle(TableStyle([
+            ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#1E293B')),
+            ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.HexColor('#F8FAFC'), colors.white]),
+            ('GRID', (0,0), (-1,-1), 0.5, colors.HexColor('#E2E8F0')),
+            ('PADDING', (0,0), (-1,-1), 5),
+            ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+        ]))
+        elements.append(t1)
         elements.append(Spacer(1, 10))
         
-        # Estructurar tabla
-        data = []
-        # Añadir cabecera
-        data.append([Paragraph(h, style_header) for h in encabezados])
-        # Añadir filas
-        for fila in filas:
-            data.append([Paragraph(str(celda), style_cell) for celda in fila])
+        # --- TABLA 2: DISTRIBUCIÓN GEOGRÁFICA ---
+        elements.append(Paragraph("2. Distribución Epidemiológica Geográfica", style_section))
+        geo_headers = ["Ubicación", "Casos Notificados", "Defunciones", "Letalidad (%)"]
+        t2_data = [[Paragraph(h, style_header) for h in geo_headers]]
+        for g in geografia:
+            t2_data.append([
+                Paragraph(g.get('nombre_lugar') or 'Desconocido', style_cell),
+                Paragraph(str(g.get('casos', 0)), style_cell),
+                Paragraph(str(g.get('fallecidos', 0)), style_cell),
+                Paragraph(f"{g.get('letalidad_pct', 0.0)}%", style_cell),
+            ])
             
-        # Calcular anchos de columna basados en la cantidad de columnas
-        col_width = (doc.width) / len(encabezados)
-        
-        t = Table(data, colWidths=[col_width] * len(encabezados))
-        
-        # Estilo de tabla premium (colores harmoniosos de la paleta)
-        t.setStyle(TableStyle([
-            ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#1E293B')), # Slate 800 para cabeceras
-            ('ALIGN', (0,0), (-1,-1), 'LEFT'),
+        t2 = Table(t2_data, colWidths=[doc.width * 0.4, doc.width * 0.2, doc.width * 0.2, doc.width * 0.2])
+        t2.setStyle(TableStyle([
+            ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#1E293B')),
+            ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.HexColor('#F8FAFC'), colors.white]),
+            ('GRID', (0,0), (-1,-1), 0.5, colors.HexColor('#E2E8F0')),
+            ('PADDING', (0,0), (-1,-1), 4),
             ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
-            ('BOTTOMPADDING', (0,0), (-1,0), 6),
-            ('TOPPADDING', (0,0), (-1,0), 6),
-            ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.HexColor('#F8FAFC'), colors.white]), # Alternancia
-            ('GRID', (0,0), (-1,-1), 0.5, colors.HexColor('#E2E8F0')), # Bordes grises finos
-            ('BOTTOMPADDING', (0,1), (-1,-1), 4),
-            ('TOPPADDING', (0,1), (-1,-1), 4),
         ]))
+        elements.append(t2)
+        elements.append(Spacer(1, 10))
         
-        elements.append(t)
+        # --- TABLA 3: DISTRIBUCIÓN DE SEROTIPOS ---
+        elements.append(Paragraph("3. Distribución por Serotipo Clínico", style_section))
+        sero_headers = ["Serotipo", "Casos Notificados"]
+        t3_data = [[Paragraph(h, style_header) for h in sero_headers]]
+        for s in serotipos:
+            t3_data.append([
+                Paragraph(s.get('serotipo') or 'No Tipificado', style_cell),
+                Paragraph(str(s.get('casos', 0)), style_cell)
+            ])
+            
+        t3 = Table(t3_data, colWidths=[doc.width * 0.6, doc.width * 0.4])
+        t3.setStyle(TableStyle([
+            ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#1E293B')),
+            ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.HexColor('#F8FAFC'), colors.white]),
+            ('GRID', (0,0), (-1,-1), 0.5, colors.HexColor('#E2E8F0')),
+            ('PADDING', (0,0), (-1,-1), 4),
+            ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+        ]))
+        elements.append(t3)
         
-        # Construir documento
         doc.build(elements)
         buffer.seek(0)
         return buffer.getvalue()

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Plus, Edit2, Trash2, Eye, Calendar, User, FileText, CheckSquare, PlusCircle, Trash, RefreshCw } from 'lucide-react';
+import { API_BASE_URL } from '../config';
 
 export default function CasoCRUD({ usuario }) {
   const [casos, setCasos] = useState([]);
@@ -57,6 +58,7 @@ export default function CasoCRUD({ usuario }) {
   });
 
   const [formError, setFormError] = useState('');
+  const [formInfo, setFormInfo] = useState('');
   const [dniSearching, setDniSearching] = useState(false);
 
   const token = localStorage.getItem('token');
@@ -131,7 +133,7 @@ export default function CasoCRUD({ usuario }) {
                       tipo === 'distritos' ? 'id_provincia' : 
                       tipo === 'establecimientos' ? 'id_distrito' : 'id_establecimiento';
     try {
-      const res = await fetch(`http://localhost:5001/api/geografia/${tipo}?${paramName}=${id}`, {
+      const res = await fetch(`${API_BASE_URL}/api/geografia/${tipo}?${paramName}=${id}`, {
         headers: { 'Authorization': token }
       });
       if (res.ok) return await res.json();
@@ -145,10 +147,10 @@ export default function CasoCRUD({ usuario }) {
     try {
       const headers = { 'Authorization': token };
       
-      const depRes = await fetch('http://localhost:5001/api/geografia/departamentos', { headers });
+      const depRes = await fetch(`${API_BASE_URL}/api/geografia/departamentos`, { headers });
       if (depRes.ok) setDepartamentos(await depRes.json());
 
-      const catRes = await fetch('http://localhost:5001/api/geografia/catalogos', { headers });
+      const catRes = await fetch(`${API_BASE_URL}/api/geografia/catalogos`, { headers });
       if (catRes.ok) {
         const cat = await catRes.json();
         setSerotipos(cat.serotipos);
@@ -166,7 +168,7 @@ export default function CasoCRUD({ usuario }) {
       let query = `?id_departamento=${filterDepto}&id_provincia=${filterProv}&id_distrito=${filterDist}`;
       query += `&anio=${filterAnio}&semana=${filterSemana}&id_serotipo=${filterSerotipo}&id_clasificacion=${filterClasificacion}`;
       
-      const res = await fetch(`http://localhost:5001/api/casos${query}`, {
+      const res = await fetch(`${API_BASE_URL}/api/casos${query}`, {
         headers: { 'Authorization': token }
       });
       if (res.ok) {
@@ -182,12 +184,15 @@ export default function CasoCRUD({ usuario }) {
   const handleSearchDni = async () => {
     const dni = formData.paciente_documento;
     if (!dni || dni.length < 8) {
-      alert("Ingrese un DNI de al menos 8 dígitos para buscar");
+      setFormError("Ingrese un DNI de al menos 8 dígitos para buscar");
+      setFormInfo("");
       return;
     }
     setDniSearching(true);
+    setFormError("");
+    setFormInfo("");
     try {
-      const res = await fetch(`http://localhost:5001/api/casos/paciente/buscar/${dni}`, {
+      const res = await fetch(`${API_BASE_URL}/api/casos/paciente/buscar/${dni}`, {
         headers: { 'Authorization': token }
       });
       if (res.ok) {
@@ -196,7 +201,7 @@ export default function CasoCRUD({ usuario }) {
         // Cargar cascadas de ubicación del paciente
         // Para esto necesitamos encontrar el depto y provincia de su distrito
         // Haremos un fetch simple para sincronizar ubicación
-        const detailsRes = await fetch(`http://localhost:5001/api/geografia/distritos`, {
+        const detailsRes = await fetch(`${API_BASE_URL}/api/geografia/distritos`, {
           headers: { 'Authorization': token }
         });
         let p_depto = '';
@@ -207,7 +212,7 @@ export default function CasoCRUD({ usuario }) {
           if (pDist) {
             p_prov = pDist.id_provincia;
             // Buscar provincia
-            const provsRes = await fetch(`http://localhost:5001/api/geografia/provincias`, {
+            const provsRes = await fetch(`${API_BASE_URL}/api/geografia/provincias`, {
               headers: { 'Authorization': token }
             });
             if (provsRes.ok) {
@@ -228,11 +233,18 @@ export default function CasoCRUD({ usuario }) {
           paciente_id_prov: p_prov,
           paciente_id_distrito: p.id_distrito
         }));
+
+        if (p.id_paciente === null) {
+          setFormInfo(`Paciente nuevo encontrado en RENIEC/externo: ${p.nombres} ${p.apellidos}. Complete los demás datos (Fecha de nacimiento, Sexo, Distrito).`);
+        } else {
+          setFormInfo(`Paciente registrado encontrado en el sistema local: ${p.nombres} ${p.apellidos}.`);
+        }
       } else {
-        alert("Paciente no encontrado en el sistema. Ingrese los datos demográficos manualmente.");
+        setFormError("Paciente no encontrado en el sistema ni en RENIEC. Ingrese los datos demográficos manualmente.");
       }
     } catch (err) {
       console.error(err);
+      setFormError("Error al consultar el DNI: " + err.message);
     } finally {
       setDniSearching(false);
     }
@@ -288,6 +300,18 @@ export default function CasoCRUD({ usuario }) {
       setFormError("Los nombres y apellidos del paciente son requeridos");
       return;
     }
+    if (!formData.paciente_fecha_nacimiento) {
+      setFormError("La fecha de nacimiento del paciente es requerida");
+      return;
+    }
+    if (!formData.paciente_sexo) {
+      setFormError("El sexo del paciente es requerido");
+      return;
+    }
+    if (!formData.paciente_id_distrito) {
+      setFormError("El distrito de residencia del paciente es requerido (debe seleccionar Departamento, Provincia y Distrito)");
+      return;
+    }
     if (!formData.id_establecimiento || !formData.id_profesional) {
       setFormError("Debe seleccionar un establecimiento y profesional de salud");
       return;
@@ -298,7 +322,7 @@ export default function CasoCRUD({ usuario }) {
     }
 
     try {
-      const url = selectedCaso ? `http://localhost:5001/api/casos/${selectedCaso.id_caso}` : 'http://localhost:5001/api/casos';
+      const url = selectedCaso ? `${API_BASE_URL}/api/casos/${selectedCaso.id_caso}` : `${API_BASE_URL}/api/casos`;
       const method = selectedCaso ? 'PUT' : 'POST';
       
       const res = await fetch(url, {
@@ -325,6 +349,7 @@ export default function CasoCRUD({ usuario }) {
   const handleOpenCreate = () => {
     setSelectedCaso(null);
     setFormError('');
+    setFormInfo('');
     setFormData({
       paciente_documento: '',
       paciente_nombres: '',
@@ -351,8 +376,9 @@ export default function CasoCRUD({ usuario }) {
   const handleOpenEdit = async (caso) => {
     setLoading(true);
     setFormError('');
+    setFormInfo('');
     try {
-      const res = await fetch(`http://localhost:5001/api/casos/${caso.id_caso}`, {
+      const res = await fetch(`${API_BASE_URL}/api/casos/${caso.id_caso}`, {
         headers: { 'Authorization': token }
       });
       if (res.ok) {
@@ -360,7 +386,7 @@ export default function CasoCRUD({ usuario }) {
         setSelectedCaso(caso);
         
         // Cargar cascadas de ubicación del paciente
-        const detailsRes = await fetch(`http://localhost:5001/api/geografia/distritos`, {
+        const detailsRes = await fetch(`${API_BASE_URL}/api/geografia/distritos`, {
           headers: { 'Authorization': token }
         });
         let p_depto = '';
@@ -370,7 +396,7 @@ export default function CasoCRUD({ usuario }) {
           const pDist = allDists.find(d => d.id_distrito === data.paciente.id_distrito);
           if (pDist) {
             p_prov = pDist.id_provincia;
-            const provsRes = await fetch(`http://localhost:5001/api/geografia/provincias`, {
+            const provsRes = await fetch(`${API_BASE_URL}/api/geografia/provincias`, {
               headers: { 'Authorization': token }
             });
             if (provsRes.ok) {
@@ -382,7 +408,7 @@ export default function CasoCRUD({ usuario }) {
         }
 
         // Cargar cascadas de establecimiento
-        const estsRes = await fetch(`http://localhost:5001/api/geografia/establecimientos`, {
+        const estsRes = await fetch(`${API_BASE_URL}/api/geografia/establecimientos`, {
           headers: { 'Authorization': token }
         });
         let est_depto = '';
@@ -393,7 +419,7 @@ export default function CasoCRUD({ usuario }) {
           const cEst = allEsts.find(e => e.id_establecimiento === data.id_establecimiento);
           if (cEst) {
             est_dist = cEst.id_distrito;
-            const distsRes = await fetch(`http://localhost:5001/api/geografia/distritos`, {
+            const distsRes = await fetch(`${API_BASE_URL}/api/geografia/distritos`, {
               headers: { 'Authorization': token }
             });
             if (distsRes.ok) {
@@ -401,7 +427,7 @@ export default function CasoCRUD({ usuario }) {
               const cDist = allDists.find(d => d.id_distrito === est_dist);
               if (cDist) {
                 est_prov = cDist.id_provincia;
-                const provsRes = await fetch(`http://localhost:5001/api/geografia/provincias`, {
+                const provsRes = await fetch(`${API_BASE_URL}/api/geografia/provincias`, {
                   headers: { 'Authorization': token }
                 });
                 if (provsRes.ok) {
@@ -448,7 +474,7 @@ export default function CasoCRUD({ usuario }) {
   const handleOpenView = async (caso) => {
     setLoading(true);
     try {
-      const res = await fetch(`http://localhost:5001/api/casos/${caso.id_caso}`, {
+      const res = await fetch(`${API_BASE_URL}/api/casos/${caso.id_caso}`, {
         headers: { 'Authorization': token }
       });
       if (res.ok) {
@@ -465,7 +491,7 @@ export default function CasoCRUD({ usuario }) {
   const handleDelete = async (caso) => {
     if (!window.confirm(`¿Está seguro de eliminar el caso Nº ${caso.id_caso}?`)) return;
     try {
-      const res = await fetch(`http://localhost:5001/api/casos/${caso.id_caso}`, {
+      const res = await fetch(`${API_BASE_URL}/api/casos/${caso.id_caso}`, {
         method: 'DELETE',
         headers: { 'Authorization': token }
       });
@@ -721,6 +747,12 @@ export default function CasoCRUD({ usuario }) {
                 </div>
               )}
 
+              {formInfo && (
+                <div className="p-4 bg-blue-50 border border-blue-200 text-blue-700 text-sm font-semibold rounded-xl">
+                  {formInfo}
+                </div>
+              )}
+
               {/* Sección 1: Paciente */}
               <div className="space-y-4">
                 <div className="flex items-center gap-2 border-b border-slate-100 pb-2">
@@ -958,7 +990,7 @@ export default function CasoCRUD({ usuario }) {
                       className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-700 text-sm font-medium focus:outline-hidden focus:border-blue-500"
                     >
                       <option value="Probable">Probable</option>
-                      <option value="Confirmado">Confirmado</option>
+                      <option value="Confirmado" disabled={!esAdminOrEpi}>Confirmado (Solo Epidemiólogo)</option>
                     </select>
                   </div>
 

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Bot, Send, Sparkles, RefreshCw, Copy, Download, Trash2, HelpCircle } from 'lucide-react';
+import { API_BASE_URL } from '../config';
 
 const renderInlineText = (text) => {
   if (!text) return '';
@@ -325,7 +326,7 @@ export default function AsistenteIA() {
   const fetchGeoData = async (tipo, id) => {
     const paramName = tipo === 'provincias' ? 'id_departamento' : 'id_provincia';
     try {
-      const res = await fetch(`http://localhost:5001/api/geografia/${tipo}?${paramName}=${id}`, {
+      const res = await fetch(`${API_BASE_URL}/api/geografia/${tipo}?${paramName}=${id}`, {
         headers: { 'Authorization': token }
       });
       if (res.ok) return await res.json();
@@ -339,10 +340,10 @@ export default function AsistenteIA() {
     try {
       const headers = { 'Authorization': token };
       
-      const depRes = await fetch('http://localhost:5001/api/geografia/departamentos', { headers });
+      const depRes = await fetch(`${API_BASE_URL}/api/geografia/departamentos`, { headers });
       if (depRes.ok) setDepartamentos(await depRes.json());
 
-      const catRes = await fetch('http://localhost:5001/api/geografia/catalogos', { headers });
+      const catRes = await fetch(`${API_BASE_URL}/api/geografia/catalogos`, { headers });
       if (catRes.ok) {
         const cat = await catRes.json();
         setSerotipos(cat.serotipos);
@@ -364,7 +365,7 @@ export default function AsistenteIA() {
     setLoading(true);
 
     try {
-      const res = await fetch('http://localhost:5001/api/pronostico/asistente-ia', {
+      const res = await fetch(`${API_BASE_URL}/api/pronostico/asistente-ia`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

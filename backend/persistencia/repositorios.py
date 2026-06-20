@@ -585,6 +585,269 @@ class RepositorioGeografia:
             cur.close()
             conn.close()
 
+    def guardar_establecimiento(self, est):
+        conn = DatabaseConnection.get_connection()
+        cur = conn.cursor()
+        try:
+            if not est.id_establecimiento:
+                cur.execute("SELECT COALESCE(MAX(id_establecimiento), 0) + 1 FROM establecimiento_salud")
+                est.id_establecimiento = cur.fetchone()[0]
+                exists = False
+            else:
+                cur.execute("SELECT 1 FROM establecimiento_salud WHERE id_establecimiento = %s", (est.id_establecimiento,))
+                exists = cur.fetchone() is not None
+
+            if exists:
+                cur.execute(
+                    """
+                    UPDATE establecimiento_salud 
+                    SET nombre_establecimiento = %s, categoria = %s, id_distrito = %s
+                    WHERE id_establecimiento = %s
+                    """,
+                    (est.nombre_establecimiento, est.categoria, est.id_distrito, est.id_establecimiento)
+                )
+            else:
+                cur.execute(
+                    """
+                    INSERT INTO establecimiento_salud (id_establecimiento, nombre_establecimiento, categoria, id_distrito)
+                    VALUES (%s, %s, %s, %s)
+                    """,
+                    (est.id_establecimiento, est.nombre_establecimiento, est.categoria, est.id_distrito)
+                )
+            conn.commit()
+            return est
+        except Exception as e:
+            conn.rollback()
+            raise e
+        finally:
+            cur.close()
+            conn.close()
+
+    def eliminar_establecimiento(self, id_establecimiento):
+        conn = DatabaseConnection.get_connection()
+        cur = conn.cursor()
+        try:
+            cur.execute("DELETE FROM establecimiento_salud WHERE id_establecimiento = %s", (id_establecimiento,))
+            conn.commit()
+            return True
+        except Exception as e:
+            conn.rollback()
+            raise e
+        finally:
+            cur.close()
+            conn.close()
+
+    def guardar_profesional(self, prof):
+        conn = DatabaseConnection.get_connection()
+        cur = conn.cursor()
+        try:
+            id_prof = prof.id
+            if not id_prof:
+                cur.execute("SELECT COALESCE(MAX(id_profesional), 0) + 1 FROM profesional_salud")
+                id_prof = cur.fetchone()[0]
+                prof._id = id_prof
+                exists = False
+            else:
+                cur.execute("SELECT 1 FROM profesional_salud WHERE id_profesional = %s", (id_prof,))
+                exists = cur.fetchone() is not None
+
+            if exists:
+                cur.execute(
+                    """
+                    UPDATE profesional_salud 
+                    SET nombres = %s, apellidos = %s, colegiatura = %s, cargo = %s, id_establecimiento = %s
+                    WHERE id_profesional = %s
+                    """,
+                    (prof.nombres, prof.apellidos, prof.colegiatura, prof.cargo, prof.id_establecimiento, id_prof)
+                )
+            else:
+                cur.execute(
+                    """
+                    INSERT INTO profesional_salud (id_profesional, nombres, apellidos, colegiatura, cargo, id_establecimiento)
+                    VALUES (%s, %s, %s, %s, %s, %s)
+                    """,
+                    (id_prof, prof.nombres, prof.apellidos, prof.colegiatura, prof.cargo, prof.id_establecimiento)
+                )
+            conn.commit()
+            return prof
+        except Exception as e:
+            conn.rollback()
+            raise e
+        finally:
+            cur.close()
+            conn.close()
+
+    def eliminar_profesional(self, id_profesional):
+        conn = DatabaseConnection.get_connection()
+        cur = conn.cursor()
+        try:
+            cur.execute("DELETE FROM profesional_salud WHERE id_profesional = %s", (id_profesional,))
+            conn.commit()
+            return True
+        except Exception as e:
+            conn.rollback()
+            raise e
+        finally:
+            cur.close()
+            conn.close()
+
+    def guardar_serotipo(self, sero):
+        conn = DatabaseConnection.get_connection()
+        cur = conn.cursor()
+        try:
+            if not sero.id_serotipo:
+                cur.execute("SELECT COALESCE(MAX(id_serotipo), 0) + 1 FROM serotipo")
+                sero.id_serotipo = cur.fetchone()[0]
+                exists = False
+            else:
+                cur.execute("SELECT 1 FROM serotipo WHERE id_serotipo = %s", (sero.id_serotipo,))
+                exists = cur.fetchone() is not None
+
+            if exists:
+                cur.execute(
+                    """
+                    UPDATE serotipo 
+                    SET codigo = %s, descripcion = %s
+                    WHERE id_serotipo = %s
+                    """,
+                    (sero.codigo, sero.descripcion, sero.id_serotipo)
+                )
+            else:
+                cur.execute(
+                    """
+                    INSERT INTO serotipo (id_serotipo, codigo, descripcion)
+                    VALUES (%s, %s, %s)
+                    """,
+                    (sero.id_serotipo, sero.codigo, sero.descripcion)
+                )
+            conn.commit()
+            return sero
+        except Exception as e:
+            conn.rollback()
+            raise e
+        finally:
+            cur.close()
+            conn.close()
+
+    def eliminar_serotipo(self, id_serotipo):
+        conn = DatabaseConnection.get_connection()
+        cur = conn.cursor()
+        try:
+            cur.execute("DELETE FROM serotipo WHERE id_serotipo = %s", (id_serotipo,))
+            conn.commit()
+            return True
+        except Exception as e:
+            conn.rollback()
+            raise e
+        finally:
+            cur.close()
+            conn.close()
+
+    def guardar_clasificacion(self, clas):
+        conn = DatabaseConnection.get_connection()
+        cur = conn.cursor()
+        try:
+            if not clas.id_clasificacion:
+                cur.execute("SELECT COALESCE(MAX(id_clasificacion), 0) + 1 FROM clasificacion_caso")
+                clas.id_clasificacion = cur.fetchone()[0]
+                exists = False
+            else:
+                cur.execute("SELECT 1 FROM clasificacion_caso WHERE id_clasificacion = %s", (clas.id_clasificacion,))
+                exists = cur.fetchone() is not None
+
+            if exists:
+                cur.execute(
+                    """
+                    UPDATE clasificacion_caso 
+                    SET nombre = %s, descripcion = %s
+                    WHERE id_clasificacion = %s
+                    """,
+                    (clas.nombre, clas.descripcion, clas.id_clasificacion)
+                )
+            else:
+                cur.execute(
+                    """
+                    INSERT INTO clasificacion_caso (id_clasificacion, nombre, descripcion)
+                    VALUES (%s, %s, %s)
+                    """,
+                    (clas.id_clasificacion, clas.nombre, clas.descripcion)
+                )
+            conn.commit()
+            return clas
+        except Exception as e:
+            conn.rollback()
+            raise e
+        finally:
+            cur.close()
+            conn.close()
+
+    def eliminar_clasificacion(self, id_clasificacion):
+        conn = DatabaseConnection.get_connection()
+        cur = conn.cursor()
+        try:
+            cur.execute("DELETE FROM clasificacion_caso WHERE id_clasificacion = %s", (id_clasificacion,))
+            conn.commit()
+            return True
+        except Exception as e:
+            conn.rollback()
+            raise e
+        finally:
+            cur.close()
+            conn.close()
+
+    def guardar_sintoma(self, sint):
+        conn = DatabaseConnection.get_connection()
+        cur = conn.cursor()
+        try:
+            if not sint.id_sintoma:
+                cur.execute("SELECT COALESCE(MAX(id_sintoma), 0) + 1 FROM signo_sintoma")
+                sint.id_sintoma = cur.fetchone()[0]
+                exists = False
+            else:
+                cur.execute("SELECT 1 FROM signo_sintoma WHERE id_sintoma = %s", (sint.id_sintoma,))
+                exists = cur.fetchone() is not None
+
+            if exists:
+                cur.execute(
+                    """
+                    UPDATE signo_sintoma 
+                    SET nombre = %s
+                    WHERE id_sintoma = %s
+                    """,
+                    (sint.nombre, sint.id_sintoma)
+                )
+            else:
+                cur.execute(
+                    """
+                    INSERT INTO signo_sintoma (id_sintoma, nombre)
+                    VALUES (%s, %s)
+                    """,
+                    (sint.id_sintoma, sint.nombre)
+                )
+            conn.commit()
+            return sint
+        except Exception as e:
+            conn.rollback()
+            raise e
+        finally:
+            cur.close()
+            conn.close()
+
+    def eliminar_sintoma(self, id_sintoma):
+        conn = DatabaseConnection.get_connection()
+        cur = conn.cursor()
+        try:
+            cur.execute("DELETE FROM signo_sintoma WHERE id_sintoma = %s", (id_sintoma,))
+            conn.commit()
+            return True
+        except Exception as e:
+            conn.rollback()
+            raise e
+        finally:
+            cur.close()
+            conn.close()
+
+
 
 class RepositorioClima(RepositorioBase):
     def guardar(self, medida: MedidaClimatica):
@@ -775,12 +1038,32 @@ class RepositorioEstadistica:
         conn = DatabaseConnection.get_connection()
         cur = conn.cursor(cursor_factory=RealDictCursor)
         try:
+            # Encontrar el departamento_id efectivo para el filtro del clima
+            clima_depto_id = depto_id
+            if not clima_depto_id and prov_id:
+                cur.execute("SELECT id_departamento FROM provincia WHERE id_provincia = %s", (prov_id,))
+                row = cur.fetchone()
+                if row:
+                    clima_depto_id = row['id_departamento']
+            elif not clima_depto_id and dist_id:
+                cur.execute("""
+                    SELECT pr.id_departamento 
+                    FROM distrito d 
+                    JOIN provincia pr ON d.id_provincia = pr.id_provincia 
+                    WHERE d.id_distrito = %s
+                """, (dist_id,))
+                row = cur.fetchone()
+                if row:
+                    clima_depto_id = row['id_departamento']
+
             query = """
-                SELECT pe.anio, pe.numero_semana, COUNT(c.id_caso) AS casos
+                SELECT pe.anio, pe.numero_semana, COUNT(c.id_caso) AS casos,
+                       mc.temperatura
                 FROM periodo_epidemiologico pe
                 LEFT JOIN caso_dengue c ON c.id_periodo = pe.id_periodo
             """
             joins = ""
+            params_joins = []
             where_clauses = ["pe.id_periodo <= (SELECT COALESCE(MAX(id_periodo), 0) FROM caso_dengue)"]
             params = []
 
@@ -799,6 +1082,25 @@ class RepositorioEstadistica:
                 if dist_id:
                     where_clauses.append("d.id_distrito = %s")
                     params.append(dist_id)
+
+            if clima_depto_id:
+                joins += """
+                    LEFT JOIN (
+                        SELECT id_periodo, ROUND(AVG(temp_media_c), 1)::float AS temperatura
+                        FROM medida_climatica
+                        WHERE id_departamento = %s
+                        GROUP BY id_periodo
+                    ) mc ON mc.id_periodo = pe.id_periodo
+                """
+                params_joins.append(clima_depto_id)
+            else:
+                joins += """
+                    LEFT JOIN (
+                        SELECT id_periodo, ROUND(AVG(temp_media_c), 1)::float AS temperatura
+                        FROM medida_climatica
+                        GROUP BY id_periodo
+                    ) mc ON mc.id_periodo = pe.id_periodo
+                """
 
             if anio:
                 try:
@@ -825,8 +1127,8 @@ class RepositorioEstadistica:
             if where_clauses:
                 query += " WHERE " + " AND ".join(where_clauses)
                 
-            query += " GROUP BY pe.id_periodo, pe.anio, pe.numero_semana ORDER BY pe.id_periodo"
-            cur.execute(query, params)
+            query += " GROUP BY pe.id_periodo, pe.anio, pe.numero_semana, mc.temperatura ORDER BY pe.id_periodo"
+            cur.execute(query, params_joins + params)
             return cur.fetchall()
         finally:
             cur.close()

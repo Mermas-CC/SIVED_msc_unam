@@ -4,7 +4,9 @@ import Dashboard from './components/Dashboard';
 import CasoCRUD from './components/CasoCRUD';
 import Usuarios from './components/Usuarios';
 import AsistenteIA from './components/AsistenteIA';
-import { Activity, ShieldAlert, BarChart3, Shield, LogOut, Sparkles, Filter, MapPin, Calendar, RotateCcw } from 'lucide-react';
+import Catalogos from './components/Catalogos';
+import { API_BASE_URL } from './config';
+import { Activity, ShieldAlert, BarChart3, Shield, LogOut, Sparkles, Filter, MapPin, Calendar, RotateCcw, FolderTree } from 'lucide-react';
 
 export default function App() {
   const [usuario, setUsuario] = useState(null);
@@ -34,9 +36,16 @@ export default function App() {
     }
   }, []);
 
-  // Cargar departamentos cuando el usuario se autentica
+  // Cargar departamentos cuando el usuario se autentica e inicializar pestaña adecuada
   useEffect(() => {
-    if (usuario) fetchDepartamentos();
+    if (usuario) {
+      fetchDepartamentos();
+      if (usuario.rol === 'Administrador') {
+        setActiveTab('usuarios');
+      } else {
+        setActiveTab('dashboard');
+      }
+    }
   }, [usuario]);
 
   // Cascada: Provincias al cambiar departamento
@@ -64,7 +73,7 @@ export default function App() {
   const fetchDepartamentos = async () => {
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch('http://localhost:5001/api/geografia/departamentos', { headers: { 'Authorization': token } });
+      const res = await fetch(`${API_BASE_URL}/api/geografia/departamentos`, { headers: { 'Authorization': token } });
       if (res.ok) setDepartamentos(await res.json());
     } catch (e) { console.error(e); }
   };
@@ -72,7 +81,7 @@ export default function App() {
   const fetchProvincias = async (deptoId) => {
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch(`http://localhost:5001/api/geografia/provincias?id_departamento=${deptoId}`, { headers: { 'Authorization': token } });
+      const res = await fetch(`${API_BASE_URL}/api/geografia/provincias?id_departamento=${deptoId}`, { headers: { 'Authorization': token } });
       if (res.ok) setProvincias(await res.json());
     } catch (e) { console.error(e); }
   };
@@ -80,7 +89,7 @@ export default function App() {
   const fetchDistritos = async (provId) => {
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch(`http://localhost:5001/api/geografia/distritos?id_provincia=${provId}`, { headers: { 'Authorization': token } });
+      const res = await fetch(`${API_BASE_URL}/api/geografia/distritos?id_provincia=${provId}`, { headers: { 'Authorization': token } });
       if (res.ok) setDistritos(await res.json());
     } catch (e) { console.error(e); }
   };
@@ -129,80 +138,103 @@ export default function App() {
 
           {/* Menú de pestañas */}
           <nav className="px-2 space-y-1.5">
-            {/* Dashboard */}
-            <button
-              onClick={() => setActiveTab('dashboard')}
-              className={`w-full flex items-center px-3 py-3 rounded-xl text-sm font-semibold transition-all duration-300 cursor-pointer ${
-                activeTab === 'dashboard'
-                  ? 'bg-blue-600 text-white shadow-xs'
-                  : 'text-slate-400 hover:bg-slate-800/50 hover:text-white'
-              }`}
-              title={sidebarColapsado ? "Estadísticas Dashboard" : ""}
-            >
-              <BarChart3 className="w-4 h-4 shrink-0" />
-              <span className={`transition-all duration-300 ease-in-out whitespace-nowrap overflow-hidden ${
-                sidebarColapsado ? 'opacity-0 max-w-0 ml-0 translate-x-4 pointer-events-none' : 'opacity-100 max-w-xs ml-3 translate-x-0 pointer-events-auto'
-              }`}>
-                Estadísticas Dashboard
-              </span>
-            </button>
-
-            {/* Casos (CRUD) */}
-            <button
-              onClick={() => setActiveTab('casos')}
-              className={`w-full flex items-center px-3 py-3 rounded-xl text-sm font-semibold transition-all duration-300 cursor-pointer ${
-                activeTab === 'casos'
-                  ? 'bg-blue-600 text-white shadow-xs'
-                  : 'text-slate-400 hover:bg-slate-800/50 hover:text-white'
-              }`}
-              title={sidebarColapsado ? "Casos de Dengue" : ""}
-            >
-              <Activity className="w-4 h-4 shrink-0" />
-              <span className={`transition-all duration-300 ease-in-out whitespace-nowrap overflow-hidden ${
-                sidebarColapsado ? 'opacity-0 max-w-0 ml-0 translate-x-4 pointer-events-none' : 'opacity-100 max-w-xs ml-3 translate-x-0 pointer-events-auto'
-              }`}>
-                Casos de Dengue
-              </span>
-            </button>
-
-            {/* Asistente IA */}
-            <button
-              onClick={() => setActiveTab('asistente-ia')}
-              className={`w-full flex items-center px-3 py-3 rounded-xl text-sm font-semibold transition-all duration-300 cursor-pointer ${
-                activeTab === 'asistente-ia'
-                  ? 'bg-blue-600 text-white shadow-xs'
-                  : 'text-slate-400 hover:bg-slate-800/50 hover:text-white'
-              }`}
-              title={sidebarColapsado ? "Asistente IA" : ""}
-            >
-              <Sparkles className="w-4 h-4 shrink-0" />
-              <span className={`transition-all duration-300 ease-in-out whitespace-nowrap overflow-hidden ${
-                sidebarColapsado ? 'opacity-0 max-w-0 ml-0 translate-x-4 pointer-events-none' : 'opacity-100 max-w-xs ml-3 translate-x-0 pointer-events-auto'
-              }`}>
-                Asistente IA
-              </span>
-            </button>
-
-
-
-            {/* Control de Usuarios */}
-            {esAdmin && (
+            {/* Dashboard - Ocultar para Administrador */}
+            {usuario.rol !== 'Administrador' && (
               <button
-                onClick={() => setActiveTab('usuarios')}
+                onClick={() => setActiveTab('dashboard')}
                 className={`w-full flex items-center px-3 py-3 rounded-xl text-sm font-semibold transition-all duration-300 cursor-pointer ${
-                  activeTab === 'usuarios'
+                  activeTab === 'dashboard'
                     ? 'bg-blue-600 text-white shadow-xs'
                     : 'text-slate-400 hover:bg-slate-800/50 hover:text-white'
                 }`}
-                title={sidebarColapsado ? "Usuarios y Accesos" : ""}
+                title={sidebarColapsado ? "Estadísticas Dashboard" : ""}
               >
-                <Shield className="w-4 h-4 shrink-0" />
+                <BarChart3 className="w-4 h-4 shrink-0" />
                 <span className={`transition-all duration-300 ease-in-out whitespace-nowrap overflow-hidden ${
                   sidebarColapsado ? 'opacity-0 max-w-0 ml-0 translate-x-4 pointer-events-none' : 'opacity-100 max-w-xs ml-3 translate-x-0 pointer-events-auto'
                 }`}>
-                  Usuarios y Accesos
+                  Estadísticas Dashboard
                 </span>
               </button>
+            )}
+
+            {/* Casos (CRUD) - Solo Epidemiologo */}
+            {usuario.rol === 'Epidemiologo' && (
+              <button
+                onClick={() => setActiveTab('casos')}
+                className={`w-full flex items-center px-3 py-3 rounded-xl text-sm font-semibold transition-all duration-300 cursor-pointer ${
+                  activeTab === 'casos'
+                    ? 'bg-blue-600 text-white shadow-xs'
+                    : 'text-slate-400 hover:bg-slate-800/50 hover:text-white'
+                }`}
+                title={sidebarColapsado ? "Casos de Dengue" : ""}
+              >
+                <Activity className="w-4 h-4 shrink-0" />
+                <span className={`transition-all duration-300 ease-in-out whitespace-nowrap overflow-hidden ${
+                  sidebarColapsado ? 'opacity-0 max-w-0 ml-0 translate-x-4 pointer-events-none' : 'opacity-100 max-w-xs ml-3 translate-x-0 pointer-events-auto'
+                }`}>
+                  Casos de Dengue
+                </span>
+              </button>
+            )}
+
+            {/* Asistente IA - Ocultar para Administrador */}
+            {usuario.rol !== 'Administrador' && (
+              <button
+                onClick={() => setActiveTab('asistente-ia')}
+                className={`w-full flex items-center px-3 py-3 rounded-xl text-sm font-semibold transition-all duration-300 cursor-pointer ${
+                  activeTab === 'asistente-ia'
+                    ? 'bg-blue-600 text-white shadow-xs'
+                    : 'text-slate-400 hover:bg-slate-800/50 hover:text-white'
+                }`}
+                title={sidebarColapsado ? "Asistente IA" : ""}
+              >
+                <Sparkles className="w-4 h-4 shrink-0" />
+                <span className={`transition-all duration-300 ease-in-out whitespace-nowrap overflow-hidden ${
+                  sidebarColapsado ? 'opacity-0 max-w-0 ml-0 translate-x-4 pointer-events-none' : 'opacity-100 max-w-xs ml-3 translate-x-0 pointer-events-auto'
+                }`}>
+                  Asistente IA
+                </span>
+              </button>
+            )}
+
+            {/* Control de Usuarios */}
+            {esAdmin && (
+              <>
+                <button
+                  onClick={() => setActiveTab('usuarios')}
+                  className={`w-full flex items-center px-3 py-3 rounded-xl text-sm font-semibold transition-all duration-300 cursor-pointer ${
+                    activeTab === 'usuarios'
+                      ? 'bg-blue-600 text-white shadow-xs'
+                      : 'text-slate-400 hover:bg-slate-800/50 hover:text-white'
+                  }`}
+                  title={sidebarColapsado ? "Usuarios y Accesos" : ""}
+                >
+                  <Shield className="w-4 h-4 shrink-0" />
+                  <span className={`transition-all duration-300 ease-in-out whitespace-nowrap overflow-hidden ${
+                    sidebarColapsado ? 'opacity-0 max-w-0 ml-0 translate-x-4 pointer-events-none' : 'opacity-100 max-w-xs ml-3 translate-x-0 pointer-events-auto'
+                  }`}>
+                    Usuarios y Accesos
+                  </span>
+                </button>
+
+                <button
+                  onClick={() => setActiveTab('catalogos')}
+                  className={`w-full flex items-center px-3 py-3 rounded-xl text-sm font-semibold transition-all duration-300 cursor-pointer ${
+                    activeTab === 'catalogos'
+                      ? 'bg-blue-600 text-white shadow-xs'
+                      : 'text-slate-400 hover:bg-slate-800/50 hover:text-white'
+                  }`}
+                  title={sidebarColapsado ? "Gestión de Catálogos" : ""}
+                >
+                  <FolderTree className="w-4 h-4 shrink-0" />
+                  <span className={`transition-all duration-300 ease-in-out whitespace-nowrap overflow-hidden ${
+                    sidebarColapsado ? 'opacity-0 max-w-0 ml-0 translate-x-4 pointer-events-none' : 'opacity-100 max-w-xs ml-3 translate-x-0 pointer-events-auto'
+                  }`}>
+                    Gestión de Catálogos
+                  </span>
+                </button>
+              </>
             )}
           </nav>
         </div>
@@ -266,6 +298,12 @@ export default function App() {
               <div className="flex flex-col">
                 <h1 className="text-sm font-bold text-slate-800 tracking-tight leading-tight">Usuarios y Accesos</h1>
                 <p className="text-[10px] text-slate-400 font-medium">Administración de usuarios y control de accesos al sistema</p>
+              </div>
+            )}
+            {activeTab === 'catalogos' && (
+              <div className="flex flex-col">
+                <h1 className="text-sm font-bold text-slate-800 tracking-tight leading-tight">Gestión de Catálogos</h1>
+                <p className="text-[10px] text-slate-400 font-medium">Administración de establecimientos, profesionales de salud y catálogos maestros</p>
               </div>
             )}
           </div>
@@ -396,6 +434,7 @@ export default function App() {
           {activeTab === 'casos' && <CasoCRUD usuario={usuario} />}
           {activeTab === 'asistente-ia' && <AsistenteIA />}
           {activeTab === 'usuarios' && esAdmin && <Usuarios />}
+          {activeTab === 'catalogos' && esAdmin && <Catalogos />}
         </main>
       </div>
     </div>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { BrainCircuit, CloudSun, Play, ShieldAlert, Sparkles, RefreshCw, Info } from 'lucide-react';
+import { API_BASE_URL } from '../config';
 
 export default function Forecasting() {
   const [departamentos, setDepartamentos] = useState([]);
@@ -30,7 +31,7 @@ export default function Forecasting() {
 
   const fetchDepartamentos = async () => {
     try {
-      const res = await fetch('http://localhost:5001/api/geografia/departamentos', {
+      const res = await fetch(`${API_BASE_URL}/api/geografia/departamentos`, {
         headers: { 'Authorization': token }
       });
       if (res.ok) setDepartamentos(await res.json());
@@ -42,7 +43,7 @@ export default function Forecasting() {
   const fetchAlertas = async () => {
     setLoadingAlertas(true);
     try {
-      const res = await fetch(`http://localhost:5001/api/pronostico/alertas/${selectedDepto}`, {
+      const res = await fetch(`${API_BASE_URL}/api/pronostico/alertas/${selectedDepto}`, {
         headers: { 'Authorization': token }
       });
       if (res.ok) {
@@ -62,7 +63,7 @@ export default function Forecasting() {
     }
     setSyncing(true);
     try {
-      const res = await fetch('http://localhost:5001/api/pronostico/sincronizar-clima', {
+      const res = await fetch(`${API_BASE_URL}/api/pronostico/sincronizar-clima`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -92,7 +93,7 @@ export default function Forecasting() {
     setRunning(true);
     setResultados(null);
     try {
-      const res = await fetch(`http://localhost:5001/api/pronostico/predecir/${selectedDepto}`, {
+      const res = await fetch(`${API_BASE_URL}/api/pronostico/predecir/${selectedDepto}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

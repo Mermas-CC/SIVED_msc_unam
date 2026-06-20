@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Shield, Plus, Edit2, Trash2, CheckCircle, XCircle, RefreshCw } from 'lucide-react';
+import { API_BASE_URL } from '../config';
 
 export default function Usuarios() {
   const [usuarios, setUsuarios] = useState([]);
@@ -12,7 +13,7 @@ export default function Usuarios() {
     nombre_usuario: '',
     password: '',
     correo: '',
-    id_rol: 3, // Notificador por defecto
+    id_rol: 2, // Epidemiologo por defecto
     id_profesional: '',
     activo: true
   });
@@ -29,8 +30,8 @@ export default function Usuarios() {
     try {
       const headers = { 'Authorization': token };
       
-      const usrRes = await fetch('http://localhost:5001/api/usuarios', { headers });
-      const rolesRes = await fetch('http://localhost:5001/api/geografia/catalogos', { headers }); // Roles está mapeado en la BD
+      const usrRes = await fetch(`${API_BASE_URL}/api/usuarios`, { headers });
+      const rolesRes = await fetch(`${API_BASE_URL}/api/geografia/catalogos`, { headers }); // Roles está mapeado en la BD
       
       // O consultar directamente a api/usuarios que lista roles
       if (usrRes.ok) {
@@ -38,11 +39,10 @@ export default function Usuarios() {
       }
       
       // Usaremos un catálogo estático de roles en el frontend si falla el fetch, 
-      // o cargamos los 4 roles del seed
+      // o cargamos los roles autorizados
       setRoles([
         { id_rol: 1, nombre_rol: 'Administrador', descripcion: 'Acceso total' },
         { id_rol: 2, nombre_rol: 'Epidemiologo', descripcion: 'Vigilancia y análisis' },
-        { id_rol: 3, nombre_rol: 'Notificador', descripcion: 'Registra casos clínicos' },
         { id_rol: 4, nombre_rol: 'Autoridad', descripcion: 'Solo lectura del dashboard' }
       ]);
     } catch (err) {
@@ -66,7 +66,7 @@ export default function Usuarios() {
     }
 
     try {
-      const url = selectedUsuario ? `http://localhost:5001/api/usuarios/${selectedUsuario.id_usuario}` : 'http://localhost:5001/api/usuarios';
+      const url = selectedUsuario ? `${API_BASE_URL}/api/usuarios/${selectedUsuario.id_usuario}` : `${API_BASE_URL}/api/usuarios`;
       const method = selectedUsuario ? 'PUT' : 'POST';
 
       const res = await fetch(url, {
@@ -125,7 +125,7 @@ export default function Usuarios() {
     }
     if (!window.confirm(`¿Está seguro de eliminar al usuario "${u.nombre_usuario}"?`)) return;
     try {
-      const res = await fetch(`http://localhost:5001/api/usuarios/${u.id_usuario}`, {
+      const res = await fetch(`${API_BASE_URL}/api/usuarios/${u.id_usuario}`, {
         method: 'DELETE',
         headers: { 'Authorization': token }
       });

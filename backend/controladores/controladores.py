@@ -497,38 +497,64 @@ def exportar_reporte(formato):
     semana_inicio = request.args.get('semana_inicio')
     semana_fin = request.args.get('semana_fin')
     
-    # Traer datos de los casos filtrados
-    casos = repo_caso.buscar_filtrado(
+    repo_est = RepositorioEstadistica()
+    
+    # 1. Indicadores generales
+    indicadores = repo_est.obtener_resumen_indicadores(
         depto_id=depto_id, prov_id=prov_id, dist_id=dist_id,
-        anio=anio, semana=semana_fin
+        anio=anio, semana_inicio=semana_inicio, semana_fin=semana_fin
     )
     
-    encabezados = ['ID Caso', 'Paciente DNI', 'Paciente Nombres', 'Establecimiento', 'Fecha Notificación', 'Diagnóstico', 'Clasificación', 'Condición']
-    filas = [
-        [c['id_caso'], c['documento'], f"{c['pac_nombres']} {c['pac_apellidos']}", c['nombre_establecimiento'], 
-         str(c['fecha_notificacion']), c['tipo_diagnostico'], c['clasificacion_nombre'], c['condicion']]
-        for c in casos
-    ]
+    # 2. Desglose geográfico
+    geografia = repo_est.obtener_letalidad_departamentos(
+        depto_id=depto_id, prov_id=prov_id, dist_id=dist_id,
+        anio=anio, semana_inicio=semana_inicio, semana_fin=semana_fin
+    )
     
-    titulo = "Reporte de Casos de Vigilancia de Dengue"
+    # 3. Distribución por serotipo
+    serotipos = repo_est.obtener_distribucion_serotipos(
+        depto_id=depto_id, prov_id=prov_id, dist_id=dist_id,
+        anio=anio, semana_inicio=semana_inicio, semana_fin=semana_fin
+    )
+    
+    titulo = "Reporte Estadístico de Vigilancia de Dengue"
     if depto_id:
         deptos = repo_geo.listar_departamentos()
         depto_nom = next((d.nombre_departamento for d in deptos if d.id_departamento == depto_id), depto_id)
-        titulo += f" - Departamento: {depto_nom}"
-
+        titulo += f" - Dpto: {depto_nom}"
+        if prov_id:
+            provs = repo_geo.listar_provincias(depto_id)
+            prov_nom = next((p.nombre_provincia for p in provs if p.id_provincia == prov_id), prov_id)
+            titulo += f" / Prov: {prov_nom}"
+            if dist_id:
+                dists = repo_geo.listar_distritos(prov_id)
+                dist_nom = next((di.nombre_distrito for di in dists if di.id_distrito == dist_id), dist_id)
+                titulo += f" / Dist: {dist_nom}"
+                
+    if anio:
+        titulo += f" (Año: {anio}"
+        if semana_inicio and semana_fin:
+            titulo += f", SE {semana_inicio} a SE {semana_fin})"
+        elif semana_inicio:
+            titulo += f", Desde SE {semana_inicio})"
+        elif semana_fin:
+            titulo += f", Hasta SE {semana_fin})"
+        else:
+            titulo += ")"
+            
     if formato == 'csv':
-        csv_content = ExportadorReportes.exportar_csv(encabezados, filas)
+        csv_content = ExportadorReportes.exportar_csv_consolidado(titulo, indicadores, geografia, serotipos)
         return Response(
             csv_content,
             mimetype="text/csv",
-            headers={"Content-disposition": "attachment; filename=reporte_dengue.csv"}
+            headers={"Content-disposition": f"attachment; filename=reporte_epidemiologico_{datetime.now().strftime('%Y%m%d')}.csv"}
         )
     elif formato == 'pdf':
-        pdf_bytes = ExportadorReportes.exportar_pdf(titulo, encabezados, filas)
+        pdf_bytes = ExportadorReportes.exportar_pdf_consolidado(titulo, indicadores, geografia, serotipos)
         return Response(
             pdf_bytes,
             mimetype="application/pdf",
-            headers={"Content-disposition": "attachment; filename=reporte_dengue.pdf"}
+            headers={"Content-disposition": f"attachment; filename=reporte_epidemiologico_{datetime.now().strftime('%Y%m%d')}.pdf"}
         )
     else:
         return jsonify({'mensaje': 'Formato no soportado (use csv o pdf)'}), 400

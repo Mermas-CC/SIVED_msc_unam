@@ -40,5 +40,5 @@ def create_app():
 
 if __name__ == '__main__':
     app = create_app()
-    # Ejecutar en el puerto 5000 por defecto
-    app.run(host='0.0.0.0', port=5001, debug=True)
+    # Ejecutar en el puerto 5005 por defecto
+    app.run(host='0.0.0.0', port=5005, debug=True)
