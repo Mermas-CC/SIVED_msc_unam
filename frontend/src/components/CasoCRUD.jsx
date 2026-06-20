@@ -2,6 +2,37 @@ import React, { useState, useEffect } from 'react';
 import { Search, Plus, Edit2, Trash2, Eye, Calendar, User, FileText, CheckSquare, PlusCircle, Trash, RefreshCw } from 'lucide-react';
 import { API_BASE_URL } from '../config';
 
+const formatFechaEsp = (fechaVal) => {
+  if (!fechaVal) return '';
+  let str = String(fechaVal);
+  
+  if (/^\d{4}-\d{2}-\d{2}$/.test(str)) {
+    const [year, month, day] = str.split('-');
+    const meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+    return `${day} ${meses[parseInt(month) - 1]} ${year}`;
+  }
+
+  const days = {
+    'Sun': 'Dom', 'Mon': 'Lun', 'Tue': 'Mar', 'Wed': 'Mié', 'Thu': 'Jue', 'Fri': 'Vie', 'Sat': 'Sáb'
+  };
+  const months = {
+    'Jan': 'Ene', 'Feb': 'Feb', 'Mar': 'Mar', 'Apr': 'Abr', 'May': 'May', 'Jun': 'Jun',
+    'Jul': 'Jul', 'Aug': 'Ago', 'Sep': 'Sep', 'Oct': 'Oct', 'Nov': 'Nov', 'Dec': 'Dic'
+  };
+  
+  Object.keys(days).forEach(engDay => {
+    const reg = new RegExp(`\\b${engDay}\\b`, 'g');
+    str = str.replace(reg, days[engDay]);
+  });
+  
+  Object.keys(months).forEach(engMonth => {
+    const reg = new RegExp(`\\b${engMonth}\\b`, 'g');
+    str = str.replace(reg, months[engMonth]);
+  });
+  
+  return str;
+};
+
 export default function CasoCRUD({ usuario }) {
   const [casos, setCasos] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -673,7 +704,7 @@ export default function CasoCRUD({ usuario }) {
                       <div className="text-slate-400 text-xs font-semibold mt-0.5">{caso.documento}</div>
                     </td>
                     <td className="px-5 py-4 font-medium">{caso.nombre_establecimiento}</td>
-                    <td className="px-5 py-4 text-slate-500 font-semibold">{caso.fecha_notificacion}</td>
+                    <td className="px-5 py-4 text-slate-500 font-semibold">{formatFechaEsp(caso.fecha_notificacion)}</td>
                     <td className="px-5 py-4 text-slate-500 font-semibold">{caso.anio} - S{caso.numero_semana}</td>
                     <td className="px-5 py-4">
                       <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${
@@ -1143,7 +1174,7 @@ export default function CasoCRUD({ usuario }) {
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div><span className="text-slate-400 font-medium">Nombres:</span> <span className="font-semibold text-slate-800">{selectedCaso.paciente.nombres} {selectedCaso.paciente.apellidos}</span></div>
                   <div><span className="text-slate-400 font-medium">Documento:</span> <span className="font-semibold text-slate-800">{selectedCaso.paciente.documento}</span></div>
-                  <div><span className="text-slate-400 font-medium">Fecha de Nacimiento:</span> <span className="font-semibold text-slate-800">{selectedCaso.paciente.fecha_nacimiento}</span></div>
+                  <div><span className="text-slate-400 font-medium">Fecha de Nacimiento:</span> <span className="font-semibold text-slate-800">{formatFechaEsp(selectedCaso.paciente.fecha_nacimiento)}</span></div>
                   <div><span className="text-slate-400 font-medium">Sexo:</span> <span className="font-semibold text-slate-800">{selectedCaso.paciente.sexo === 'M' ? 'Masculino' : 'Femenino'}</span></div>
                 </div>
               </div>
@@ -1162,8 +1193,8 @@ export default function CasoCRUD({ usuario }) {
               <div className="space-y-3">
                 <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100 pb-1">Cuadro Clínico y Fechas</h4>
                 <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div><span className="text-slate-400 font-medium">Fecha Notificación:</span> <span className="font-semibold text-slate-850">{selectedCaso.fecha_notificacion}</span></div>
-                  <div><span className="text-slate-400 font-medium">Fecha Inicio de Síntomas:</span> <span className="font-semibold text-slate-850">{selectedCaso.fecha_inicio_sintomas || 'No Registra'}</span></div>
+                  <div><span className="text-slate-400 font-medium">Fecha Notificación:</span> <span className="font-semibold text-slate-850">{formatFechaEsp(selectedCaso.fecha_notificacion)}</span></div>
+                  <div><span className="text-slate-400 font-medium">Fecha Inicio de Síntomas:</span> <span className="font-semibold text-slate-850">{selectedCaso.fecha_inicio_sintomas ? formatFechaEsp(selectedCaso.fecha_inicio_sintomas) : 'No Registra'}</span></div>
                   
                   <div><span className="text-slate-400 font-medium">Clasificación:</span> 
                     <span className={`ml-2 px-2.5 py-0.5 rounded-full text-xs font-bold ${
@@ -1208,7 +1239,7 @@ export default function CasoCRUD({ usuario }) {
                       <div key={index} className="flex justify-between items-center bg-slate-50 p-2.5 rounded-xl border border-slate-200 text-sm">
                         <div>
                           <span className="font-bold text-slate-800">{dl.tipo_prueba}</span>
-                          <span className="text-slate-400 text-xs ml-3">Fecha: {dl.fecha_resultado || 'n/a'}</span>
+                          <span className="text-slate-400 text-xs ml-3">Fecha: {dl.fecha_resultado ? formatFechaEsp(dl.fecha_resultado) : 'n/a'}</span>
                         </div>
                         <span className={`px-2.5 py-0.5 rounded-md text-xs font-bold ${
                           dl.resultado === 'Positivo' ? 'bg-red-50 text-red-700' : 'bg-emerald-50 text-emerald-700'

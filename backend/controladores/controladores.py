@@ -4,7 +4,7 @@ from datetime import datetime
 from psycopg2.extras import RealDictCursor
 from backend.persistencia.repositorios import RepositorioUsuario, RepositorioCaso, RepositorioGeografia, RepositorioClima, RepositorioEstadistica, DatabaseConnection
 from backend.modelos.persona import Paciente
-from backend.modelos.entidades import CasoDengue, DiagnosticoLaboratorio, Usuario, PrediccionAlerta
+from backend.modelos.entidades import CasoDengue, DiagnosticoLaboratorio, Usuario, PrediccionAlerta, SignoSintoma
 from backend.servicios.servicios import ServicioClimaAPI, ModeloSARIMA, ModeloProphet, ModeloRegresion, ServicioAlerta
 from backend.utilitarios.utilitarios import Hasher, ValidadorDatos, ExportadorReportes
 import pandas as pd
@@ -402,6 +402,151 @@ def eliminar_caso(id_caso):
     if success:
         return jsonify({'mensaje': 'Caso eliminado con éxito'})
     return jsonify({'mensaje': 'Error al eliminar caso'}), 500
+
+@casos_bp.route('/importar-csv', methods=['POST'])
+@token_requerido
+@requiere_roles('Administrador')
+def importar_csv():
+    import csv
+    import io
+    if 'file' not in request.files:
+        return jsonify({'mensaje': 'No se proporcionó ningún archivo'}), 400
+        
+    file = request.files['file']
+    if file.filename == '':
+        return jsonify({'mensaje': 'Nombre de archivo vacío'}), 400
+
+    if not file.filename.endswith('.csv'):
+        return jsonify({'mensaje': 'El archivo debe ser de formato CSV'}), 400
+        
+    try:
+        # Leer el contenido del archivo CSV con soporte UTF-8 BOM
+        stream = io.StringIO(file.stream.read().decode("utf-8-sig"), newline=None)
+        reader = csv.DictReader(stream)
+        
+        required_headers = [
+            'dni', 'nombres', 'apellidos', 'fecha_nacimiento', 'sexo', 'id_distrito',
+            'id_establecimiento', 'id_profesional', 'fecha_notificacion', 'fecha_inicio_sintomas',
+            'id_serotipo', 'id_clasificacion', 'tipo_diagnostico', 'condicion'
+        ]
+        
+        if not reader.fieldnames:
+            return jsonify({'mensaje': 'El archivo CSV está vacío'}), 400
+            
+        missing_headers = [h for h in required_headers if h not in reader.fieldnames]
+        if missing_headers:
+            return jsonify({'mensaje': f'El archivo CSV carece de las siguientes cabeceras requeridas: {", ".join(missing_headers)}'}), 400
+
+        total_filas = 0
+        exitosos = 0
+        fallidos = 0
+        errores = []
+
+        for row in reader:
+            total_filas += 1
+            fila_num = total_filas + 1  # 1-based index including header
+            
+            try:
+                dni = (row.get('dni') or '').strip()
+                nombres = (row.get('nombres') or '').strip()
+                apellidos = (row.get('apellidos') or '').strip()
+                fecha_nacimiento = (row.get('fecha_nacimiento') or '').strip()
+                sexo = (row.get('sexo') or '').strip()
+                id_distrito = (row.get('id_distrito') or '').strip()
+                
+                id_establecimiento = (row.get('id_establecimiento') or '').strip()
+                id_profesional = (row.get('id_profesional') or '').strip()
+                fecha_notificacion = (row.get('fecha_notificacion') or '').strip()
+                fecha_inicio_sintomas = (row.get('fecha_inicio_sintomas') or '').strip()
+                id_serotipo = (row.get('id_serotipo') or '').strip()
+                id_clasificacion = (row.get('id_clasificacion') or '').strip()
+                tipo_diagnostico = (row.get('tipo_diagnostico') or '').strip()
+                condicion = (row.get('condicion') or 'Vivo').strip()
+                
+                if not dni:
+                    raise Exception("El DNI es obligatorio")
+                if not ValidadorDatos.validar_dni(dni):
+                    raise Exception("Documento de identidad (DNI) inválido")
+                if not nombres or not apellidos:
+                    raise Exception("Nombres y apellidos son obligatorios")
+                if not id_distrito:
+                    raise Exception("El ID de distrito es obligatorio")
+                if not id_establecimiento:
+                    raise Exception("El ID de establecimiento es obligatorio")
+                if not id_profesional:
+                    raise Exception("El ID de profesional es obligatorio")
+                if not id_clasificacion:
+                    raise Exception("La clasificación del caso es obligatoria")
+                if not fecha_notificacion:
+                    raise Exception("La fecha de notificación es obligatoria")
+                
+                if fecha_inicio_sintomas and not ValidadorDatos.validar_fechas(fecha_inicio_sintomas, fecha_notificacion):
+                    raise Exception("La fecha de inicio de síntomas debe ser menor o igual a la fecha de notificación")
+                
+                # Buscar o guardar paciente
+                paciente = repo_caso.buscar_paciente_por_dni(dni)
+                if not paciente:
+                    paciente = Paciente(
+                        id_paciente=None,
+                        documento=dni,
+                        nombres=nombres,
+                        apellidos=apellidos,
+                        fecha_nacimiento=fecha_nacimiento if fecha_nacimiento else None,
+                        sexo=sexo if sexo in ['M', 'F'] else 'M',
+                        id_distrito=id_distrito
+                    )
+                    paciente = repo_caso.guardar_paciente(paciente)
+                else:
+                    paciente.nombres = nombres
+                    paciente.apellidos = apellidos
+                    if fecha_nacimiento:
+                        paciente.fecha_nacimiento = fecha_nacimiento
+                    if sexo in ['M', 'F']:
+                        paciente.sexo = sexo
+                    paciente.id_distrito = id_distrito
+                    repo_caso.guardar_paciente(paciente)
+                
+                # Buscar periodo
+                periodo = repo_clima.buscar_periodo_por_fecha(fecha_notificacion)
+                if not periodo:
+                    periodo = repo_clima.buscar_ultimo_periodo_epidemiologico()
+                
+                # Guardar caso
+                caso = CasoDengue(
+                    id_caso=None,
+                    id_paciente=paciente.id,
+                    id_establecimiento=int(id_establecimiento),
+                    id_profesional=int(id_profesional),
+                    id_periodo=periodo.id_periodo,
+                    id_serotipo=int(id_serotipo) if (id_serotipo and id_serotipo != "") else None,
+                    id_clasificacion=int(id_clasificacion),
+                    fecha_notificacion=fecha_notificacion,
+                    fecha_inicio_sintomas=fecha_inicio_sintomas if fecha_inicio_sintomas else None,
+                    tipo_diagnostico=tipo_diagnostico if tipo_diagnostico in ['Probable', 'Confirmado'] else 'Probable',
+                    condicion=condicion if condicion in ['Vivo', 'Fallecido'] else 'Vivo',
+                    sintomas=[],
+                    diagnosticos_lab=[]
+                )
+                
+                repo_caso.guardar(caso)
+                exitosos += 1
+                
+            except Exception as e:
+                fallidos += 1
+                errores.append({
+                    'fila': fila_num,
+                    'error': str(e)
+                })
+                
+        return jsonify({
+            'total_filas_procesadas': total_filas,
+            'exitosos': exitosos,
+            'fallidos': fallidos,
+            'errores': errores
+        }), 200
+
+    except Exception as e:
+        return jsonify({'mensaje': f'Error general de procesamiento del archivo: {str(e)}'}), 500
 
 
 # ---------- 4. Controladores de Dashboard e Indicadores ----------

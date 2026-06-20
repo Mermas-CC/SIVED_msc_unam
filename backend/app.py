@@ -9,8 +9,18 @@ from flask_cors import CORS
 from backend.config import Config
 from backend.controladores.controladores import auth_bp, casos_bp, geo_bp, dash_bp, pron_bp, usr_bp
 
+from flask.json.provider import DefaultJSONProvider
+import datetime
+
+class CustomJSONProvider(DefaultJSONProvider):
+    def default(self, obj):
+        if isinstance(obj, (datetime.date, datetime.datetime)):
+            return obj.isoformat()
+        return super().default(obj)
+
 def create_app():
     app = Flask(__name__)
+    app.json = CustomJSONProvider(app)
     app.config.from_object(Config)
     
     # Habilitar CORS para permitir peticiones desde el frontend de React (por ejemplo en localhost:5173)
